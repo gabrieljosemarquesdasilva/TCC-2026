@@ -1,0 +1,29 @@
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+}
+
+.container{
+  display:flex;
+  height:100vh;
+}
+
+#esquerda{
+  width:50%;
+  background:#97cfc3; 
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+#direita{
+  width:50%;
+  background:#ffffff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
