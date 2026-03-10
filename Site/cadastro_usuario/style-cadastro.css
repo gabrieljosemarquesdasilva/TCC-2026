@@ -37,3 +37,18 @@ body{
   border-bottom-right-radius: 25px;
   
 }
+
+.input{
+  border-style: outset;
+  content: ;
+}
+
+#titulo{
+  margin-top: -5%;
+}
+
+form{
+  border: black solid 1px;
+  width: 500px;
+  height: 200px;
+}
