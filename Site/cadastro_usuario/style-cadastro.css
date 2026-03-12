@@ -82,8 +82,10 @@ header {
 .container {
   display: flex;
   height: auto;
-  min-height: 750px;
-  margin: 48px 10%;
+  min-height: 670px;
+  margin: 1%;
+  margin-left: 100px;
+  margin-right: 100px;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 8px 40px rgba(0,0,0,0.12);
@@ -134,37 +136,11 @@ header {
   margin-bottom: 28px;
 }
 
-form {
-  width: 100%;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.input {
-  display: block;
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid #ddd;
-  border-radius: 8px;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
-  background: #fafafa;
-  transition: border 0.2s;
-  outline: none;
-}
-
-.input:focus {
-  border-color: #c9a84c;
-  background: #fff;
-}
-
 #botao-criar {
   display: block;
-  width: 100%;
+  width: 80%;
   margin-top: 8px;
-  padding: 13px;
+  padding: 8px;
   background-color: #c9a84c;
   color: #1a1a1a;
   font-family: 'Bebas Neue', sans-serif;
@@ -174,6 +150,7 @@ form {
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
+  margin: auto;
 }
 
 #botao-criar:hover {
@@ -196,36 +173,28 @@ form{
   display:flex;
   flex-direction:column;
   gap:20px;
-  width: 400px;
+  width: 55%;
   padding: 10px;
-}
-
-.div-form{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
 }
 
 label{
   font-family:'Space Mono',monospace;
   font-size:0.6rem;
-  letter-spacing:0.15em;
+  letter-spacing:0.20em;
   text-transform:uppercase;
   display:block;
   margin-bottom:8px;
  }
 
- input [type=text]{
+ input[type="text"]{
   width:100%;
   background:var(--bg3);
-  border:1px solid var(--border);
-  color:var(--text);
   font-family:'DM Sans',sans-serif;
   font-size:0.95rem;
-  padding:12px 16px;
-  border-radius:8px;
+  border-radius:4px;
   outline:none;
   transition:border-color 0.2s;
+  height: 70%;
  }
 
  .div-select{
@@ -235,5 +204,27 @@ label{
  }
 
  #input-maior{
-  width: 97.5%;
+  width: 100%;
+  background:var(--bg3);
+  font-family:'DM Sans',sans-serif;
+  font-size:0.95rem;
+  border-radius:4px;
+  outline:none;
+  transition:border-color 0.2s;
+  height: 70%;
+ }
+
+ .enviar{
+  color: white;
+  background-color: rgb(97, 97, 97);
+  height: 25px;
+  width: 80%;
+  display:block;
+  margin: auto;
+ }
+
+ .div-form-nome-sobrenome{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  width: 100%;
  }
