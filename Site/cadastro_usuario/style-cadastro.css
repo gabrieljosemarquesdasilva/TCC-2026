@@ -1,0 +1,64 @@
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background-color: rgb(106, 169, 187);
+}
+
+.container{
+  display:flex;
+  height:650px;
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  
+}
+
+#esquerda{
+  width:35%;
+  background:#b6e5ff; 
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+
+#direita{
+  width:65%;
+  background:#ffffff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+  
+}
+
+.input{
+  border-style: outset;
+  display: block;
+  margin: auto;
+  width: 60%;
+  padding: 5px;
+}
+
+#botao-criar{
+  display:block;
+  margin: auto;
+  margin-top: 20px;
+}
+
+
+#titulo{
+  margin-top: -5%;
+}
+
+form{
+  width: 500px;
+  height: 200px;
+  align-content: center;
+}
