@@ -15,6 +15,7 @@
                 <li><a href="sobre.html">Sobre</a></li>
                 <li><a href="contato.html">Contato</a></li>
                 <li><a href="cadastro_usuario/cadastro.html">Cadastro</a></li>
+                <li><a href="perfil.html">Perfil</a></li>
             </ul>
         </nav>
     </header>
@@ -23,7 +24,40 @@
         <h1>Agendamento de horarios</h1>
         <p>Aqui você agenda seus horários.</p>
     </section>
-     <!-- Rodapé -->
+
+<form id="form-agendamento">
+
+<label>Nome</label>
+<input type="text" name="nome" required>
+
+<label>Quadra</label>
+<select name="quadra">
+<option>Quadra 1</option>
+<option>Quadra 2</option>
+<option>Quadra 3</option>
+</select>
+
+<label>Data</label>
+<input type="date" name="data" required>
+
+<label>Horário</label>
+<input type="time" name="horario" required>
+
+<label>Duração</label>
+<select name="duracao">
+<option>1 hora</option>
+<option>2 horas</option>
+</select>
+
+<label>Observação</label>
+<textarea name="obs"></textarea>
+
+<button type="submit">Reservar Quadra</button>
+
+</form>
+    
+    
+    <!-- Rodapé -->
     <footer>
         <p>Projeto de TCC - 2026</p>
     </footer>
