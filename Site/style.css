@@ -45,6 +45,11 @@ header {
   transition: color 0.2s;
 }
 
+.menu a.ativo{
+background-color:#555;
+border-radius:5px;
+}
+
 .menu a:hover {
   color: #c9a84c;
   background-color: transparent;
@@ -148,4 +153,20 @@ footer {
   font-size: 0.85rem;
   letter-spacing: 0.05em;
   border-top: 2px solid #c9a84c;
+}
+
+.redes{
+margin-top:30px;
+text-align:center;
+}
+
+.redes a{
+font-size:40px;
+margin:15px;
+color:#333;
+text-decoration:none;
+}
+
+.redes a:hover{
+color:#2c7a4b;
 }
