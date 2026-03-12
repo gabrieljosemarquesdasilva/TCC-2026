@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Resultados — LetzPlay</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+.page-hero{
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 60px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero-grid{
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+}
+.page-hero-orb{
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  width: 500px; height: 500px;
+  background: rgba(255,106,0,0.1);
+  top: -200px; right: -100px;
+  animation: orbFloat 10s ease-in-out infinite;
+}
+.page-hero-content{ position: relative; z-index: 2; max-width: 700px; }
+.page-eyebrow{
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sport-color);
+  margin-bottom: 16px;
+}
+.page-title{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+.page-title .accent{ color: var(--sport-color); }
+.page-desc{
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 480px;
+}
+</style>
+</head>
+<body data-sport="tennis">
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- TOP STRIP -->
+<div id="top-strip">
+  <span>🏆 QUADRA LETZPLAY · RESERVAS ABERTAS · VENHA JOGAR CONOSCO</span>
+  <button onclick="document.getElementById('top-strip').style.display='none'">FECHAR ✕</button>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">QUADRA · <span>João Silva</span> recordista em reservas do mês ↑</span>
+    <span class="ticker-item">NOVIDADE · <span>Novas grades horárias</span> disponíveis a partir de abril</span>
+    <span class="ticker-item">DESTAQUE · <span>Pedro Alves</span> completou 50 reservas na quadra 🏆</span>
+    <span class="ticker-item">AGENDA · <span>Fim de semana</span> com horários disponíveis — reserve já</span>
+    <span class="ticker-item">TOP · <span>Mariana Costa</span> lidera ranking de frequência feminino</span>
+    <span class="ticker-item">QUADRA · <span>João Silva</span> recordista em reservas do mês ↑</span>
+    <span class="ticker-item">NOVIDADE · <span>Novas grades horárias</span> disponíveis a partir de abril</span>
+    <span class="ticker-item">DESTAQUE · <span>Pedro Alves</span> completou 50 reservas na quadra 🏆</span>
+    <span class="ticker-item">AGENDA · <span>Fim de semana</span> com horários disponíveis — reserve já</span>
+    <span class="ticker-item">TOP · <span>Mariana Costa</span> lidera ranking de frequência feminino</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="LetzPlay-Laranja-2.html" class="logo" style="text-decoration:none;">Letz<em>Play</em></a>
+  <ul class="nav-links">
+    <li><a href="ranking.html">Rankings</a></li>
+    <li><a href="reservar.html">Reservar</a></li>
+    <li><a href="atletas.html">Atletas</a></li>
+    <li><a href="resultados.html">Resultados</a></li>
+  </ul>
+  <a href="inscricao.html" class="nav-cta">Inscrever-se</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-grid"></div>
+  <div class="page-hero-orb"></div>
+  <div class="page-hero-content">
+    <div class="page-eyebrow">🏅 HISTÓRICO DE JOGOS</div>
+    <h1 class="page-title">ÚLTIMOS<br><span class="accent">RESULTADOS</span></h1>
+    <p class="page-desc">Veja os resultados e partidas recentes disputadas na quadra LetzPlay.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">🏅 PARTIDAS RECENTES</div>
+      <h2 class="section-title">HISTÓRICO<br>DE JOGOS</h2>
+    </div>
+
+    <div class="cat-filter-bar reveal">
+      <button class="cat-tag active" onclick="filterRes(this,'ALL')">Todos</button>
+      <button class="cat-tag" onclick="filterRes(this,'tennis')">🎾 Tênis</button>
+      <button class="cat-tag" onclick="filterRes(this,'beach')">🏖️ Beach Tennis</button>
+      <button class="cat-tag" onclick="filterRes(this,'padel')">🏓 Padel</button>
+    </div>
+
+    <div class="rankings-table-wrap reveal">
+      <div class="rankings-table-head" style="grid-template-columns:120px 1fr 80px 1fr 100px;">
+        <span class="rth">DATA</span>
+        <span class="rth">JOGADOR 1</span>
+        <span class="rth" style="text-align:center;">PLACAR</span>
+        <span class="rth">JOGADOR 2</span>
+        <span class="rth">MODALIDADE</span>
+      </div>
+      <div id="results-body"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Letz<em>Play</em></div>
+  <div class="footer-copy">© 2025 LetzPlay · Todos os direitos reservados</div>
+  <div class="footer-links">
+    <a href="#">Sobre</a>
+    <a href="#">Contato</a>
+    <a href="#">Privacidade</a>
+    <a href="#">Termos</a>
+  </div>
+</footer>
+
+<script>
+const results = [
+  {date:'06 Mar', p1:'João Silva',    p2:'Carlos Neto',   score:'6-3 · 6-2', sport:'tennis', sportLabel:'🎾 Tênis',       winner:1},
+  {date:'05 Mar', p1:'Pedro Alves',   p2:'Felipe Nunes',  score:'6-4 · 7-5', sport:'padel',  sportLabel:'🏓 Padel',       winner:1},
+  {date:'05 Mar', p1:'Ana Beatriz',   p2:'Mariana Costa', score:'4-6 · 6-3 · 7-5', sport:'beach', sportLabel:'🏖️ Beach', winner:2},
+  {date:'04 Mar', p1:'Rafael Mendes', p2:'João Silva',    score:'6-7 · 3-6', sport:'tennis', sportLabel:'🎾 Tênis',       winner:2},
+  {date:'04 Mar', p1:'Lucas Moreira', p2:'Pedro Alves',   score:'6-2 · 6-1', sport:'beach',  sportLabel:'🏖️ Beach',      winner:1},
+  {date:'03 Mar', p1:'Carlos Neto',   p2:'Felipe Nunes',  score:'7-6 · 6-4', sport:'padel',  sportLabel:'🏓 Padel',       winner:1},
+  {date:'03 Mar', p1:'Fernanda O.',   p2:'Ana Beatriz',   score:'6-3 · 6-0', sport:'tennis', sportLabel:'🎾 Tênis',       winner:1},
+  {date:'02 Mar', p1:'João Silva',    p2:'Lucas Moreira', score:'6-1 · 6-3', sport:'tennis', sportLabel:'🎾 Tênis',       winner:1},
+];
+
+let currentSport = 'ALL';
+
+function renderResults(filter){
+  const body = document.getElementById('results-body');
+  const data = filter==='ALL' ? results : results.filter(r=>r.sport===filter);
+  body.innerHTML = data.map(r=>`
+    <div class="ranking-row" style="grid-template-columns:120px 1fr 80px 1fr 100px;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--muted);">${r.date}</div>
+      <div class="rank-athlete" style="gap:8px;">
+        <div class="rank-avatar" style="width:32px;height:32px;font-size:0.8rem;">${r.p1.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+        <div class="rank-name" style="${r.winner===1?'color:var(--sport-color);':''}">${r.p1} ${r.winner===1?'🏆':''}</div>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);text-align:center;">${r.score}</div>
+      <div class="rank-athlete" style="gap:8px;">
+        <div class="rank-avatar" style="width:32px;height:32px;font-size:0.8rem;background:var(--bg3);color:var(--muted);">${r.p2.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+        <div class="rank-name" style="${r.winner===2?'color:var(--sport-color);':''}">${r.p2} ${r.winner===2?'🏆':''}</div>
+      </div>
+      <div class="rank-cat">${r.sportLabel}</div>
+    </div>
+  `).join('');
+}
+
+function filterRes(btn, filter){
+  document.querySelectorAll('.cat-tag').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderResults(filter);
+}
+renderResults('ALL');
+</script>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+  let rx=0,ry=0;
+  function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+  animRing();
+  document.querySelectorAll('a,button,.sport-btn,.cat-tag').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovered'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovered'));
+  });
+  // scroll reveal
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body></html>
