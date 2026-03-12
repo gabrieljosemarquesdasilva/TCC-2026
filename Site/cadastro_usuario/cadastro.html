@@ -17,9 +17,9 @@
         <nav>
             <ul class="menu">
                 <li><a href="../index.html">Início</a></li>
-                <li><a href="../index.html">Agendamento</a></li>
-                <li><a href="../index.html">Sobre</a></li>
-                <li><a href="../index.html">Contato</a></li>
+                <li><a href="../agendamento.html">Agendamento</a></li>
+                <li><a href="../sobre.html">Sobre</a></li>
+                <li><a href="../contato.html">Contato</a></li>
             </ul>
         </nav>
 </header>
@@ -39,19 +39,64 @@
 
     
 
-    <form action="" >
-        <p></p>
-        <input type="text" name="nome" placeholder="Nome" class="input">
+   <form id="inscricao-form" >
 
-        <p></p>
-        <input type="text" name="email" placeholder="Email" class="input">
+        <div class="div-form">
+          <div>
+            <label>NOME</label>
+            <input type="text" placeholder="Seu nome"/>
+          </div>
+          <div>
+            <label>SOBRENOME</label>
+            <input type="text" placeholder="Seu sobrenome"/>
+          </div>
+        </div>
 
-        <p></p>
-        <input type="text" name="senha" placeholder="Senha" class="input">
-        <p></p>
-        <input type="submit" name="enviar" value="Criar conta" id="botao-criar">
+        <div>
+          <label>E-MAIL</label>
+          <input type="email" placeholder="seu@email.com" id="input-maior"/>
+        </div>
 
-    </form>
+        <div>
+          <label>TELEFONE / WHATSAPP</label>
+          <input type="tel" placeholder="(11) 99999-9999" id="input-maior"/>
+        </div>
+
+        <div class="div-select">
+          <div>
+            <label>MODALIDADE</label>
+            <select>
+              <option value="">Selecione</option>
+              <option>🎾 Tênis</option>
+              <option>🏖️ Beach Tennis</option>
+              <option>🏓 Padel</option>
+            </select>
+          </div>
+          <div>
+            <label>NÍVEL</label>
+            <select>
+              <option value="">Selecione</option>
+              <option>Iniciante</option>
+              <option>Intermediário</option>
+              <option>Avançado / PRO</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label>DATA PREFERIDA</label>
+          <input type="date" id="input-maior"/>
+        </div>
+
+        <div>
+          <label>OBSERVAÇÕES (OPCIONAL)</label>
+          <textarea placeholder="Alguma informação adicional..." rows="3" id="input-maior"></textarea>
+        </div>
+
+        <button type="submit" class="">
+          ✅ CONFIRMAR INSCRIÇÃO
+        </button>
+      </form>
     </div>
     
 </div>
