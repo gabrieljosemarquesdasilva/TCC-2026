@@ -242,3 +242,28 @@ textarea{
   min-height: 4em;
   resize: vertical; 
 }
+
+.botao-logar{
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+
+.botao-logar a{
+  color: #f5f0e8;
+  text-decoration: none;
+  display: block;
+  padding: 25px 22px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3rem;
+  letter-spacing: 0.12em;
+  transition: color 0.2s;
+}
+
+.botao-logar :hover{
+   color: #c9a84c;
+  background-color: transparent;
+}
