@@ -1,7 +1,7 @@
 body{
   margin:0;
   font-family: Arial, sans-serif;
-  background-color: rgb(80, 80, 80);
+  background-color: rgb(143, 143, 143);
 }
 
 .container{
@@ -63,8 +63,8 @@ form{
   align-content: center;
 }
 #top-strip {
-    background-color: rgb(0, 0, 0);
-    color: #ffffff;
+    background-color: rgb(255, 255, 255);
+    color: #000000;
     font-family: 'Space Mono', monospace;
     font-size: 0.9rem;
     letter-spacing: 0.08em;
@@ -75,7 +75,7 @@ form{
   }
 
 #top-strip button {
-    background: rgba(187, 187, 187, 0.25);
+    background: rgba(102, 102, 102, 0.25);
     border: none;
     color: inherit;
     cursor: none;
@@ -85,3 +85,29 @@ form{
     font-size: 0.9rem;
     letter-spacing: 0.1em;
   }
+  header {
+    background-color: #333;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.menu li {
+    margin: 0 15px;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 15px;
+}
+
+.menu a:hover {
+    background-color: #555;
+}
