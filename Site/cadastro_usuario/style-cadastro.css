@@ -1,113 +1,193 @@
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background-color: rgb(143, 143, 143);
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.container{
-  display:flex;
-  height:650px;
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f5f0e8;
 }
 
-#esquerda{
-  width:35%;
-  background:#dbdbdb; 
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
-}
-
-#direita{
-  width:65%;
-  background:#ffffff;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  border-top-right-radius: 25px;
-  border-bottom-right-radius: 25px;
-  
-}
-
-.input{
-  border-style: outset;
-  display: block;
-  margin: auto;
-  width: 60%;
-  padding: 5px;
-}
-
-#botao-criar{
-  display:block;
-  margin: auto;
-  margin-top: 20px;
-}
-
-
-#titulo{
-  margin-top: -5%;
-}
-
-form{
-  width: 500px;
-  height: 200px;
-  align-content: center;
-}
-#top-strip {
-    background-color: rgb(255, 255, 255);
-    color: #000000;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
-    letter-spacing: 0.08em;
-    padding: 8px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-#top-strip button {
-    background: rgba(102, 102, 102, 0.25);
-    border: none;
-    color: inherit;
-    cursor: none;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-family: inherit;
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
-  }
-  header {
-    background-color: #333;
+/* ── HEADER ── */
+header {
+  background-color: #1a1a1a;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 2px solid #c9a84c;
 }
 
 .menu {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
 }
 
-.menu li {
-    margin: 0 15px;
-}
+.menu li { margin: 0; }
 
 .menu a {
-    color: white;
-    text-decoration: none;
-    display: block;
-    padding: 15px;
+  color: #f5f0e8;
+  text-decoration: none;
+  display: block;
+  padding: 16px 22px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+  transition: color 0.2s;
 }
 
 .menu a:hover {
-    background-color: #555;
+  color: #c9a84c;
+  background-color: transparent;
+}
+
+/* ── TOP STRIP ── */
+#top-strip {
+  background-color: #1a1a1a;
+  color: #c9a84c;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  padding: 7px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #333;
+}
+
+#top-strip button {
+  background: rgba(201,168,76,0.15);
+  border: 1px solid #c9a84c;
+  color: #c9a84c;
+  cursor: pointer;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  transition: background 0.2s;
+}
+
+#top-strip button:hover {
+  background: rgba(201,168,76,0.35);
+}
+
+/* ── CONTAINER DO FORM ── */
+.container {
+  display: flex;
+  height: auto;
+  min-height: 600px;
+  margin: 48px 10%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+}
+
+#esquerda {
+  width: 38%;
+  background: linear-gradient(160deg, #1a1a1a 60%, #2e2008);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 48px 32px;
+  color: #f5f0e8;
+}
+
+#esquerda h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.1em;
+  color: #c9a84c;
+  margin-bottom: 12px;
+}
+
+#esquerda p {
+  font-weight: 300;
+  font-size: 0.95rem;
+  color: #ccc;
+  line-height: 1.6;
+}
+
+#direita {
+  width: 62%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 40px;
+}
+
+#titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+  color: #1a1a1a;
+  margin-bottom: 28px;
+}
+
+form {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  background: #fafafa;
+  transition: border 0.2s;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #c9a84c;
+  background: #fff;
+}
+
+#botao-criar {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px;
+  background-color: #c9a84c;
+  color: #1a1a1a;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#botao-criar:hover {
+  background-color: #b8913a;
+  transform: translateY(-1px);
+}
+
+/* ── RODAPÉ ── */
+footer {
+  background-color: #1a1a1a;
+  color: #f5f0e8;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  border-top: 2px solid #c9a84c;
 }
