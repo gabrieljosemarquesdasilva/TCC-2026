@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reservar Quadra — LetzPlay</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+.page-hero{
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 60px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero-grid{
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+}
+.page-hero-orb{
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  width: 500px; height: 500px;
+  background: rgba(255,106,0,0.1);
+  top: -200px; right: -100px;
+  animation: orbFloat 10s ease-in-out infinite;
+}
+.page-hero-content{ position: relative; z-index: 2; max-width: 700px; }
+.page-eyebrow{
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sport-color);
+  margin-bottom: 16px;
+}
+.page-title{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+.page-title .accent{ color: var(--sport-color); }
+.page-desc{
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 480px;
+}
+</style>
+</head>
+<body data-sport="tennis">
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- TOP STRIP -->
+<div id="top-strip">
+  <span>🏆 QUADRA LETZPLAY · RESERVAS ABERTAS · VENHA JOGAR CONOSCO</span>
+  <button onclick="document.getElementById('top-strip').style.display='none'">FECHAR ✕</button>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">QUADRA · <span>João Silva</span> recordista em reservas do mês ↑</span>
+    <span class="ticker-item">NOVIDADE · <span>Novas grades horárias</span> disponíveis a partir de abril</span>
+    <span class="ticker-item">DESTAQUE · <span>Pedro Alves</span> completou 50 reservas na quadra 🏆</span>
+    <span class="ticker-item">AGENDA · <span>Fim de semana</span> com horários disponíveis — reserve já</span>
+    <span class="ticker-item">TOP · <span>Mariana Costa</span> lidera ranking de frequência feminino</span>
+    <span class="ticker-item">QUADRA · <span>João Silva</span> recordista em reservas do mês ↑</span>
+    <span class="ticker-item">NOVIDADE · <span>Novas grades horárias</span> disponíveis a partir de abril</span>
+    <span class="ticker-item">DESTAQUE · <span>Pedro Alves</span> completou 50 reservas na quadra 🏆</span>
+    <span class="ticker-item">AGENDA · <span>Fim de semana</span> com horários disponíveis — reserve já</span>
+    <span class="ticker-item">TOP · <span>Mariana Costa</span> lidera ranking de frequência feminino</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="LetzPlay-Laranja-2.html" class="logo" style="text-decoration:none;">Letz<em>Play</em></a>
+  <ul class="nav-links">
+    <li><a href="ranking.html">Rankings</a></li>
+    <li><a href="reservar.html">Reservar</a></li>
+    <li><a href="atletas.html">Atletas</a></li>
+    <li><a href="resultados.html">Resultados</a></li>
+  </ul>
+  <a href="inscricao.html" class="nav-cta">Inscrever-se</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-grid"></div>
+  <div class="page-hero-orb"></div>
+  <div class="page-hero-content">
+    <div class="page-eyebrow">📅 AGENDA DA QUADRA</div>
+    <h1 class="page-title">RESERVE<br><span class="accent">SUA HORA</span></h1>
+    <p class="page-desc">Veja os horários disponíveis e faça sua reserva online de forma rápida e simples.</p>
+  </div>
+</section>
+
+<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">📅 DISPONIBILIDADE</div>
+      <h2 class="section-title">HORÁRIOS<br>DISPONÍVEIS</h2>
+    </div>
+
+    <div class="filter-bar reveal" style="margin-bottom:32px;">
+      <label>DIA:</label>
+      <select class="filter-select" id="day-filter">
+        <option>Segunda-feira</option><option>Terça-feira</option>
+        <option>Quarta-feira</option><option>Quinta-feira</option>
+        <option>Sexta-feira</option><option>Sábado</option><option>Domingo</option>
+      </select>
+      <select class="filter-select" id="sport-filter">
+        <option value="">Todas as Modalidades</option>
+        <option>🎾 Tênis</option><option>🏖️ Beach Tennis</option><option>🏓 Padel</option>
+      </select>
+    </div>
+
+    <div class="tournaments-grid reveal" id="slots-grid">
+      <!-- injected by JS -->
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Letz<em>Play</em></div>
+  <div class="footer-copy">© 2025 LetzPlay · Todos os direitos reservados</div>
+  <div class="footer-links">
+    <a href="#">Sobre</a>
+    <a href="#">Contato</a>
+    <a href="#">Privacidade</a>
+    <a href="#">Termos</a>
+  </div>
+</footer>
+
+<script>
+const slots = [
+  {time:'07:00 – 08:00', sport:'🎾 Tênis',        status:'open',  price:'R$ 60'},
+  {time:'08:00 – 09:00', sport:'🎾 Tênis',        status:'taken', price:'R$ 60'},
+  {time:'09:00 – 10:00', sport:'🏖️ Beach Tennis', status:'open',  price:'R$ 70'},
+  {time:'10:00 – 11:00', sport:'🏖️ Beach Tennis', status:'open',  price:'R$ 70'},
+  {time:'11:00 – 12:00', sport:'🏓 Padel',        status:'taken', price:'R$ 65'},
+  {time:'14:00 – 15:00', sport:'🎾 Tênis',        status:'open',  price:'R$ 55'},
+  {time:'15:00 – 16:00', sport:'🏓 Padel',        status:'open',  price:'R$ 65'},
+  {time:'16:00 – 17:00', sport:'🎾 Tênis',        status:'open',  price:'R$ 55'},
+  {time:'17:00 – 18:00', sport:'🏖️ Beach Tennis', status:'taken', price:'R$ 70'},
+  {time:'18:00 – 19:00', sport:'🎾 Tênis',        status:'open',  price:'R$ 80'},
+  {time:'19:00 – 20:00', sport:'🏓 Padel',        status:'open',  price:'R$ 80'},
+  {time:'20:00 – 21:00', sport:'🎾 Tênis',        status:'open',  price:'R$ 80'},
+];
+
+function renderSlots(){
+  const g = document.getElementById('slots-grid');
+  g.innerHTML = slots.map(s=>`
+    <div class="tournament-card revealed" style="opacity:1;transform:none;">
+      <div class="tournament-sport-bar" style="background:${s.status==='open'?'var(--sport-color)':'var(--muted)'}"></div>
+      <div class="tournament-body">
+        <span class="tournament-status ${s.status==='open'?'status-open':'status-live'}" style="${s.status==='taken'?'background:rgba(107,118,133,0.12);color:var(--muted);border-color:rgba(107,118,133,0.25);':''}">
+          ${s.status==='open'?'✅ DISPONÍVEL':'🔒 RESERVADO'}
+        </span>
+        <div class="tournament-name" style="font-size:1.3rem;">${s.time}</div>
+        <div class="tournament-location">${s.sport}</div>
+        <div class="tournament-footer">
+          <div class="tournament-prize">${s.price}<span style="font-family:'DM Sans';font-size:0.75rem;color:var(--muted);"> /hora</span></div>
+          ${s.status==='open'
+            ? `<a href="inscricao.html" class="tournament-cta">Reservar →</a>`
+            : `<button class="tournament-cta" style="opacity:0.35;cursor:default;" disabled>Ocupado</button>`
+          }
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+renderSlots();
+</script>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+  let rx=0,ry=0;
+  function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+  animRing();
+  document.querySelectorAll('a,button,.sport-btn,.cat-tag').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovered'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovered'));
+  });
+  // scroll reveal
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body></html>

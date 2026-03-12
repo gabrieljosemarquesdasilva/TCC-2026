@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Atletas — LetzPlay</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+.page-hero{
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 60px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero-grid{
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+}
+.page-hero-orb{
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  width: 500px; height: 500px;
+  background: rgba(255,106,0,0.1);
+  top: -200px; right: -100px;
+  animation: orbFloat 10s ease-in-out infinite;
+}
+.page-hero-content{ position: relative; z-index: 2; max-width: 700px; }
+.page-eyebrow{
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sport-color);
+  margin-bottom: 16px;
+}
+.page-title{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+.page-title .accent{ color: var(--sport-color); }
+.page-desc{
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 480px;
+}
+</style>
+</head>
+<body data-sport="tennis">
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- TOP STRIP -->
+<div id="top-strip">
+  <span>🏆 QUADRA LETZPLAY · RESERVAS ABERTAS · VENHA JOGAR CONOSCO</span>
+  <button onclick="document.getElementById('top-strip').style.display='none'">FECHAR ✕</button>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">QUADRA · <span>João Silva</span> recordista em reservas do mês ↑</span>
+    <span class="ticker-item">NOVIDADE · <span>Novas grades horárias</span> disponíveis a partir de abril</span>
+    <span class="ticker-item">DESTAQUE · <span>Pedro Alves</span> completou 50 reservas na quadra 🏆</span>
+    <span class="ticker-item">AGENDA · <span>Fim de semana</span> com horários disponíveis — reserve já</span>
+    <span class="ticker-item">TOP · <span>Mariana Costa</span> lidera ranking de frequência feminino</span>
+    <span class="ticker-item">QUADRA · <span>João Silva</span> recordista em reservas do mês ↑</span>
+    <span class="ticker-item">NOVIDADE · <span>Novas grades horárias</span> disponíveis a partir de abril</span>
+    <span class="ticker-item">DESTAQUE · <span>Pedro Alves</span> completou 50 reservas na quadra 🏆</span>
+    <span class="ticker-item">AGENDA · <span>Fim de semana</span> com horários disponíveis — reserve já</span>
+    <span class="ticker-item">TOP · <span>Mariana Costa</span> lidera ranking de frequência feminino</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="LetzPlay-Laranja-2.html" class="logo" style="text-decoration:none;">Letz<em>Play</em></a>
+  <ul class="nav-links">
+    <li><a href="ranking.html">Rankings</a></li>
+    <li><a href="reservar.html">Reservar</a></li>
+    <li><a href="atletas.html">Atletas</a></li>
+    <li><a href="resultados.html">Resultados</a></li>
+  </ul>
+  <a href="inscricao.html" class="nav-cta">Inscrever-se</a>
+</nav>
+
+<style>
+.atletas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;}
+.atleta-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px;
+  text-align:center;transition:border-color 0.3s,transform 0.3s,box-shadow 0.3s;
+  opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s,border-color .3s,box-shadow .3s;
+}
+.atleta-card.revealed{opacity:1;transform:none;}
+.atleta-card:hover{border-color:var(--sport-color);box-shadow:0 12px 40px rgba(255,106,0,0.1);transform:translateY(-4px);}
+.atleta-avatar{
+  width:72px;height:72px;border-radius:50%;background:var(--sport-color);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#000;
+  margin:0 auto 16px;
+}
+.atleta-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.03em;margin-bottom:4px;}
+.atleta-sport{font-size:0.8rem;color:var(--muted);margin-bottom:16px;}
+.atleta-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;}
+.atleta-stat{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px;}
+.atleta-stat-num{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--sport-color);}
+.atleta-stat-label{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;color:var(--muted);}
+</style>
+
+<section class="page-hero">
+  <div class="page-hero-grid"></div>
+  <div class="page-hero-orb"></div>
+  <div class="page-hero-content">
+    <div class="page-eyebrow">👥 COMUNIDADE LETZPLAY</div>
+    <h1 class="page-title">NOSSOS<br><span class="accent">ATLETAS</span></h1>
+    <p class="page-desc">Conheça os jogadores que fazem parte da nossa quadra. Uma comunidade apaixonada pelo esporte.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">👥 MEMBROS ATIVOS</div>
+      <h2 class="section-title">QUEM FAZ<br>PARTE</h2>
+    </div>
+    <div class="cat-filter-bar reveal">
+      <button class="cat-tag active" onclick="filterAtletas(this,'ALL')">Todos</button>
+      <button class="cat-tag" onclick="filterAtletas(this,'tennis')">🎾 Tênis</button>
+      <button class="cat-tag" onclick="filterAtletas(this,'beach')">🏖️ Beach Tennis</button>
+      <button class="cat-tag" onclick="filterAtletas(this,'padel')">🏓 Padel</button>
+    </div>
+    <div class="atletas-grid reveal" id="atletas-grid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Letz<em>Play</em></div>
+  <div class="footer-copy">© 2025 LetzPlay · Todos os direitos reservados</div>
+  <div class="footer-links">
+    <a href="#">Sobre</a>
+    <a href="#">Contato</a>
+    <a href="#">Privacidade</a>
+    <a href="#">Termos</a>
+  </div>
+</footer>
+
+<script>
+const atletas = [
+  {name:'João Silva',    sport:'tennis', sportLabel:'🎾 Tênis',       reservas:48, horas:96,  initials:'JS', nivel:'PRO'},
+  {name:'Pedro Alves',   sport:'padel',  sportLabel:'🏓 Padel',       reservas:41, horas:82,  initials:'PA', nivel:'PRO'},
+  {name:'Mariana Costa', sport:'tennis', sportLabel:'🎾 Tênis',       reservas:38, horas:76,  initials:'MC', nivel:'A'},
+  {name:'Lucas Moreira', sport:'beach',  sportLabel:'🏖️ Beach Tennis', reservas:35, horas:70, initials:'LM', nivel:'PRO'},
+  {name:'Ana Beatriz',   sport:'beach',  sportLabel:'🏖️ Beach Tennis', reservas:33, horas:66, initials:'AB', nivel:'A'},
+  {name:'Carlos Neto',   sport:'tennis', sportLabel:'🎾 Tênis',       reservas:29, horas:58,  initials:'CN', nivel:'B'},
+  {name:'Fernanda O.',   sport:'padel',  sportLabel:'🏓 Padel',       reservas:27, horas:54,  initials:'FO', nivel:'A'},
+  {name:'Rafael Mendes', sport:'tennis', sportLabel:'🎾 Tênis',       reservas:24, horas:48,  initials:'RM', nivel:'PRO'},
+];
+
+function renderAtletas(filter){
+  const g = document.getElementById('atletas-grid');
+  const data = filter==='ALL' ? atletas : atletas.filter(a=>a.sport===filter);
+  g.innerHTML = data.map(a=>`
+    <div class="atleta-card revealed">
+      <div class="atleta-avatar">${a.initials}</div>
+      <div class="atleta-name">${a.name}</div>
+      <div class="atleta-sport">${a.sportLabel} · <span style="color:var(--sport-color)">${a.nivel}</span></div>
+      <div class="atleta-stats">
+        <div class="atleta-stat">
+          <div class="atleta-stat-num">${a.reservas}</div>
+          <div class="atleta-stat-label">RESERVAS</div>
+        </div>
+        <div class="atleta-stat">
+          <div class="atleta-stat-num">${a.horas}h</div>
+          <div class="atleta-stat-label">NA QUADRA</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterAtletas(btn, filter){
+  document.querySelectorAll('.cat-tag').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAtletas(filter);
+}
+renderAtletas('ALL');
+</script>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+  let rx=0,ry=0;
+  function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+  animRing();
+  document.querySelectorAll('a,button,.sport-btn,.cat-tag').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovered'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovered'));
+  });
+  // scroll reveal
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body></html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Inscrição — LetzPlay</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+.page-hero{
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 60px 60px;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero-grid{
+  position: absolute; inset: 0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent);
+}
+.page-hero-orb{
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  width: 500px; height: 500px;
+  background: rgba(255,106,0,0.1);
+  top: -200px; right: -100px;
+  animation: orbFloat 10s ease-in-out infinite;
+}
+.page-hero-content{ position: relative; z-index: 2; max-width: 700px; }
+.page-eyebrow{
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sport-color);
+  margin-bottom: 16px;
+}
+.page-title{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+.page-title .accent{ color: var(--sport-color); }
+.page-desc{
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 480px;
+}
+</style>
+</head>
+<body data-sport="tennis">
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- TOP STRIP -->
+<div id="top-strip">
+  <span>🏆 QUADRA LETZPLAY · RESERVAS ABERTAS · VENHA JOGAR CONOSCO</span>
+  <button onclick="document.getElementById('top-strip').style.display='none'">FECHAR ✕</button>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">QUADRA · <span>João Silva</span> recordista em reservas do mês ↑</span>
+    <span class="ticker-item">NOVIDADE · <span>Novas grades horárias</span> disponíveis a partir de abril</span>
+    <span class="ticker-item">DESTAQUE · <span>Pedro Alves</span> completou 50 reservas na quadra 🏆</span>
+    <span class="ticker-item">AGENDA · <span>Fim de semana</span> com horários disponíveis — reserve já</span>
+    <span class="ticker-item">TOP · <span>Mariana Costa</span> lidera ranking de frequência feminino</span>
+    <span class="ticker-item">QUADRA · <span>João Silva</span> recordista em reservas do mês ↑</span>
+    <span class="ticker-item">NOVIDADE · <span>Novas grades horárias</span> disponíveis a partir de abril</span>
+    <span class="ticker-item">DESTAQUE · <span>Pedro Alves</span> completou 50 reservas na quadra 🏆</span>
+    <span class="ticker-item">AGENDA · <span>Fim de semana</span> com horários disponíveis — reserve já</span>
+    <span class="ticker-item">TOP · <span>Mariana Costa</span> lidera ranking de frequência feminino</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="LetzPlay-Laranja-2.html" class="logo" style="text-decoration:none;">Letz<em>Play</em></a>
+  <ul class="nav-links">
+    <li><a href="ranking.html">Rankings</a></li>
+    <li><a href="reservar.html">Reservar</a></li>
+    <li><a href="atletas.html">Atletas</a></li>
+    <li><a href="resultados.html">Resultados</a></li>
+  </ul>
+  <a href="inscricao.html" class="nav-cta">Inscrever-se</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-grid"></div>
+  <div class="page-hero-orb"></div>
+  <div class="page-hero-content">
+    <div class="page-eyebrow">🎾 RESERVA DE QUADRA</div>
+    <h1 class="page-title">FAÇA SUA<br><span class="accent">INSCRIÇÃO</span></h1>
+    <p class="page-desc">Reserve seu horário na quadra e garanta sua vaga. Rápido, fácil e sem complicação.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container" style="max-width:720px;">
+    <div class="reveal" style="background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:48px;">
+      <div class="section-label">📋 FORMULÁRIO DE INSCRIÇÃO</div>
+      <h2 class="section-title" style="margin-bottom:32px;">SEUS DADOS</h2>
+
+      <form id="inscricao-form" onsubmit="handleSubmit(event)" style="display:flex;flex-direction:column;gap:20px;">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <label style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">NOME</label>
+            <input type="text" placeholder="Seu nome" required style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;padding:12px 16px;border-radius:8px;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--sport-color)'" onblur="this.style.borderColor='var(--border)'"/>
+          </div>
+          <div>
+            <label style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">SOBRENOME</label>
+            <input type="text" placeholder="Seu sobrenome" required style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;padding:12px 16px;border-radius:8px;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--sport-color)'" onblur="this.style.borderColor='var(--border)'"/>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">E-MAIL</label>
+          <input type="email" placeholder="seu@email.com" required style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;padding:12px 16px;border-radius:8px;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--sport-color)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+
+        <div>
+          <label style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">TELEFONE / WHATSAPP</label>
+          <input type="tel" placeholder="(11) 99999-9999" required style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;padding:12px 16px;border-radius:8px;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--sport-color)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <label style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">MODALIDADE</label>
+            <select required style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;padding:12px 16px;border-radius:8px;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7685' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--sport-color)'" onblur="this.style.borderColor='var(--border)'">
+              <option value="">Selecione</option>
+              <option>🎾 Tênis</option>
+              <option>🏖️ Beach Tennis</option>
+              <option>🏓 Padel</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">NÍVEL</label>
+            <select required style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;padding:12px 16px;border-radius:8px;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7685' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--sport-color)'" onblur="this.style.borderColor='var(--border)'">
+              <option value="">Selecione</option>
+              <option>Iniciante</option>
+              <option>Intermediário</option>
+              <option>Avançado / PRO</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">DATA PREFERIDA</label>
+          <input type="date" required style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;padding:12px 16px;border-radius:8px;outline:none;transition:border-color 0.2s;color-scheme:dark;" onfocus="this.style.borderColor='var(--sport-color)'" onblur="this.style.borderColor='var(--border)'"/>
+        </div>
+
+        <div>
+          <label style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">OBSERVAÇÕES (OPCIONAL)</label>
+          <textarea placeholder="Alguma informação adicional..." rows="3" style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.95rem;padding:12px 16px;border-radius:8px;outline:none;resize:vertical;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--sport-color)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" style="justify-content:center;padding:16px;font-size:0.9rem;">
+          ✅ CONFIRMAR INSCRIÇÃO
+        </button>
+      </form>
+
+      <!-- SUCCESS STATE -->
+      <div id="success-msg" style="display:none;text-align:center;padding:40px 0;">
+        <div style="font-size:3rem;margin-bottom:16px;">🎉</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--sport-color);margin-bottom:8px;">INSCRIÇÃO CONFIRMADA!</div>
+        <p style="color:var(--muted);margin-bottom:24px;">Em breve entraremos em contato via WhatsApp para confirmar seu horário.</p>
+        <a href="LetzPlay-Laranja-2.html" class="btn-secondary">← VOLTAR À HOME</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Letz<em>Play</em></div>
+  <div class="footer-copy">© 2025 LetzPlay · Todos os direitos reservados</div>
+  <div class="footer-links">
+    <a href="#">Sobre</a>
+    <a href="#">Contato</a>
+    <a href="#">Privacidade</a>
+    <a href="#">Termos</a>
+  </div>
+</footer>
+
+<script>
+function handleSubmit(e){
+  e.preventDefault();
+  document.getElementById('inscricao-form').style.display='none';
+  document.getElementById('success-msg').style.display='block';
+}
+</script>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring   = document.getElementById('cursor-ring');
+  let mx=0,my=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+  let rx=0,ry=0;
+  function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+  animRing();
+  document.querySelectorAll('a,button,.sport-btn,.cat-tag').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovered'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovered'));
+  });
+  // scroll reveal
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body></html>
