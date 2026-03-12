@@ -236,3 +236,9 @@ label{
   background-color: rgb(231, 231, 231);
   padding-left: 2%;
  }
+
+textarea{
+  min-width: 100%;
+  min-height: 4em;
+  resize: vertical; 
+}
