@@ -84,15 +84,15 @@ header {
   height: auto;
   min-height: 670px;
   margin: 1%;
-  margin-left: 100px;
-  margin-right: 100px;
+  margin-left: 150px;
+  margin-right: 150px;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 8px 40px rgba(0,0,0,0.12);
 }
 
 #esquerda {
-  width: 38%;
+  width: 30%;
   background: linear-gradient(160deg, #1a1a1a 60%, #2e2008);
   display: flex;
   flex-direction: column;
@@ -119,7 +119,7 @@ header {
 }
 
 #direita {
-  width: 62%;
+  width: 70%;
   background: #ffffff;
   display: flex;
   flex-direction: column;
@@ -141,7 +141,7 @@ header {
   width: 80%;
   margin-top: 8px;
   padding: 8px;
-  background-color: #c9a84c;
+  background-color: #00ccff;
   color: #1a1a1a;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 1.05rem;
@@ -154,7 +154,7 @@ header {
 }
 
 #botao-criar:hover {
-  background-color: #b8913a;
+  background-color: #2d8fad;
   transform: translateY(-1px);
 }
 
@@ -178,9 +178,9 @@ form{
 }
 
 label{
-  font-family:'Space Mono',monospace;
-  font-size:0.6rem;
-  letter-spacing:0.20em;
+  font-family:'Space Mono',monospace bold;
+  font-size:0.9rem;
+  letter-spacing:0.10em;
   text-transform:uppercase;
   display:block;
   margin-bottom:8px;
@@ -195,12 +195,14 @@ label{
   outline:none;
   transition:border-color 0.2s;
   height: 70%;
+  padding-left: 2%;
  }
 
  .div-select{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px;
+  gap:15px;
+  width: 100%;
  }
 
  #input-maior{
@@ -212,19 +214,25 @@ label{
   outline:none;
   transition:border-color 0.2s;
   height: 70%;
- }
-
- .enviar{
-  color: white;
-  background-color: rgb(97, 97, 97);
-  height: 25px;
-  width: 80%;
-  display:block;
-  margin: auto;
+  padding-left: 1.5%;
  }
 
  .div-form-nome-sobrenome{
   display:grid;
   grid-template-columns:1fr 1fr;
   width: 100%;
+  gap: 15px;
+ }
+ 
+ select{
+  width:100%;
+  background:var(--bg3);
+  font-family:'DM Sans',sans-serif;
+  font-size:0.95rem;
+  border-radius:4px;
+  outline:none;
+  transition:border-color 0.2s;
+  height: 70%;
+  background-color: rgb(231, 231, 231);
+  padding-left: 2%;
  }
