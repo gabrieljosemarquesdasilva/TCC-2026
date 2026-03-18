@@ -195,3 +195,18 @@ border:3px solid #333;
 .info-usuario{
 text-align:left;
 }
+.div-select{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  width: 100%;
+ }
+
+  select{
+  width:100%;
+  font-family:'DM Sans',sans-serif;
+  border-radius:2px;
+  outline:none;
+  background-color: rgb(231, 231, 231);
+  border: 1px solid gray;
+ }
