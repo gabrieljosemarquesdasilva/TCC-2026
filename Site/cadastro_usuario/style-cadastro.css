@@ -29,7 +29,9 @@ header {
   gap: 8px;
 }
 
-.menu li { margin: 0; }
+.menu li {
+  margin: 0;
+}
 
 .menu a {
   color: #f5f0e8;
@@ -40,6 +42,11 @@ header {
   font-size: 1.1rem;
   letter-spacing: 0.12em;
   transition: color 0.2s;
+}
+
+.menu a.ativo{
+background-color:#555;
+border-radius:5px;
 }
 
 .menu a:hover {
