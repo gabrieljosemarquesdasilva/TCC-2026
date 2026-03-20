@@ -8,6 +8,9 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+
+   
+
 <header>
     <nav>
         <ul class="menu">
@@ -19,6 +22,8 @@
             <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
         </ul>
     </nav>
+
+     <script src="script.js"></script>
 </header>
     </header>
         <!-- Seção Agendamento -->
@@ -26,6 +31,7 @@
         <h1>Agendamento de horarios</h1>
         <p>Aqui você agenda seus horários.</p>
     </section>
+    
 
 <form id="form-agendamento">
 
@@ -33,11 +39,11 @@
 <input type="text" name="nome" required>
 
 <label>Quadra</label>
-<select name="quadra">
+<select id="quadra" name="quadra">
 <option>Quadra 1</option>
 <option>Quadra 2</option>
-<option>Quadra 3</option>
 </select>
+
 
 <div class="div-select">
     <div>
@@ -63,8 +69,7 @@
 <label>Data</label>
 <input type="date" name="data" required>
 
-<label>Horário</label>
-<input type="time" name="horario" required>
+<input type="time" id="horario" name="horario">
 
 <label>Duração</label>
 <select name="duracao">
@@ -84,5 +89,7 @@
     <footer>
         <p>Projeto de TCC - 2026</p>
     </footer>
+
+    
 </body>
 </html>

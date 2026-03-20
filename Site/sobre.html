@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre</title>
-     <link rel="stylesheet" href="style.css">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
+
 <header>
     <nav>
         <ul class="menu">
@@ -20,21 +23,58 @@
         </ul>
     </nav>
 </header>
-<!--Seção Sobre -->
-    <section id="sobre">
-        <h1>QUEM SOMOS?</h1>
-        <p>História, fundação e informações sobre o local</p>
-    </section>
 
-<!--Seção Quadras -->
-    <section id="quadras">
-        <h1>NOSSAS QUADRAS</h1>
-        <p>Informações e especificações sobre cada quadra</p>
-    </section>
+<!-- SOBRE -->
+<section id="sobre">
+    <h1>QUEM SOMOS?</h1>
+    <p>Somos um espaço esportivo dedicado ao beach tennis, oferecendo estrutura de qualidade para lazer, treinos e competições.</p>
+</section>
 
-     <!-- Rodapé -->
-    <footer>
-        <p>Projeto de TCC - 2026</p>
-    </footer>
+<script src="script.js"></script>
+
+<!-- QUADRAS -->
+<section id="quadras">
+
+    <h1>NOSSAS QUADRAS</h1>
+
+    <!-- Quadra 1 -->
+    <div class="quadra-sobre">
+        <img src="img/quadra1.jpg" onclick="abrirImagem(this.src)">
+        <div>
+            <h2>Quadra 1</h2>
+            <p>Quadra de areia profissional, com iluminação noturna e excelente estrutura para jogos e treinos.</p>
+        </div>
+    </div>
+
+    <!-- Quadra 2 -->
+    <div class="quadra-sobre">
+       <img src="img/quadra2.png" onclick="abrirImagem(this.src)">
+        <div>
+            <h2>Quadra 2</h2>
+            <p>Espaço amplo e confortável, ideal para partidas recreativas e eventos esportivos.</p>
+        </div>
+    </div>
+
+    <!-- Quadra 3 -->
+    <div class="quadra-sobre">
+       <img src="img/quadra3.jpg" onclick="abrirImagem(this.src)">
+        <div>
+            <h2>Quadra 3</h2>
+            <p>Quadra moderna com estrutura premium, perfeita para competições e jogos de alto nível.</p>
+        </div>
+    </div>
+
+</section>
+
+<!-- RODAPÉ -->
+<footer>
+    <p>Projeto de TCC - 2026</p>
+</footer>
+
+<div id="modal-img" class="modal">
+    <span class="fechar" onclick="fecharImagem()">&times;</span>
+    <img class="modal-conteudo" id="img-grande">
+</div>
+
 </body>
 </html>
