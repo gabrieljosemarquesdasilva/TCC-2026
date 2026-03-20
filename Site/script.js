@@ -83,3 +83,4 @@ function abrirImagem(src){
 function fecharImagem(){
     document.getElementById("modal-img").style.display = "none";
 }
+
