@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
-    <link rel="stylesheet" href="style-cadastro.css">
+    <link rel="stylesheet" href="style-login.css">
 </head>
 <body>
 
@@ -23,9 +23,12 @@
 
     <div class="container">
 
-    <div id="esquerda">
+
+      <div id="esquerda">
         <h1>Não possui uma conta?</h1>
-        <p>Cadastrar-se</p>
+        <ul class="botao-cadastrar">
+            <li><a href="../cadastro_usuario/cadastro.html">Cadastrar</a></li>
+        </ul>
     </div>
 
     
@@ -36,60 +39,19 @@
 
    <form id="login-form" >
 
-        <div class="div-form-nome-sobrenome">
-          <div>
-            <label>NOME</label>
-            <input type="text" placeholder="Seu nome"/>
-          </div>
-          <div>
-            <label>SOBRENOME</label>
-            <input type="text" placeholder="Seu sobrenome"/>
-          </div>
-        </div>
-
         <div>
           <label>E-MAIL</label>
           <input type="email" placeholder="seu@email.com" id="input-maior"/>
         </div>
 
         <div>
-          <label>TELEFONE / WHATSAPP</label>
-          <input type="tel" placeholder="(11) 99999-9999" id="input-maior"/>
+          <label>Senha</label>
+          <input type="password" id="input-maior" placeholder="********"/>
         </div>
 
-        <div class="div-select">
-          <div>
-            <label>MODALIDADE</label>
-            <select>
-              <option value="" disabled selected hidden>Selecione</option>
-              <option>🎾 Tênis</option>
-              <option>🏖️ Beach Tennis</option>
-              <option>🏓 Padel</option>
-            </select>
-          </div>
-          <div>
-            <label>NÍVEL</label>
-            <select>
-              <option value="" disabled selected hidden>Selecione</option>
-              <option>Iniciante</option>
-              <option>Intermediário</option>
-              <option>Avançado / PRO</option>
-            </select>
-          </div>
-        </div>
 
-        <div>
-          <label>DATA DE NASCIMENTO</label>
-          <input type="date" id="input-maior"/>
-        </div>
-
-        <div>
-          <label>OBSERVAÇÕES (OPCIONAL)</label>
-          <textarea placeholder="Alguma informação adicional..." rows="3" id="input-maior"></textarea>
-        </div>
-
-        <button type="submit" id="botao-criar">
-           CONFIRMAR INSCRIÇÃO
+        <button type="submit" id="botao-continuar">
+           Continuar
         </button>
       </form>
     </div>
