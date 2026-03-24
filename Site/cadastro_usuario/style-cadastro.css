@@ -190,7 +190,7 @@ label{
   letter-spacing:0.10em;
   text-transform:uppercase;
   display:block;
-  margin-bottom:8px;
+  margin-bottom:6px;
  }
 
  input[type="text"]{
@@ -203,13 +203,7 @@ label{
   transition:border-color 0.2s;
   height: 70%;
   padding-left: 2%;
- }
-
- .div-select{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-  width: 100%;
+  
  }
 
  #input-maior{
@@ -273,4 +267,8 @@ textarea{
 .botao-logar :hover{
    color: #c9a84c;
   background-color: transparent;
+}
+
+input{
+  padding: 0.2rem;
 }
