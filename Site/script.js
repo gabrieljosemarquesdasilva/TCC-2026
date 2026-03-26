@@ -1,27 +1,18 @@
 let slideIndex = 0;
 
-// SLIDES
-function mostrarSlides(){
+// ── SLIDER ──
+let count = 1;
+const totalSlides = 4;
 
-    let slides = document.getElementsByClassName("slide");
+// Inicia no primeiro slide
+document.getElementById("radio1").checked = true;
 
-    for(let i = 0; i < slides.length; i++){
-        slides[i].style.display = "none";
-    }
-
-    slideIndex++;
-
-    if(slideIndex > slides.length){
-        slideIndex = 1;
-    }
-
-    slides[slideIndex-1].style.display = "block";
-
-    setTimeout(mostrarSlides, 3000);
-}
-
-// INICIA SLIDES
-mostrarSlides();
+// Avança automaticamente a cada 3 segundos
+setInterval(function () {
+    count++;
+    if (count > totalSlides) count = 1;
+    document.getElementById("radio" + count).checked = true;
+}, 3000);
 
 
 // IR DIRETO PRO AGENDAMENTO
