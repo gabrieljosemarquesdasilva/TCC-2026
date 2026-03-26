@@ -455,4 +455,42 @@ font-size:40px;
 cursor:pointer;
 }
 
+.estatisticas{
+  text-align:center;
+  padding:60px 20px;
+  background:#ffffff;
+}
 
+.estatisticas h1{
+  margin-bottom:40px;
+}
+
+.stats-container{
+  display:flex;
+  justify-content:center;
+  gap:60px;
+  flex-wrap:wrap;
+}
+
+.stat{
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(250, 150, 1, 0.1);
+  width:200px;
+  transition:0.3s;
+}
+
+.stat:hover{
+  transform:translateY(-5px);
+}
+
+.stat h2{
+  font-size:40px;
+  color:#2c7a4b;
+}
+
+.stat p{
+  margin-top:10px;
+  color:#555;
+}

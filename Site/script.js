@@ -84,3 +84,19 @@ function fecharImagem(){
     document.getElementById("modal-img").style.display = "none";
 }
 
+const numeros = document.querySelectorAll(".stat h2");
+
+numeros.forEach(n => {
+    let final = parseInt(n.innerText.replace("+",""));
+    let atual = 0;
+
+    let intervalo = setInterval(() => {
+        atual += Math.ceil(final / 50);
+        if(atual >= final){
+            atual = final;
+            clearInterval(intervalo);
+        }
+        n.innerText = "+" + atual;
+    }, 30);
+});
+
