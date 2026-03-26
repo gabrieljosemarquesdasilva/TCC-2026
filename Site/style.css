@@ -123,24 +123,112 @@ section:nth-child(even) {
   background-color: #eae4d6;
 }
 
-/* ── CARROSSEL ── */
-.carrossel {
-  width: 100%;
-  max-width: 900px;
-  height: 480px;
-  margin: 40px auto;
-  overflow: hidden;
-  position: relative;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+.slider {
+    margin: 0 auto;      /* já tem, mas garante centralização */
+    width: 1100px;
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);                /* efeito em formato de caixa () */
+    transform: translateY(4%);  /* levar para cima e para baixo (Deixar no centro) */
+}
+
+.slides {
+    width: 400%;
+    height: 500px;        /* era 400px */
+    display: flex;
+    transition: margin-left 0.6s cubic-bezier(.77,0,.18,1); /* animação mais suave */
+}
+
+.slides input {
+    display: none;
 }
 
 .slide {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  display: none;
+    width: 25%;
+    position: relative;
+    overflow: hidden;     /* garante que a img não vaze */
+    transition: margin-left 0.6s cubic-bezier(.77,0,.18,1);
+}
+
+.slide img {
+    width: 1100px;        /* era 800px */
+    height: 500px;        /* era 400px */
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease; /* zoom suave ao trocar */
+}
+
+.slide img:hover {
+    transform: scale(1.03); /* leve zoom no hover */
+}
+
+/* ── Navegação manual ── */
+.manual-navigation {
+    position: absolute;
+    width: 1100px;        /* era 800px */
+    bottom: 16px;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    z-index: 10;
+}
+
+.manual-btn {
+    border: 2px solid #fff;
+    padding: 6px;         /* era 5px */
+    border-radius: 50%;   /* círculo em vez de quadrado */
+    cursor: pointer;
+    display: inline-block;
+    background: rgba(255,255,255,0.25); /* semi-transparente */
+    backdrop-filter: blur(4px);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.manual-btn:hover {
+    background-color: #fff;
+    transform: scale(1.2);
+}
+
+/* ── Navegação automática (indicadores) ── */
+.navigation-auto {
+    position: absolute;
+    width: 1100px;        /* era 800px */
+    bottom: 16px;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    z-index: 9;
+}
+
+.navigation-auto div {
+    border: 2px solid rgba(255,255,255,0.6);
+    padding: 6px;
+    border-radius: 50%;   /* círculo */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+}
+
+/* ── Lógica de troca de slides ── */
+#radio1:checked ~ .first {
+    margin-left: 0;
+}
+
+#radio2:checked ~ .first {
+    margin-left: -25%;
+}
+
+#radio3:checked ~ .first {
+    margin-left: -50%;
+}
+
+#radio4:checked ~ .first {
+    margin-left: -75%;
 }
 
 form{
@@ -455,4 +543,42 @@ font-size:40px;
 cursor:pointer;
 }
 
+.estatisticas{
+  text-align:center;
+  padding:60px 20px;
+  background:#ffffff;
+}
 
+.estatisticas h1{
+  margin-bottom:40px;
+}
+
+.stats-container{
+  display:flex;
+  justify-content:center;
+  gap:60px;
+  flex-wrap:wrap;
+}
+
+.stat{
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(250, 150, 1, 0.1);
+  width:200px;
+  transition:0.3s;
+}
+
+.stat:hover{
+  transform:translateY(-5px);
+}
+
+.stat h2{
+  font-size:40px;
+  color:#2c7a4b;
+}
+
+.stat p{
+  margin-top:10px;
+  color:#555;
+}
