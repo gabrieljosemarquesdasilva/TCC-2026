@@ -69,6 +69,21 @@ section h1, section h2 {
   margin-bottom: 16px;
 }
 
+section h1{
+  position: relative;
+  display: inline-block;
+}
+
+section h1::after{
+  content: "";
+  display: block;
+  width: 60%;
+  height: 4px;
+  background: #ff9100;
+  margin: 10px auto 0;
+  border-radius: 5px;
+}
+
 section p {
   font-weight: 300;
   font-size: 1.05rem;
@@ -288,10 +303,11 @@ width:300px;
 border-radius:12px;
 box-shadow:0 4px 10px rgba(0,0,0,0.1);
 transition:0.3s;
+ border: 1px solid rgba(0,0,0,0.05);
 }
 
 .quadra:hover{
-transform:translateY(-5px);
+transform:translateY(-8px);
 box-shadow:0 8px 20px rgba(0,0,0,0.2);
 }
 
@@ -327,7 +343,7 @@ cursor:not-allowed;
 .botao-agendar{
 display:block;
 padding:14px 30px;
-background:#2c7a4b;
+background: linear-gradient(135deg, #2c7a4b, #36a167);
 color:white;
 border-radius:10px;
 text-decoration:none;
@@ -335,12 +351,14 @@ font-weight:bold;
 transition:0.3s;
 width:fit-content;
 margin:30px auto 0;
+box-shadow: 0 4px 15px rgba(44,122,75,0.4);
 }
 
 .botao-agendar:hover{
-transform:scale(1.05);
+transform:scale(1.08);
 background:#256b40;
 }
+
 
 /* Título */
 .quadras h2{
