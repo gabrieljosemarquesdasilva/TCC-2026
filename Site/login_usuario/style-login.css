@@ -85,8 +85,20 @@ border-radius:5px;
   background: rgba(201,168,76,0.35);
 }
 
+section {
+  padding: 144px 100%;
+  z-index: 0;  
+  position: fixed;
+  background-color: #eae4d6;
+}
+
+section:nth-child(even) {
+  background-color: #eae4d6;
+}
+
 /* ── CONTAINER DO FORM ── */
 .container {
+  position: relative;
   display: flex;
   border-radius: 20px;
   overflow: hidden;
@@ -94,6 +106,7 @@ border-radius:5px;
   margin: auto;
   width: 75%;
   margin-top: 3%;
+  z-index: 1;
 }
 
 #esquerda {
