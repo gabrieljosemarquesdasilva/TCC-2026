@@ -182,7 +182,7 @@ form{
   display:flex;
   flex-direction:column;
   gap:20px;
-  width: 55%;
+  width: 50%;
   padding: 10px;
 }
 
