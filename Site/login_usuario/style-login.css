@@ -211,10 +211,74 @@ label{
 }
 
 .botao-cadastrar :hover{
-   color: #c9a84c;
+  color: #c9a84c;
   background-color: transparent;
 }
 
 input{
   padding: 0.2rem;
+}
+
+h3.divisor {
+  width: 60%;
+  text-align: center;
+  border-bottom: 1px solid #000;
+  line-height: 0.1em;
+  margin: 10px 0 20px;
+}
+
+h3.divisor span {
+  background: #fff; /* Deve ser a mesma cor do fundo da página */
+  padding: 0 10px;
+}
+
+.social-buttons {
+  width: 400px;
+}
+
+.btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #eee;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.btn:hover {
+  background: #e0e0e0;
+}
+
+.btn.google {
+  background: #f1f1f1;
+}
+
+.btn.apple {
+  background: #f1f1f1;
+}
+
+.btn.google:hover {
+  background-color: #cfcfcf;
+  transform: translateY(-1px);
+}
+
+.btn.apple:hover {
+  background-color: #cfcfcf;
+  transform: translateY(-1px);
+}
+.btn:hover span,
+.btn:hover img {
+    transform: translateY(-1px);
 }
