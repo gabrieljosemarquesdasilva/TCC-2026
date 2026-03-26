@@ -140,7 +140,8 @@ border-radius:5px;
   font-size: 2rem;
   letter-spacing: 0.1em;
   color: #1a1a1a;
-  margin-bottom: 28px;
+  margin-bottom: 1%;
+  margin-top: 2%;
 }
 
 #botao-criar {
@@ -158,6 +159,7 @@ border-radius:5px;
   cursor: pointer;
   transition: background 0.2s, transform 0.1s;
   margin: auto;
+  margin-top: 4%;
 }
 
 #botao-criar:hover {
@@ -180,7 +182,7 @@ form{
   display:flex;
   flex-direction:column;
   gap:20px;
-  width: 55%;
+  width: 50%;
   padding: 10px;
 }
 
@@ -199,11 +201,10 @@ label{
   font-family:'DM Sans',sans-serif;
   font-size:0.95rem;
   border-radius:4px;
-  outline:none;
   transition:border-color 0.2s;
   height: 70%;
   padding-left: 2%;
-  
+  border: 1px solid gray;
  }
 
  #input-maior{
@@ -212,10 +213,10 @@ label{
   font-family:'DM Sans',sans-serif;
   font-size:0.95rem;
   border-radius:4px;
-  outline:none;
   transition:border-color 0.2s;
   height: 70%;
   padding-left: 1.5%;
+  border: 1px solid gray;
  }
 
  .div-form-nome-sobrenome{
@@ -224,23 +225,10 @@ label{
   width: 100%;
   gap: 15px;
  }
- 
- select{
-  width:100%;
-  background:var(--bg3);
-  font-family:'DM Sans',sans-serif;
-  font-size:0.95rem;
-  border-radius:4px;
-  outline:none;
-  transition:border-color 0.2s;
-  height: 70%;
-  background-color: rgb(231, 231, 231);
-  padding-left: 2%;
- }
 
 textarea{
   min-width: 100%;
-  min-height: 4em;
+  min-height: 5em;
   resize: vertical; 
 }
 
@@ -271,4 +259,72 @@ textarea{
 
 input{
   padding: 0.2rem;
+}
+
+
+h3.divisor {
+  width: 60%;
+  text-align: center;
+  border-bottom: 1px solid #000;
+  line-height: 0.1em;
+  margin: 10px 0 20px;
+  margin-bottom: 3%;
+}
+
+h3.divisor span {
+  background: #fff; /* Deve ser a mesma cor do fundo da página */
+  padding: 0 10px;
+}
+
+.social-buttons {
+  width: 45%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #eee;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.btn:hover {
+  background: #e0e0e0;
+}
+
+.btn.google {
+  background: #f1f1f1;
+}
+
+.btn.apple {
+  background: #f1f1f1;
+}
+
+.btn.google:hover {
+  background-color: #cfcfcf;
+  transform: translateY(-1px);
+}
+
+.btn.apple:hover {
+  background-color: #cfcfcf;
+  transform: translateY(-1px);
+}
+.btn:hover span,
+.btn:hover img {
+    transform: translateY(-1px);
 }
