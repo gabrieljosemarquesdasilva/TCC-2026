@@ -5,7 +5,10 @@ let count = 1;
 const totalSlides = 4;
 
 // Inicia no primeiro slide
-document.getElementById("radio1").checked = true;
+let radio = document.getElementById("radio1");
+if(radio){
+    radio.checked = true;
+}
 
 // Avança automaticamente a cada 3 segundos
 setInterval(function () {
@@ -91,3 +94,46 @@ numeros.forEach(n => {
     }, 30);
 });
 
+document.addEventListener("DOMContentLoaded", function(){
+
+    const form = document.getElementById("form-agendamento");
+
+    if(!form){
+        console.log("Form não encontrado");
+        return;
+    }
+
+    form.addEventListener("submit", function(e){
+        e.preventDefault();
+
+        const dados = {
+            nome: document.querySelector('input[name="nome"]').value,
+            quadra: document.querySelector('select[name="quadra"]').value,
+            data: document.querySelector('input[name="data"]').value,
+            horario: document.querySelector('input[name="horario"]').value,
+            modalidade: document.querySelector('select[name="modalidade"]').value,
+            nivel: document.querySelector('select[name="nivel"]').value
+        };
+
+        console.log(dados); // 👈 testa aqui
+
+        fetch("http://localhost:3000/agendar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dados)
+        })
+        .then(res => res.text())
+        .then(msg => {
+            alert(msg);
+            form.reset();
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Erro ao conectar com o servidor");
+        });
+
+    });
+
+});
