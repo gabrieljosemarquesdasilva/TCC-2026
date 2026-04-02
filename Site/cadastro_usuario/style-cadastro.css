@@ -106,7 +106,7 @@ section:nth-child(even) {
   box-shadow: 0 8px 40px rgba(0,0,0,0.12);
   margin: auto;
   width: 75%;
-  margin-top: 3%;
+  margin-top: 1.5%;
   z-index: 1;
 }
 
@@ -177,17 +177,6 @@ section:nth-child(even) {
 #botao-criar:hover {
   background-color: #2d8fad;
   transform: translateY(-1px);
-}
-
-/* ── RODAPÉ ── */
-footer {
-  background-color: #1a1a1a;
-  color: #f5f0e8;
-  text-align: center;
-  padding: 20px;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  border-top: 2px solid #c9a84c;
 }
 
 form{
@@ -339,4 +328,14 @@ h3.divisor span {
 .btn:hover span,
 .btn:hover img {
     transform: translateY(-1px);
+}
+footer {
+  background-color: #1a1a1a;
+  color: #f5f0e8;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  border-top: 2px solid #c9a84c;
+  margin-top: 1.55%;
 }
