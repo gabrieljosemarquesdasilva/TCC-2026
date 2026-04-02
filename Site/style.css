@@ -1,5 +1,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600&display=swap');
 
+/* ── BOTÃO PARA AGENDAR ── */
+
+.botao-agendar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 36px;
+  background: linear-gradient(135deg, #1e6b3f 0%, #28925a 60%, #34b870 100%);
+  color: #fff;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow:
+    0 2px 0 rgba(0,0,0,0.18),
+    0 6px 20px rgba(30,107,63,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  overflow: hidden;
+}
+
+.botao-agendar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.13) 0%, transparent 100%);
+  border-radius: 14px 14px 0 0;
+  pointer-events: none;
+}
+
+.botao-agendar:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 0 rgba(0,0,0,0.16),
+    0 12px 28px rgba(30,107,63,0.48),
+    inset 0 1px 0 rgba(255,255,255,0.26);
+  filter: brightness(1.06);
+}
+
+.botao-agendar:active {
+  transform: translateY(1px);
+}
 * {
   box-sizing: border-box;
   margin: 0;
@@ -53,8 +101,6 @@ nav{
   display:flex;
   gap:8px;
 }
-
-
 
 .menu li {
   margin: 0;
@@ -124,7 +170,7 @@ section:nth-child(even) {
 }
 
 .slider {
-    margin: 0 auto;      /* já tem, mas garante centralização */
+    margin: 0 auto;      /* garante a centralização */
     width: 1100px;
     height: 500px;
     overflow: hidden;
@@ -136,7 +182,7 @@ section:nth-child(even) {
 
 .slides {
     width: 400%;
-    height: 500px;        /* era 400px */
+    height: 500px;        /* SLIDES MAIORES */
     display: flex;
     transition: margin-left 0.6s cubic-bezier(.77,0,.18,1); /* animação mais suave */
 }
@@ -167,29 +213,13 @@ section:nth-child(even) {
 /* ── Navegação manual ── */
 .manual-navigation {
     position: absolute;
-    width: 1100px;        /* era 800px */
+    width: 1100px;        /* 800px */
     bottom: 16px;
     left: 0;
     display: flex;
     justify-content: center;
     gap: 12px;
     z-index: 10;
-}
-
-.manual-btn {
-    border: 2px solid #fff;
-    padding: 6px;         /* era 5px */
-    border-radius: 50%;   /* círculo em vez de quadrado */
-    cursor: pointer;
-    display: inline-block;
-    background: rgba(255,255,255,0.25); /* semi-transparente */
-    backdrop-filter: blur(4px);
-    transition: background 0.2s, transform 0.2s;
-}
-
-.manual-btn:hover {
-    background-color: #fff;
-    transform: scale(1.2);
 }
 
 /* ── Navegação automática (indicadores) ── */
@@ -250,29 +280,6 @@ color:white;
 border:none;
 cursor:pointer;
 }
-
-/* ── BOTÃO GENÉRICO ── */
-.btn {
-  display: inline-block;
-  margin-top: 24px;
-  padding: 12px 32px;
-  background-color: #c9a84c;
-  color: #1a1a1a;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.2s, transform 0.1s;
-}
-
-.btn:hover {
-  background-color: #b8913a;
-  transform: translateY(-2px);
-}
-
 /* ── RODAPÉ ── */
 footer {
   background-color: #1a1a1a;
@@ -283,23 +290,6 @@ footer {
   letter-spacing: 0.05em;
   border-top: 2px solid #c9a84c;
 }
-
-.redes{
-margin-top:30px;
-text-align:center;
-}
-
-.redes a{
-font-size:40px;
-margin:15px;
-color:#333;
-text-decoration:none;
-}
-
-.redes a:hover{
-color:#2c7a4b;
-}
-
 
 .perfil-container{
 display:flex;
@@ -462,17 +452,10 @@ color:white;
 border-radius:10px;
 text-decoration:none;
 font-weight:bold;
-transition:0.3s;
 width:fit-content;
 margin:30px auto 0;
 box-shadow: 0 4px 15px rgba(44,122,75,0.4);
 }
-
-.botao-agendar:hover{
-transform:scale(1.08);
-background:#256b40;
-}
-
 
 /* Título */
 .quadras h2{
@@ -581,4 +564,84 @@ cursor:pointer;
 .stat p{
   margin-top:10px;
   color:#555;
+}
+
+
+/* ── TODOS BTNS -> ── */
+
+.manual-btn {
+    border: 2px solid #fff;
+    padding: 6px;         /*  5px */
+    border-radius: 50%;   /* círculo em vez de quadrado */
+    cursor: pointer;
+    display: inline-block;
+    background: rgba(255,255,255,0.25); /* semi-transparente */
+    backdrop-filter: blur(4px);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.manual-btn:hover {
+    background-color: #fff;
+    transform: scale(1.2);
+}
+
+/* ── BOTÃO GENÉRICO ── */
+.btn {
+  display: inline-block;
+  margin-top: 24px;
+  padding: 12px 32px;
+  background-color: #c9a84c;
+  color: #1a1a1a;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.1s;
+}
+
+/* ── MOUSE EM CIMA DO BOTÃO ── */
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-contato {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    width: 280px;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+/* ── ANIMAÇÃO DO BOTÃO ── */
+
+.btn-contato:hover {
+    transform: translateY(-3px);
+    opacity: 0.9;
+}
+
+.btn-contato i {
+    font-size: 1.4rem;
+}
+
+.btn-instagram { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: white; }
+.btn-whatsapp  { background-color: #25d366; color: white; }
+.btn-facebook  { background-color: #1877f2; color: white; }
+.btn-email     { background-color: #c9a84c; color: #1a1a1a; }
+
+.redes {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
