@@ -4,30 +4,32 @@ let slideIndex = 0;
 let count = 1;
 const totalSlides = 4;
 
-// Inicia no primeiro slide
-let radio = document.getElementById("radio1");
-if(radio){
+// só executa se existir slider
+const radio = document.getElementById("radio1");
+if (radio) {
     radio.checked = true;
+
+    setInterval(function () {
+        count++;
+        if (count > totalSlides) count = 1;
+
+        const atual = document.getElementById("radio" + count);
+        if (atual) {
+            atual.checked = true;
+        }
+    }, 3000);
 }
 
-// Avança automaticamente a cada 3 segundos
-setInterval(function () {
-    count++;
-    if (count > totalSlides) count = 1;
-    document.getElementById("radio" + count).checked = true;
-}, 3000);
 
-
-// IR DIRETO PRO AGENDAMENTO
+// ── IR PRO AGENDAMENTO ──
 function irParaAgendamento(quadra, horario){
     localStorage.setItem("quadra", quadra);
     localStorage.setItem("horario", horario);
-
     window.location.href = "agendamento.html";
 }
 
 
-// SELECIONAR HORÁRIO
+// ── SELECIONAR HORÁRIO ──
 function selecionarHorario(elemento, quadra){
 
     let horarios = document.querySelectorAll(".horarios span");
@@ -44,96 +46,135 @@ function selecionarHorario(elemento, quadra){
 }
 
 
-// QUANDO A PÁGINA CARREGAR
+// ── FUNÇÕES GERAIS AO CARREGAR ──
 document.addEventListener("DOMContentLoaded", function(){
 
+    // preencher dados do localStorage
     let horarioSalvo = localStorage.getItem("horario");
     let quadraSalva = localStorage.getItem("quadra");
 
-    if(horarioSalvo){
-        let input = document.getElementById("horario");
-        if(input){
-            input.value = horarioSalvo.slice(0,5);
-        }
+    let inputHorario = document.getElementById("horario");
+    if (horarioSalvo && inputHorario) {
+        inputHorario.value = horarioSalvo.slice(0,5);
     }
 
-    if(quadraSalva){
-        let select = document.getElementById("quadra");
-        if(select){
-            select.value = quadraSalva;
-        }
+    let selectQuadra = document.getElementById("quadra");
+    if (quadraSalva && selectQuadra) {
+        selectQuadra.value = quadraSalva;
+    }
+
+
+    // ── ANIMAÇÃO DOS NÚMEROS ──
+    const numeros = document.querySelectorAll(".stat h2");
+
+    if (numeros.length > 0) {
+        numeros.forEach(n => {
+            let final = parseInt(n.innerText.replace("+",""));
+            let atual = 0;
+
+            let intervalo = setInterval(() => {
+                atual += Math.ceil(final / 50);
+                if(atual >= final){
+                    atual = final;
+                    clearInterval(intervalo);
+                }
+                n.innerText = "+" + atual;
+            }, 30);
+        });
+    }
+
+
+    // ── ENVIO DO FORMULÁRIO ──
+    const form = document.getElementById("form-agendamento");
+
+    if(form){
+        form.addEventListener("submit", function(e){
+            e.preventDefault();
+
+            const dados = {
+                nome: document.querySelector('input[name="nome"]').value,
+                quadra: document.querySelector('select[name="quadra"]').value,
+                data: document.querySelector('input[name="data"]').value,
+                horario: document.querySelector('input[name="horario"]').value,
+                modalidade: document.querySelector('select[name="modalidade"]').value,
+                nivel: document.querySelector('select[name="nivel"]').value
+            };
+
+            fetch("http://localhost:3000/agendar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(res => res.text())
+            .then(msg => {
+                alert(msg);
+                form.reset();
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Erro ao conectar com o servidor");
+            });
+        });
+    }
+
+
+    // ── LISTAR AGENDAMENTOS (PERFIL) ──
+    const lista = document.getElementById("lista-agendamentos");
+
+    if(lista){
+        fetch("http://localhost:3000/agendamentos")
+        .then(res => res.json())
+        .then(dados => {
+
+            if(dados.length === 0){
+                lista.innerHTML = "<p>Nenhum agendamento encontrado.</p>";
+                return;
+            }
+
+            dados.forEach(ag => {
+
+                let item = document.createElement("div");
+                item.classList.add("card-agendamento");
+
+                item.innerHTML = `
+                    <p><strong>Nome:</strong> ${ag.nome}</p>
+                    <p><strong>Quadra:</strong> ${ag.quadra}</p>
+                    <p><strong>Data:</strong> ${ag.data}</p>
+                    <p><strong>Horário:</strong> ${ag.horario}</p>
+                    <p><strong>Modalidade:</strong> ${ag.modalidade}</p>
+                    <p><strong>Nível:</strong> ${ag.nivel}</p>
+                    <hr>
+                `;
+
+                lista.appendChild(item);
+            });
+
+        })
+        .catch(err => {
+            console.error(err);
+            lista.innerHTML = "<p>Erro ao carregar agendamentos</p>";
+        });
     }
 
 });
 
+
+// ── MODAL DE IMAGEM ──
 function abrirImagem(src){
     let modal = document.getElementById("modal-img");
     let img = document.getElementById("img-grande");
 
-    modal.style.display = "flex";
-    img.src = src;
+    if(modal && img){
+        modal.style.display = "flex";
+        img.src = src;
+    }
 }
 
 function fecharImagem(){
-    document.getElementById("modal-img").style.display = "none";
-}
-
-const numeros = document.querySelectorAll(".stat h2");
-
-numeros.forEach(n => {
-    let final = parseInt(n.innerText.replace("+",""));
-    let atual = 0;
-
-    let intervalo = setInterval(() => {
-        atual += Math.ceil(final / 50);
-        if(atual >= final){
-            atual = final;
-            clearInterval(intervalo);
-        }
-        n.innerText = "+" + atual;
-    }, 30);
-});
-
-document.addEventListener("DOMContentLoaded", function(){
-
-    const form = document.getElementById("form-agendamento");
-
-    if(!form){
-        console.log("Form não encontrado");
-        return;
+    let modal = document.getElementById("modal-img");
+    if(modal){
+        modal.style.display = "none";
     }
-
-    form.addEventListener("submit", function(e){
-        e.preventDefault();
-
-        const dados = {
-            nome: document.querySelector('input[name="nome"]').value,
-            quadra: document.querySelector('select[name="quadra"]').value,
-            data: document.querySelector('input[name="data"]').value,
-            horario: document.querySelector('input[name="horario"]').value,
-            modalidade: document.querySelector('select[name="modalidade"]').value,
-            nivel: document.querySelector('select[name="nivel"]').value
-        };
-
-        console.log(dados); // 👈 testa aqui
-
-        fetch("http://localhost:3000/agendar", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(dados)
-        })
-        .then(res => res.text())
-        .then(msg => {
-            alert(msg);
-            form.reset();
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Erro ao conectar com o servidor");
-        });
-
-    });
-
-});
+}

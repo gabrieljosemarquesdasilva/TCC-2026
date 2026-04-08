@@ -645,3 +645,13 @@ cursor:pointer;
     align-items: center;
     gap: 15px;
 }
+
+.card-agendamento{
+background:white;
+padding:15px;
+margin:10px auto;
+max-width:400px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+text-align:left;
+}

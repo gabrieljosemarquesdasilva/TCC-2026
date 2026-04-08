@@ -49,3 +49,17 @@ app.post("/agendar", (req, res) => {
 app.listen(3000, () => {
     console.log("Servidor rodando em http://localhost:3000");
 });
+
+
+app.get("/agendamentos", (req, res) => {
+    const sql = "SELECT * FROM agendamentos ORDER BY data DESC";
+
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ erro: "Erro ao buscar agendamentos" });
+        }
+
+        res.json(result);
+    });
+});

@@ -12,3 +12,5 @@ CREATE TABLE agendamentos (
     nivel VARCHAR(50)
 );
 
+node server.js 
+
