@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,24 +10,24 @@
 <body>
 
 <header>
-        <nav>
-            <ul class="menu">
+    <nav>
+        <ul class="menu">
             <li><a href="../index.html"><i class="fa-solid fa-house"></i> Início</a></li>
             <li><a href="../agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a></li>
             <li><a href="../sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a></li>
             <li><a href="../contato.html"><i class="fa-solid fa-envelope"></i> Contato</a></li>
-            <li><a class="ativo" href="cadastro_usuario/cadastro.html"><i class="fa-solid fa-user-plus"></i> Cadastro</a></li>
-            <li><a href="../login_usuario/login.html"><i class="fa-solid fa-user-plus"></i>Login</a></li>
+            <li><a class="ativo" href="#"><i class="fa-solid fa-user-plus"></i> Cadastro</a></li>
+            <li><a href="../login_usuario/login.html"><i class="fa-solid fa-user"></i> Login</a></li>
             <li><a href="../perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
         </ul>
-        </nav>
+    </nav>
 </header>
 
-  <section id="inicio"></section>
+<section id="inicio"></section>
 
+<div class="container">
 
-    <div class="container">
-
+    <!-- ESQUERDA -->
     <div id="esquerda">
         <h1>Já possui uma conta?</h1>
         <ul class="botao-logar">
@@ -35,70 +35,109 @@
         </ul>
     </div>
 
-    
+    <!-- DIREITA -->
     <div id="direita">
-    <h1 id="titulo">Cadastrar-se</h1>
+        <h1 id="titulo">Cadastrar-se</h1>
 
-    
+        <div class="social-buttons">
+            <button class="btn google">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
+                <span>Continue com Google</span>
+            </button>
 
-      <div class="social-buttons">
-        <button class="btn google">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
-            <span>Continue com Google</span>
-        </button>
-
-        <button class="btn apple">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg" alt="Apple">
-            <span>Continue com Apple</span> 
-        </button>
-      </div>
-    <h3 class="divisor"><span>OU</span></h3>
-   <form id="inscricao-form" >
-
-        <div class="div-form-nome-sobrenome">
-          <div>
-            <label>NOME</label>
-            <input type="text" placeholder="Seu nome"/>
-          </div>
-          <div>
-            <label>SOBRENOME</label>
-            <input type="text" placeholder="Seu sobrenome"/>
-          </div>
+            <button class="btn apple">
+                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg">
+                <span>Continue com Apple</span> 
+            </button>
         </div>
 
-        <div>
-          <label>E-MAIL</label>
-          <input type="email" placeholder="seu@email.com" id="input-maior"/>
-        </div>
+        <h3 class="divisor"><span>OU</span></h3>
 
-        <div>
-          <label>TELEFONE / WHATSAPP</label>
-          <input type="tel" placeholder="(11) 99999-9999" id="input-maior"/>
-        </div>
+        <form id="inscricao-form">
 
-        <div>
-          <label>SENHA</label>
-          <input type="tel" placeholder="********" id="input-maior"/>
-        </div>
+            <!-- NOME -->
+            <div class="div-form-nome-sobrenome">
+                <div>
+                    <label>NOME</label>
+                    <input type="text" id="nome" placeholder="Seu nome" required>
+                </div>
+                <div>
+                    <label>SOBRENOME</label>
+                    <input type="text" id="sobrenome" placeholder="Seu sobrenome" required>
+                </div>
+            </div>
 
-        <div>
-          <label>DATA DE NASCIMENTO</label>
-          <input type="date" id="input-maior"/>
-        </div>
+            <!-- EMAIL -->
+            <div>
+                <label>E-MAIL</label>
+                <input type="email" id="email" placeholder="seu@email.com" required>
+            </div>
 
-        <button type="submit" id="botao-criar">
-           CONFIRMAR INSCRIÇÃO
-        </button>
-      </form>
+            <!-- TELEFONE -->
+            <div>
+                <label>TELEFONE / WHATSAPP</label>
+                <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+            </div>
 
-      
+            <!-- SENHA -->
+            <div>
+                <label>SENHA</label>
+                <input type="password" id="senha" placeholder="********" required>
+            </div>
+
+            <!-- NASCIMENTO -->
+            <div>
+                <label>DATA DE NASCIMENTO</label>
+                <input type="date" id="nascimento" required>
+            </div>
+
+            <button type="submit" id="botao-criar">
+                CONFIRMAR INSCRIÇÃO
+            </button>
+
+        </form>
+
     </div>
 
-    
-    
 </div>
-    <footer>
-        <p>Projeto de TCC - 2026</p>
-    </footer>
+
+<footer>
+    <p>Projeto de TCC - 2026</p>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+document.getElementById("inscricao-form").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const dados = {
+        nome: document.getElementById("nome").value,
+        sobrenome: document.getElementById("sobrenome").value,
+        email: document.getElementById("email").value,
+        telefone: document.getElementById("telefone").value,
+        senha: document.getElementById("senha").value,
+        nascimento: document.getElementById("nascimento").value
+    };
+
+    console.log(dados); // 👈 pra testar
+
+    fetch("http://localhost:3000/cadastrar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dados)
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert(msg);
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Erro ao conectar com o servidor");
+    });
+});
+</script>
+
 </body>
 </html>

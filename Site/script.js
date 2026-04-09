@@ -178,3 +178,4 @@ function fecharImagem(){
         modal.style.display = "none";
     }
 }
+

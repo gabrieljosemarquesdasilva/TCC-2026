@@ -63,3 +63,24 @@ app.get("/agendamentos", (req, res) => {
         res.json(result);
     });
 });
+
+app.post("/cadastrar", (req, res) => {
+
+    const { nome, sobrenome, email, telefone, senha, nascimento } = req.body;
+
+    const sql = `
+    INSERT INTO usuarios 
+    (nome, sobrenome, email, telefone, senha, nascimento) 
+    VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    db.query(sql, [nome, sobrenome, email, telefone, senha, nascimento], (err) => {
+        if(err){
+            console.log(err);
+            return res.status(500).send("Erro ao cadastrar");
+        }
+
+        res.send("Usuário cadastrado com sucesso! ✅");
+    });
+
+});
