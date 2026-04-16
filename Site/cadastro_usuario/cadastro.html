@@ -4,10 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="stylesheet" href="style-cadastro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+    
+    <div id="g_id_onload"
+       data-client_id="314377682610-qnrudcuk611ou7kse4v4m9a86v980pth.apps.googleusercontent.com"
+       data-callback="handleCredentialResponse">
+  </div>
+
+  <script>
+    function handleCredentialResponse(response) {
+      console.log("JWT Token:", response.credential);
+
+      // Decodificar o token (apenas para testes no frontend)
+      const data = parseJwt(response.credential);
+      console.log(data);
+    }
+
+    function parseJwt(token) {
+      let base64Url = token.split('.')[1];
+      let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+
+      return JSON.parse(jsonPayload);
+    }
+  </script>
 
 <header>
     <nav>
@@ -40,10 +66,13 @@
         <h1 id="titulo">Cadastrar-se</h1>
 
         <div class="social-buttons">
-            <button class="btn google">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg">
-                <span>Continue com Google</span>
-            </button>
+            <div class="g_id_signin"
+                data-type="standard"
+                data-size="large"
+                data-theme="outline"
+                data-text="sign_in_with"
+                data-shape="rectangular">
+            </div>
 
             <button class="btn apple">
                 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg">
