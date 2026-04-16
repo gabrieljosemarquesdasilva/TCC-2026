@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil — Beach Tennis ETEC</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><a href="index.html"><img src="img/logo.png" alt="Logo"></a></div>
+    <ul class="menu">
+      <li><a href="index.html"><i class="fa-solid fa-house"></i> Início</a></li>
+      <li><a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a></li>
+      <li><a href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a></li>
+      <li><a href="contato.html"><i class="fa-solid fa-envelope"></i> Contato</a></li>
+      <li><a href="cadastro_usuario/cadastro.html"><i class="fa-solid fa-user-plus"></i> Cadastro</a></li>
+      <li><a href="login_usuario/login.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+      <li><a class="ativo" href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="form-section">
+  <div class="section-header" style="margin-bottom:48px;">
+    <span class="section-tag">👤 Conta</span>
+    <h2>Meu <span class="accent">Perfil</span></h2>
+  </div>
+
+  <div class="card-perfil">
+    <div class="topo-perfil">
+      <img src="img/teste.jpeg" alt="Foto do usuário" class="foto">
+      <h2>Gabriel Marques</h2>
+      <span class="nivel">🎾 Jogador Intermediário</span>
+    </div>
+
+    <div class="info-perfil">
+      <p><strong>Email:</strong> exemplo@email.com</p>
+      <p><strong>Telefone:</strong> (19) 99999-9999</p>
+      <p><strong>Modalidade:</strong> Beach Tennis</p>
+      <p><strong>Nascimento:</strong> 10/02/2009</p>
+    </div>
+
+    <div class="bio">
+      <p>Tenho 17 anos e sou apaixonado por Beach Tennis. Jogo desde 2022 e não paro mais! 🏖️</p>
+    </div>
+  </div>
+
+  <div style="max-width:600px;margin:48px auto 0;">
+    <div class="section-header">
+      <span class="section-tag">📅 Histórico</span>
+      <h2>Meus <span class="accent">Agendamentos</span></h2>
+    </div>
+    <div id="lista-agendamentos"></div>
+  </div>
+</section>
+
+<footer>
+  <p>Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

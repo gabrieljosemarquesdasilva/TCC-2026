@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre — Beach Tennis ETEC</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><a href="index.html"><img src="img/logo.png" alt="Logo"></a></div>
+    <ul class="menu">
+      <li><a href="index.html"><i class="fa-solid fa-house"></i> Início</a></li>
+      <li><a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a></li>
+      <li><a class="ativo" href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a></li>
+      <li><a href="contato.html"><i class="fa-solid fa-envelope"></i> Contato</a></li>
+      <li><a href="cadastro_usuario/cadastro.html"><i class="fa-solid fa-user-plus"></i> Cadastro</a></li>
+      <li><a href="login_usuario/login.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+      <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="sobre-section">
+  <div class="section-header">
+    <span class="section-tag">🏖️ Quem somos</span>
+    <h2>Nossa <span class="accent">História</span></h2>
+    <p>Somos um espaço esportivo dedicado ao beach tennis, oferecendo estrutura de qualidade para lazer, treinos e competições.</p>
+  </div>
+
+  <div class="section-header" style="margin-top:72px;">
+    <span class="section-tag">🎾 Estrutura</span>
+    <h2>Nossas <span class="accent">Quadras</span></h2>
+  </div>
+
+  <div class="quadra-card">
+    <img src="img/quadra1.jpg" onclick="abrirImagem(this.src)" alt="Quadra 1">
+    <div class="quadra-card-info">
+      <span class="quadra-badge">Quadra 1</span>
+      <h3>Arena Principal</h3>
+      <p>Quadra de areia profissional com iluminação noturna de alta potência. Perfeita para jogos noturnos e treinos intensivos. Estrutura completa com vestiários e área de apoio.</p>
+    </div>
+  </div>
+
+  <div class="quadra-card">
+    <img src="img/quadra2.png" onclick="abrirImagem(this.src)" alt="Quadra 2">
+    <div class="quadra-card-info">
+      <span class="quadra-badge">Quadra 2</span>
+      <h3>Espaço Recreativo</h3>
+      <p>Espaço amplo e confortável, ideal para partidas recreativas e eventos esportivos. Ambiente descontraído para quem quer curtir o jogo com os amigos.</p>
+    </div>
+  </div>
+
+  <div class="quadra-card">
+    <img src="img/quadra3.jpg" onclick="abrirImagem(this.src)" alt="Quadra 3">
+    <div class="quadra-card-info">
+      <span class="quadra-badge">Quadra 3</span>
+      <h3>Arena Premium</h3>
+      <p>Quadra moderna com estrutura premium e areia selecionada. Perfeita para competições e jogos de alto nível. Equipamentos de linha profissional inclusos.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
+</footer>
+
+<div id="modal-img" class="modal">
+  <span class="fechar" onclick="fecharImagem()">&times;</span>
+  <img class="modal-conteudo" id="img-grande">
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
