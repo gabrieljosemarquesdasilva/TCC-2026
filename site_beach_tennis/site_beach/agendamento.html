@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento — Beach Tennis ETEC</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo"><a href="index.html"><img src="img/logo.png" alt="Logo"></a></div>
+    <ul class="menu">
+      <li><a href="index.html"><i class="fa-solid fa-house"></i> Início</a></li>
+      <li><a class="ativo" href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a></li>
+      <li><a href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a></li>
+      <li><a href="contato.html"><i class="fa-solid fa-envelope"></i> Contato</a></li>
+      <li><a href="cadastro_usuario/cadastro.html"><i class="fa-solid fa-user-plus"></i> Cadastro</a></li>
+      <li><a href="login_usuario/login.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+      <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="form-section">
+  <div class="section-header" style="margin-bottom:40px;">
+    <span class="section-tag">📅 Reserve</span>
+    <h2>Agendamento de <span class="accent">Quadra</span></h2>
+    <p>Preencha os dados abaixo para reservar seu horário.</p>
+  </div>
+
+  <div class="form-card">
+    <h2>Nova Reserva</h2>
+    <p class="sub">Confirme sua presença na quadra 🏖️</p>
+
+    <form id="form-agendamento">
+      <div class="form-group">
+        <label>Nome Completo</label>
+        <input type="text" name="nome" placeholder="Seu nome" required>
+      </div>
+
+      <div class="form-group">
+        <label>Quadra</label>
+        <select id="quadra" name="quadra">
+          <option>Quadra 1</option>
+          <option>Quadra 2</option>
+        </select>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Modalidade</label>
+          <select name="modalidade">
+            <option value="" disabled selected hidden>Selecione</option>
+            <option>🏐 Vôlei de Areia</option>
+            <option>🎾 Beach Tennis</option>
+            <option>⚽ FutVôlei</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Nível</label>
+          <select name="nivel">
+            <option value="" disabled selected hidden>Selecione</option>
+            <option>Iniciante</option>
+            <option>Intermediário</option>
+            <option>Avançado / PRO</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Data</label>
+          <input type="date" name="data" required>
+        </div>
+        <div class="form-group">
+          <label>Horário</label>
+          <input type="time" id="horario" name="horario">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Duração</label>
+        <select name="duracao">
+          <option>1 hora</option>
+          <option>2 horas</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Observação</label>
+        <textarea name="obs" placeholder="Algo que devemos saber? (opcional)"></textarea>
+      </div>
+
+      <button type="submit" class="botao-agendar" style="width:100%; justify-content:center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="3"/>
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="16" x2="15" y2="16"/>
+          <line x1="12" y1="13" x2="12" y2="19"/>
+        </svg>
+        Reservar Quadra
+      </button>
+    </form>
+  </div>
+
+  <!-- Lista de agendamentos -->
+  <div id="lista-agendamentos"></div>
+</section>
+
+<footer>
+  <p>Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
