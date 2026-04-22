@@ -11,35 +11,34 @@
 <body>
 
 <script>
-let tokenClient;
-
-window.onload = function () {
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: '314377682610-qnrudcuk611ou7kse4v4m9a86v980pth.apps.googleusercontent.com',
-    scope: 'email profile',
-    callback: (response) => {
-      console.log('Token:', response.access_token);
-      // aqui você trata o login (backend ou frontend)
-    },
-  });
-};
-
-google.accounts.id.initialize({
-  client_id: 'SEU_CLIENT_ID',
-  callback: handleCredentialResponse
-});
-
 function handleCredentialResponse(response) {
-  const idToken = response.credential; // 👈 ISSO AQUI É O MAIS IMPORTANTE
+  const idToken = response.credential;
+
+  fetch('/auth/google', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ token: idToken })
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log('Usuário logado:', data);
+  })
+  .catch(err => console.error(err));
 }
 
-fetch('/auth/google', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ token: idToken })
-});
+window.onload = function () {
+  google.accounts.id.initialize({
+    client_id: '314377682610-qnrudcuk611ou7kse4v4m9a86v980pth.apps.googleusercontent.com',
+    callback: handleCredentialResponse
+  });
+
+  google.accounts.id.renderButton(
+    document.getElementById("loginDiv"),
+    { theme: "outline", size: "large" }
+  );
+};
 </script>
 
 <header>
@@ -66,17 +65,11 @@ fetch('/auth/google', {
     </div>
 
     <!-- Social -->
-    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
-      <button  class="google-btn" onclick="loginWithGoogle()" style="display:flex;align-items:center;gap:12px;padding:13px 20px;border:2px solid #E8EFF5;border-radius:12px;background:white;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#0077B6'" onmouseout="this.style.borderColor='#E8EFF5'">
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;" id="loginDiv">
+      <button  class="google-btn" style="display:flex;align-items:center;gap:12px;padding:13px 20px;border:2px solid #E8EFF5;border-radius:12px;background:white;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#0077B6'" onmouseout="this.style.borderColor='#E8EFF5'">
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="20" alt="Google">
         <span>Continue com Google</span>
       </button>
-
-      <script>
-        function loginWithGoogle() {
-          tokenClient.requestAccessToken();
-        }
-      </script>
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
