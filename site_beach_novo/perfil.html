@@ -30,24 +30,25 @@
     <h2>Meu <span class="accent">Perfil</span></h2>
   </div>
 
-  <div class="card-perfil">
-    <div class="topo-perfil">
-      <img src="img/teste.jpeg" alt="Foto do usuário" class="foto">
-      <h2>Gabriel Marques</h2>
-      <span class="nivel">🎾 Jogador Intermediário</span>
-    </div>
-
-    <div class="info-perfil">
-      <p><strong>Email:</strong> exemplo@email.com</p>
-      <p><strong>Telefone:</strong> (19) 99999-9999</p>
-      <p><strong>Modalidade:</strong> Beach Tennis</p>
-      <p><strong>Nascimento:</strong> 10/02/2009</p>
-    </div>
-
-    <div class="bio">
-      <p>Tenho 17 anos e sou apaixonado por Beach Tennis. Jogo desde 2022 e não paro mais! 🏖️</p>
-    </div>
+<div class="card-perfil">
+  <div class="topo-perfil">
+    <img src="img/teste.jpeg" alt="Foto do usuário" class="foto">
+    <h2 id="nome-perfil">Nome do Usuário</h2>
+    <span class="nivel">🎾 Jogador</span>
   </div>
+
+  <div class="info-perfil">
+    <p><strong>Email:</strong> <span id="email-perfil">-</span></p>
+    <p><strong>Telefone:</strong> <span id="telefone-perfil">-</span></p>
+    <p><strong>Nascimento:</strong> <span id="nascimento-perfil">-</span></p>
+  </div>
+
+  <div class="bio">
+    <p id="bio-perfil">
+      Bem-vindo ao seu perfil! 🏖️
+    </p>
+  </div>
+</div>
 
   <div style="max-width:600px;margin:48px auto 0;">
     <div class="section-header">
@@ -63,5 +64,34 @@
 </footer>
 
 <script src="script.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const usuarioString = localStorage.getItem("usuario");
+
+console.log("PEGANDO:", usuarioString); // debug
+
+if(!usuarioString){
+  alert("Você não está logado!");
+  return;
+}
+
+const usuario = JSON.parse(usuarioString);
+
+  if(!usuario){
+    alert("Você não está logado!");
+    window.location.href = "cadastro_usuario.html";
+    return;
+  }
+
+  // Preencher dados
+  document.getElementById("nome-perfil").innerText = usuario.nome + " " + usuario.sobrenome;
+  document.getElementById("email-perfil").innerText = usuario.email;
+  document.getElementById("telefone-perfil").innerText = usuario.telefone;
+  document.getElementById("nascimento-perfil").innerText = usuario.nascimento;
+
+});
+</script>
 </body>
 </html>

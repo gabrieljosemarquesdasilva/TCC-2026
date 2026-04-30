@@ -179,3 +179,31 @@ function fecharImagem(){
     }
 }
 
+// ── CARREGAR DADOS DO USUÁRIO NO PERFIL ──
+const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+if(usuario){
+
+    const nome = document.getElementById("nome-perfil");
+    const email = document.getElementById("email-perfil");
+    const telefone = document.getElementById("telefone-perfil");
+    const nascimento = document.getElementById("nascimento-perfil");
+
+    if(nome){
+        nome.innerText = usuario.nome + " " + usuario.sobrenome;
+    }
+
+    if(email){
+        email.innerText = usuario.email;
+    }
+
+    if(telefone){
+        telefone.innerText = usuario.telefone;
+    }
+
+    if(nascimento){
+        // formata data bonitinha
+        const data = new Date(usuario.nascimento);
+        nascimento.innerText = data.toLocaleDateString("pt-BR");
+    }
+}

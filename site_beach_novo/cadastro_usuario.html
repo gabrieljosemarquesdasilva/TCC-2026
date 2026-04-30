@@ -4,42 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro — Beach Tennis ETEC</title>
+
+  <!-- Google login -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-
-<script>
-function handleCredentialResponse(response) {
-  const idToken = response.credential;
-
-  fetch('/auth/google', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ token: idToken })
-  })
-  .then(res => res.json())
-  .then(data => {
-    console.log('Usuário logado:', data);
-  })
-  .catch(err => console.error(err));
-}
-
-window.onload = function () {
-  google.accounts.id.initialize({
-    client_id: '314377682610-qnrudcuk611ou7kse4v4m9a86v980pth.apps.googleusercontent.com',
-    callback: handleCredentialResponse
-  });
-
-  google.accounts.id.renderButton(
-    document.getElementById("loginDiv"),
-    { theme: "outline", size: "large" }
-  );
-};
-</script>
 
 <header>
   <nav>
@@ -58,88 +30,113 @@ window.onload = function () {
 
 <section class="auth-section" style="align-items:flex-start;padding-top:40px;">
   <div class="auth-card" style="max-width:520px;">
+
     <div style="text-align:center; margin-bottom:32px;">
       <span style="font-size:2.5rem;">🏖️</span>
       <h2 style="margin-top:8px;">Criar Conta</h2>
       <p class="sub">Entre para a comunidade Beach Tennis ETEC!</p>
     </div>
 
-    <!-- Social -->
-    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;" id="loginDiv">
-      <button  class="google-btn" style="display:flex;align-items:center;gap:12px;padding:13px 20px;border:2px solid #E8EFF5;border-radius:12px;background:white;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#0077B6'" onmouseout="this.style.borderColor='#E8EFF5'">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="20" alt="Google">
-        <span>Continue com Google</span>
-      </button>
-    </div>
+    <!-- Google -->
+    <div id="loginDiv" style="margin-bottom:24px;"></div>
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
       <div style="flex:1;height:1px;background:#E8EFF5;"></div>
-      <span style="color:#9BB;font-size:0.82rem;font-weight:600;letter-spacing:0.1em;">OU</span>
+      <span style="color:#9BB;font-size:0.82rem;">OU</span>
       <div style="flex:1;height:1px;background:#E8EFF5;"></div>
     </div>
 
+    <!-- FORM -->
     <form id="inscricao-form">
+
       <div class="form-grid">
         <div class="form-group">
           <label>Nome</label>
-          <input type="text" id="nome" placeholder="Seu nome" required>
+          <input type="text" id="nome" required>
         </div>
+
         <div class="form-group">
           <label>Sobrenome</label>
-          <input type="text" id="sobrenome" placeholder="Sobrenome" required>
+          <input type="text" id="sobrenome" required>
         </div>
       </div>
+
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="email" placeholder="seu@email.com" required>
+        <input type="email" id="email" required>
       </div>
+
       <div class="form-group">
-        <label>Telefone / WhatsApp</label>
-        <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+        <label>Telefone</label>
+        <input type="tel" id="telefone" required>
       </div>
+
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="senha" placeholder="••••••••" required>
+        <input type="password" id="senha" required>
       </div>
+
       <div class="form-group">
         <label>Data de Nascimento</label>
         <input type="date" id="nascimento" required>
       </div>
 
-      <button type="submit" id="botao-criar" class="botao-agendar" style="width:100%;justify-content:center;margin-top:8px;">
+      <button type="submit" class="botao-agendar" style="width:100%;">
         <i class="fa-solid fa-user-plus"></i> Confirmar Inscrição
       </button>
+
     </form>
 
-    <p style="text-align:center;margin-top:24px;color:#9BB;font-size:0.9rem;">
-      Já tem conta? <a href="../login_usuario/login.html" class="switch">Fazer login</a>
-    </p>
   </div>
 </section>
 
 <footer>
-  <p>Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
+  <p>Beach Tennis ETEC — Projeto TCC 2026</p>
 </footer>
 
+<!-- SCRIPT SEM BUG -->
 <script>
-document.getElementById("inscricao-form").addEventListener("submit", function(e){
-  e.preventDefault();
-  const dados = {
-    nome: document.getElementById("nome").value,
-    sobrenome: document.getElementById("sobrenome").value,
-    email: document.getElementById("email").value,
-    telefone: document.getElementById("telefone").value,
-    senha: document.getElementById("senha").value,
-    nascimento: document.getElementById("nascimento").value
-  };
-  fetch("http://localhost:3000/cadastrar", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(dados)
-  })
-  .then(res => res.text())
-  .then(msg => alert(msg))
-  .catch(err => alert("Erro ao conectar com o servidor"));
+document.addEventListener("DOMContentLoaded", function(){
+
+  const form = document.getElementById("inscricao-form");
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const dados = {
+      nome: document.getElementById("nome").value,
+      sobrenome: document.getElementById("sobrenome").value,
+      email: document.getElementById("email").value,
+      telefone: document.getElementById("telefone").value,
+      senha: document.getElementById("senha").value,
+      nascimento: document.getElementById("nascimento").value
+    };
+
+    console.log("SALVANDO:", dados); // TESTE
+
+    fetch("http://localhost:3000/cadastrar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados)
+    })
+    .then(res => res.text())
+    .then(msg => {
+
+      alert(msg);
+
+      // 🔥 SALVA CERTO
+      localStorage.setItem("usuario", JSON.stringify(dados));
+
+      // 🔁 REDIRECIONA
+      window.location.href = "perfil.html";
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Erro ao conectar com servidor");
+    });
+
+  });
+
 });
 </script>
 
