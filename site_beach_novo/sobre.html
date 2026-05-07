@@ -50,8 +50,16 @@ Seja você um iniciante curioso ou um jogador experiente, aqui é o seu espaço.
     <h2>Nossas <span class="accent">Quadras</span></h2>
   </div>
 
+  <!-- QUADRA 1 -->
   <div class="quadra-card">
-    <img src="img/quadra1.jpg" onclick="abrirImagem(this.src)" alt="Quadra 1">
+    <div class="quadra-slideshow" id="slide-quadra1">
+      <div class="quadra-slides-wrapper">
+        <!-- As imagens serão carregadas dinamicamente da pasta img/quadra1/ -->
+      </div>
+      <button class="slide-btn slide-prev" onclick="mudarSlide('quadra1', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="slide-btn slide-next" onclick="mudarSlide('quadra1', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="slide-dots" id="dots-quadra1"></div>
+    </div>
     <div class="quadra-card-info">
       <span class="quadra-badge">Quadra 1</span>
       <h3>Arena Principal</h3>
@@ -59,8 +67,16 @@ Seja você um iniciante curioso ou um jogador experiente, aqui é o seu espaço.
     </div>
   </div>
 
+  <!-- QUADRA 2 -->
   <div class="quadra-card">
-    <img src="img/quadra2.png" onclick="abrirImagem(this.src)" alt="Quadra 2">
+    <div class="quadra-slideshow" id="slide-quadra2">
+      <div class="quadra-slides-wrapper">
+        <!-- As imagens serão carregadas dinamicamente da pasta img/quadra2/ -->
+      </div>
+      <button class="slide-btn slide-prev" onclick="mudarSlide('quadra2', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="slide-btn slide-next" onclick="mudarSlide('quadra2', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="slide-dots" id="dots-quadra2"></div>
+    </div>
     <div class="quadra-card-info">
       <span class="quadra-badge">Quadra 2</span>
       <h3>Espaço Recreativo</h3>
@@ -68,8 +84,16 @@ Seja você um iniciante curioso ou um jogador experiente, aqui é o seu espaço.
     </div>
   </div>
 
+  <!-- QUADRA 3 -->
   <div class="quadra-card">
-    <img src="img/quadra3.jpg" onclick="abrirImagem(this.src)" alt="Quadra 3">
+    <div class="quadra-slideshow" id="slide-quadra3">
+      <div class="quadra-slides-wrapper">
+        <!-- As imagens serão carregadas dinamicamente da pasta img/quadra3/ -->
+      </div>
+      <button class="slide-btn slide-prev" onclick="mudarSlide('quadra3', -1)"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="slide-btn slide-next" onclick="mudarSlide('quadra3', 1)"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="slide-dots" id="dots-quadra3"></div>
+    </div>
     <div class="quadra-card-info">
       <span class="quadra-badge">Quadra 3</span>
       <h3>Arena Premium</h3>
@@ -79,7 +103,18 @@ Seja você um iniciante curioso ou um jogador experiente, aqui é o seu espaço.
 </section>
 
 <footer>
-  <p>Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
+  <div class="footer-content">
+    <div class="footer-logo">
+      <img src="img/logo.png" alt="Logo Beach Tennis ETEC">
+    </div>
+    <div class="footer-links">
+      <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+      <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
+      <a href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a>
+      <a href="contato.html"><i class="fa-solid fa-envelope"></i> Contato</a>
+    </div>
+    <p class="footer-copy">Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
+  </div>
 </footer>
 
 <div id="modal-img" class="modal">
@@ -88,5 +123,99 @@ Seja você um iniciante curioso ou um jogador experiente, aqui é o seu espaço.
 </div>
 
 <script src="script.js"></script>
+<script>
+// ── SLIDESHOW DAS QUADRAS ──
+// Configuração das quadras: nome da pasta e extensões das imagens
+// Adicione aqui os nomes dos arquivos de imagem de cada quadra
+const quadrasConfig = {
+  quadra1: [
+    'img/quadra1/foto1.jpg',
+    'img/quadra1/foto2.jpg',
+    'img/quadra1/foto3.jpg',
+    'img/quadra1/foto4.jpg'
+  ],
+  quadra2: [
+    'img/quadra2/foto1.jpg',
+    'img/quadra2/foto2.jpg',
+    'img/quadra2/foto3.jpg',
+    'img/quadra2/foto4.jpg'
+  ],
+  quadra3: [
+    'img/quadra3/foto1.jpg',
+    'img/quadra3/foto2.jpg',
+    'img/quadra3/foto3.jpg',
+    'img/quadra3/foto4.jpg'
+  ]
+};
+
+const slideshowState = {};
+
+function iniciarSlideshow(quadraId) {
+  const config = quadrasConfig[quadraId];
+  const wrapper = document.querySelector(`#slide-${quadraId} .quadra-slides-wrapper`);
+  const dotsContainer = document.getElementById(`dots-${quadraId}`);
+
+  if (!wrapper || !config || config.length === 0) return;
+
+  slideshowState[quadraId] = { current: 0, total: config.length, timer: null };
+
+  // Cria os slides
+  config.forEach((src, i) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = `${quadraId} foto ${i + 1}`;
+    img.className = 'quadra-slide-img' + (i === 0 ? ' active' : '');
+    img.onclick = () => abrirImagem(src);
+    wrapper.appendChild(img);
+
+    // Cria o dot
+    const dot = document.createElement('span');
+    dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => { irParaSlide(quadraId, i); resetTimer(quadraId); };
+    dotsContainer.appendChild(dot);
+  });
+
+  iniciarTimer(quadraId);
+}
+
+function irParaSlide(quadraId, index) {
+  const state = slideshowState[quadraId];
+  if (!state) return;
+
+  const slides = document.querySelectorAll(`#slide-${quadraId} .quadra-slide-img`);
+  const dots = document.querySelectorAll(`#dots-${quadraId} .slide-dot`);
+
+  slides[state.current].classList.remove('active');
+  dots[state.current].classList.remove('active');
+
+  state.current = (index + state.total) % state.total;
+
+  slides[state.current].classList.add('active');
+  dots[state.current].classList.add('active');
+}
+
+function mudarSlide(quadraId, direcao) {
+  const state = slideshowState[quadraId];
+  if (!state) return;
+  irParaSlide(quadraId, state.current + direcao);
+  resetTimer(quadraId);
+}
+
+function iniciarTimer(quadraId) {
+  slideshowState[quadraId].timer = setInterval(() => {
+    irParaSlide(quadraId, slideshowState[quadraId].current + 1);
+  }, 4000);
+}
+
+function resetTimer(quadraId) {
+  clearInterval(slideshowState[quadraId].timer);
+  iniciarTimer(quadraId);
+}
+
+// Inicializa todos os slideshows ao carregar a página
+document.addEventListener('DOMContentLoaded', () => {
+  Object.keys(quadrasConfig).forEach(id => iniciarSlideshow(id));
+});
+</script>
 </body>
 </html>

@@ -1,0 +1,16 @@
+Footer do contato.html — Agora tem logo,
+links de navegação, ícones das redes sociais e o texto de copyright.
+Slideshow das quadras no sobre.html — As três quadras agora têm um slideshow:
+
+Setas de navegação (anterior/próximo)
+Bolinhas (dots) de navegação clicáveis
+Troca automática a cada 4 segundos
+Clique na imagem abre o modal (mantendo a funcionalidade original)
+
+Estrutura de pastas criada:
+img/
+  quadra1/   ← fotos da Arena Principal
+  quadra2/   ← fotos do Espaço Recreativo  
+  quadra3/   ← fotos da Arena Premium
+Para trocar as fotos: colocar os arquivo dentro de cada pasta com os nomes foto1.jpg, foto2.jpg, foto3.jpg, foto4.jpg.
+Se quiser usar outros nomes ou extensões (.png, .jpeg), é só editar o array quadrasConfig no script do sobre.html.
