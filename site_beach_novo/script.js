@@ -109,9 +109,24 @@ document.addEventListener("DOMContentLoaded", function(){
             })
             .then(res => res.text())
             .then(msg => {
-                alert(msg);
-                form.reset();
-            })
+
+    // pegar dados do formulário
+    const quadra = document.querySelector('select[name="quadra"]').value;
+    const modalidade = document.querySelector('select[name="modalidade"]').value;
+    const data = document.querySelector('input[name="data"]').value;
+    const horario = document.querySelector('input[name="horario"]').value;
+
+    // inserir informações no modal
+    document.getElementById("infoQuadra").innerText = "📍 " + quadra;
+    document.getElementById("infoModalidade").innerText = modalidade;
+    document.getElementById("infoData").innerText = "📅 " + data;
+    document.getElementById("infoHorario").innerText = "⏰ " + horario;
+
+    // abrir modal
+    abrirModal();
+
+    form.reset();
+})
             .catch(err => {
                 console.error(err);
                 alert("Erro ao conectar com o servidor");
@@ -174,6 +189,22 @@ function abrirImagem(src){
 
 function fecharImagem(){
     let modal = document.getElementById("modal-img");
+    if(modal){
+        modal.style.display = "none";
+    }
+}
+
+function abrirModal(){
+    let modal = document.getElementById("modalSucesso");
+
+    if(modal){
+        modal.style.display = "flex";
+    }
+}
+
+function fecharModal(){
+    let modal = document.getElementById("modalSucesso");
+
     if(modal){
         modal.style.display = "none";
     }

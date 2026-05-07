@@ -46,6 +46,7 @@
         <select id="quadra" name="quadra">
           <option>Quadra 1</option>
           <option>Quadra 2</option>
+          <option>Quadra 3</option>
         </select>
       </div>
 
@@ -107,6 +108,30 @@
   </div>
 
 </section>
+
+<!-- MODAL DE SUCESSO -->
+<div id="modalSucesso" class="modal">
+  <div class="modal-content">
+
+    <div class="check">✓</div>
+
+    <h2>Agendamento Confirmado!</h2>
+
+    <p>Sua reserva foi realizada com sucesso.</p>
+
+    <div class="info">
+      <span id="infoQuadra"></span>
+      <span id="infoModalidade"></span>
+      <span id="infoData"></span>
+      <span id="infoHorario"></span>
+    </div>
+
+    <button onclick="fecharModal()">
+      Fechar
+    </button>
+
+  </div>
+</div>
 
 <footer>
   <div class="footer-content">
