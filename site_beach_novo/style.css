@@ -980,3 +980,76 @@ footer strong { color: var(--coral); }
   .menu { display: none; }
   .hero h1 { font-size: 3.5rem; }
 }
+
+.modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content{
+  background: white;
+  width: 400px;
+  padding: 35px;
+  border-radius: 20px;
+  text-align: center;
+  animation: aparecer 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.check{
+  width: 80px;
+  height: 80px;
+  background: #22c55e;
+  color: white;
+  font-size: 40px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content h2{
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.modal-content p{
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+.info{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 25px;
+  color: #334155;
+}
+
+.modal-content button{
+  background: #c75b2f;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@keyframes aparecer{
+  from{
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to{
+    opacity: 1;
+    transform: scale(1);
+  }
+}
