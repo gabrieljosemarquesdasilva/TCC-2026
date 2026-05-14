@@ -26,7 +26,7 @@
 
     google.accounts.id.renderButton(
       document.getElementById("loginDiv"),
-      { theme: "outline", size: "large" }
+      { theme: "filled_blue", size: "large", shape: "pill", }
     );
   };
 </script>
@@ -55,9 +55,8 @@
     </div>
 
     <!-- Social -->
-    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
-      <button  class="google-btn" id="loginDiv" style="display:flex;align-items:center;gap:12px;padding:13px 20px;border:2px solid #E8EFF5;border-radius:12px;background:white;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='#0077B6'" onmouseout="this.style.borderColor='#E8EFF5'">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="20" alt="Google">
+    <div id="loginDiv" style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
+      <button >
         <span>Continue com Google</span>
       </button>
 
