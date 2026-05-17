@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+<div class="site-wrapper">
 
 <header>
   <nav>
@@ -21,28 +22,47 @@
       <li><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
       <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </nav>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div class="menu-mobile-overlay" id="menuOverlay"></div>
+
+<!-- Mobile Menu -->
+<nav class="menu-mobile" id="menuMobile">
+  <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+  <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
+  <a href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a>
+  <a href="contato.html"><i class="fa-solid fa-envelope"></i> Contato</a>
+  <a href="cadastro_usuario.html"><i class="fa-solid fa-user-plus"></i> Cadastro</a>
+  <a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+  <a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a>
+</nav>
 
 <section class="sobre-section">
   <div class="section-header">
     <span class="section-tag">🏖️ Quem somos</span>
     <h2>Nossa <span class="accent">História</span></h2>
-    <p>A Beach Tennis ETEC nasceu com o propósito de promover o esporte, o bem-estar e a convivência entre pessoas que compartilham a paixão pela areia, pelo sol e pela energia do beach tennis. Mais do que apenas um espaço para prática esportiva, buscamos criar uma comunidade acolhedora, onde iniciantes e jogadores experientes possam evoluir juntos, trocar experiências e construir amizades duradouras.
+  </div>
 
-Nosso projeto surgiu dentro do ambiente educacional da ETEC, como parte de uma iniciativa de desenvolvimento tecnológico e esportivo, unindo conhecimentos de programação, design e gestão para oferecer uma plataforma moderna e funcional. A ideia principal é facilitar o acesso aos agendamentos de quadras, tornando o processo simples, rápido e intuitivo para todos os usuários.
-
-Acreditamos que o esporte tem um papel fundamental na qualidade de vida, ajudando não apenas na saúde física, mas também no equilíbrio mental e emocional. Por isso, incentivamos a prática regular de atividades ao ar livre, proporcionando um ambiente organizado, seguro e acessível para todos os públicos.
-
-Além disso, nosso sistema foi pensado para evoluir constantemente. Estamos sempre buscando melhorias, novas funcionalidades e formas de tornar a experiência do usuário ainda mais completa. Entre nossos objetivos futuros estão a implementação de rankings, integração com eventos esportivos, criação de perfis personalizados e até mesmo a organização de torneios internos.
-
-Outro ponto importante é a inclusão digital. Ao desenvolver essa plataforma, também buscamos aplicar na prática os conhecimentos adquiridos ao longo do curso técnico, mostrando como a tecnologia pode ser utilizada para resolver problemas reais e facilitar o dia a dia das pessoas. Esse projeto representa não apenas um sistema funcional, mas também um aprendizado concreto sobre desenvolvimento web, banco de dados e experiência do usuário.
-
-Valorizamos a transparência, a simplicidade e a eficiência. Cada detalhe foi pensado para oferecer uma navegação clara e objetiva, permitindo que qualquer pessoa consiga utilizar o sistema sem dificuldades, independentemente do seu nível de familiaridade com tecnologia.
-
-Por fim, a Beach Tennis ETEC não é apenas um projeto, mas sim o início de algo maior. Uma ideia que pode crescer, se expandir e impactar positivamente a vida de muitas pessoas, incentivando o esporte, a saúde e a conexão entre indivíduos.
-
-Seja você um iniciante curioso ou um jogador experiente, aqui é o seu espaço. Bem-vindo à comunidade Beach Tennis ETEC. 🏖️🎾</p>
+  <div class="historia-card">
+    <p class="historia-lead">
+      A Beach Tennis ETEC nasceu em 2024 dentro das salas de aula do curso técnico de Informática da ETEC, com uma missão simples: <strong>unir tecnologia e esporte em um projeto real.</strong>
+    </p>
+    <p>
+      O que começou como um trabalho de conclusão de curso rapidamente ganhou forma e propósito — criar uma plataforma funcional para facilitar o agendamento de quadras de beach tennis na comunidade.
+    </p>
+    <p>
+      Desenvolvido por alunos apaixonados pelo esporte e pela programação, o sistema foi construído do zero, desde o banco de dados até o design das telas. Cada detalhe foi pensado para oferecer uma experiência simples e agradável, tanto para quem joga pela primeira vez quanto para os mais experientes.
+    </p>
+    <p class="historia-destaque">
+      🎾 Mais do que um projeto escolar, a Beach Tennis ETEC representa a prova de que tecnologia pode resolver problemas reais — e que é possível aprender construindo algo que as pessoas realmente usam.
+    </p>
   </div>
 
   <div class="section-header" style="margin-top:72px;">
@@ -217,5 +237,36 @@ document.addEventListener('DOMContentLoaded', () => {
   Object.keys(quadrasConfig).forEach(id => iniciarSlideshow(id));
 });
 </script>
+<script>
+// ── HAMBURGER MENU ──
+(function() {
+  var btn = document.getElementById('hamburgerBtn');
+  var overlay = document.getElementById('menuOverlay');
+  var menu = document.getElementById('menuMobile');
+  function abrirMenu() {
+    btn.classList.add('aberto');
+    overlay.classList.add('aberto');
+    menu.classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+  function fecharMenu() {
+    btn.classList.remove('aberto');
+    overlay.classList.remove('aberto');
+    menu.classList.remove('aberto');
+    document.body.style.overflow = '';
+  }
+  if (btn) btn.addEventListener('click', function() {
+    btn.classList.contains('aberto') ? fecharMenu() : abrirMenu();
+  });
+  if (overlay) overlay.addEventListener('click', fecharMenu);
+  // Mark active link
+  var links = document.querySelectorAll('.menu-mobile a');
+  var current = window.location.pathname.split('/').pop() || 'index.html';
+  links.forEach(function(a) {
+    if (a.getAttribute('href') === current) a.classList.add('ativo');
+  });
+})();
+</script>
+</div>
 </body>
 </html>

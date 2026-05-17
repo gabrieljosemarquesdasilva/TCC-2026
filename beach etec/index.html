@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+<div class="site-wrapper">
 
 <header>
   <nav>
@@ -23,8 +24,27 @@
       <li><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
       <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </nav>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div class="menu-mobile-overlay" id="menuOverlay"></div>
+
+<!-- Mobile Menu -->
+<nav class="menu-mobile" id="menuMobile">
+  <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+  <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
+  <a href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a>
+  <a href="contato.html"><i class="fa-solid fa-envelope"></i> Contato</a>
+  <a href="cadastro_usuario.html"><i class="fa-solid fa-user-plus"></i> Cadastro</a>
+  <a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+  <a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a>
+</nav>
 
 <!-- HERO -->
 <section class="hero">
@@ -257,5 +277,36 @@
   startTimer();
 })();
 </script>
+<script>
+// ── HAMBURGER MENU ──
+(function() {
+  var btn = document.getElementById('hamburgerBtn');
+  var overlay = document.getElementById('menuOverlay');
+  var menu = document.getElementById('menuMobile');
+  function abrirMenu() {
+    btn.classList.add('aberto');
+    overlay.classList.add('aberto');
+    menu.classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+  }
+  function fecharMenu() {
+    btn.classList.remove('aberto');
+    overlay.classList.remove('aberto');
+    menu.classList.remove('aberto');
+    document.body.style.overflow = '';
+  }
+  if (btn) btn.addEventListener('click', function() {
+    btn.classList.contains('aberto') ? fecharMenu() : abrirMenu();
+  });
+  if (overlay) overlay.addEventListener('click', fecharMenu);
+  // Mark active link
+  var links = document.querySelectorAll('.menu-mobile a');
+  var current = window.location.pathname.split('/').pop() || 'index.html';
+  links.forEach(function(a) {
+    if (a.getAttribute('href') === current) a.classList.add('ativo');
+  });
+})();
+</script>
+</div>
 </body>
 </html>
