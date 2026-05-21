@@ -17,6 +17,30 @@
  function handleCredentialResponse(response) {
   const idToken = jwtDecode(response.credential);
   console.log(idToken);
+
+const dadosUsuario = {
+        google_id: idToken.sub,
+        nome: idToken.name,
+        email: idToken.email,
+        foto: idToken.picture
+    };
+
+    // Envia para backend
+    fetch("http://localhost:3000/login-google", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dadosUsuario)
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Salvo no banco:", data);
+    })
+    .catch(err => {
+        console.error("Erro:", err);
+    });
+
 }
 
   window.onload = function () {

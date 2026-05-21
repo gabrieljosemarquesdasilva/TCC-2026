@@ -45,6 +45,43 @@ app.post("/agendar", (req, res) => {
 
 });
 
+app.post("/login-google", (req, res) => {
+
+    const { google_id, nome, email, foto } = req.body;
+
+    const sql = `
+        INSERT INTO login
+        (google_id, nome, email, foto)
+
+        VALUES (?, ?, ?, ?)
+
+        ON DUPLICATE KEY UPDATE
+            nome = VALUES(nome),
+            email = VALUES(email),
+            foto = VALUES(foto)
+    `;
+
+    db.query(
+        sql,
+        [google_id, nome, email, foto],
+        (err, result) => {
+
+            if (err) {
+                console.log(err);
+
+                return res.status(500).json({
+                    erro: "Erro ao salvar"
+                });
+            }
+
+            res.json({
+                sucesso: true
+            });
+        }
+    );
+});
+
+
 // iniciar servidor
 app.listen(3000, () => {
     console.log("Servidor rodando em http://localhost:3000");
