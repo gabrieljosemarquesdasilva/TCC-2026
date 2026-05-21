@@ -139,11 +139,16 @@
 
 <div id="modal-img" class="modal">
   <span class="fechar" onclick="fecharImagem()">&times;</span>
+  <button class="modal-nav modal-prev" onclick="navegarModal(-1)"><i class="fa-solid fa-chevron-left"></i></button>
   <img class="modal-conteudo" id="img-grande">
+  <button class="modal-nav modal-next" onclick="navegarModal(1)"><i class="fa-solid fa-chevron-right"></i></button>
 </div>
 
 <script src="script.js"></script>
 <script>
+// ── MODAL STATE ──
+let modalState = { quadraId: null, index: 0 };
+
 // ── SLIDESHOW DAS QUADRAS ──
 // Configuração das quadras: nome da pasta e extensões das imagens
 // Adicione aqui os nomes dos arquivos de imagem de cada quadra
@@ -185,7 +190,12 @@ function iniciarSlideshow(quadraId) {
     img.src = src;
     img.alt = `${quadraId} foto ${i + 1}`;
     img.className = 'quadra-slide-img' + (i === 0 ? ' active' : '');
-    img.onclick = () => abrirImagem(src);
+    img.onclick = () => {
+      const idx = slideshowState[quadraId].current;
+      modalState.quadraId = quadraId;
+      modalState.index = idx;
+      abrirImagem(quadrasConfig[quadraId][idx]);
+    };
     wrapper.appendChild(img);
 
     // Cria o dot
@@ -238,7 +248,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <script>
-// ── HAMBURGER MENU ──
+function navegarModal(direcao) {
+  const { quadraId } = modalState;
+  if (!quadraId) return;
+  const total = quadrasConfig[quadraId].length;
+  modalState.index = (modalState.index + direcao + total) % total;
+  // Sync slideshow with modal navigation
+  irParaSlide(quadraId, modalState.index);
+  resetTimer(quadraId);
+  document.getElementById('img-grande').src = quadrasConfig[quadraId][modalState.index];
+}
+
 (function() {
   var btn = document.getElementById('hamburgerBtn');
   var overlay = document.getElementById('menuOverlay');
