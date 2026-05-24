@@ -4,8 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contato — Beach Tennis ETEC</title>
+  <meta name="description" content="Entre em contato com o Beach Tennis ETEC pelas redes sociais ou envie uma mensagem direta.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ── FORMULÁRIO DE MENSAGEM ── */
+    .contato-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    @media (max-width: 700px) { .contato-grid { grid-template-columns: 1fr; } }
+
+    .contato-form-card {
+      background: white;
+      border-radius: 20px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 20px rgba(27,58,92,0.08);
+      border: 1.5px solid #e8eff5;
+    }
+    .contato-form-card h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.4rem; font-weight: 800; color: var(--navy);
+      margin-bottom: 6px;
+    }
+    .contato-form-card p { font-size: 0.88rem; color: #6a8099; margin-bottom: 24px; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 28px; right: 28px; padding: 14px 22px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: white; z-index: 99999; transform: translateY(80px); opacity: 0; transition: all 0.35s cubic-bezier(.175,.885,.32,1.275); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #27ae60; }
+
+    /* FAQ */
+    .faq-list { margin-top: 0; }
+    .faq-card { background: white; border-radius: 20px; padding: 32px; box-shadow: 0 4px 20px rgba(27,58,92,0.08); border: 1.5px solid #e8eff5; }
+    .faq-card h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+    .faq-card p { font-size: 0.88rem; color: #6a8099; margin-bottom: 24px; }
+    .faq-item { border-bottom: 1.5px solid #e8eff5; }
+    .faq-question { width: 100%; background: none; border: none; text-align: left; padding: 16px 0; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; color: var(--navy); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .faq-question i { font-size: 0.85rem; color: var(--coral); transition: transform 0.3s; }
+    .faq-item.open .faq-question i { transform: rotate(180deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; font-size: 0.88rem; color: #6a8099; line-height: 1.6; }
+    .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 16px; }
+
+    .btn-loading { position: relative; }
+    .btn-loading .btn-text { opacity: 0; }
+    .btn-loading::after { content: ''; position: absolute; width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+  </style>
 </head>
 <body>
 <div class="site-wrapper">
@@ -22,18 +71,10 @@
       <li><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
       <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
-    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 </header>
-
-<!-- Mobile Menu Overlay -->
 <div class="menu-mobile-overlay" id="menuOverlay"></div>
-
-<!-- Mobile Menu -->
 <nav class="menu-mobile" id="menuMobile">
   <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
   <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
@@ -48,9 +89,10 @@
   <div class="section-header">
     <span class="section-tag">📬 Fale conosco</span>
     <h2>Entre em <span class="accent">Contato</span></h2>
-    <p>Siga nossas redes sociais ou mande uma mensagem direto pra gente!</p>
+    <p>Siga nossas redes sociais ou envie uma mensagem direta para a equipe.</p>
   </div>
 
+  <!-- Redes Sociais -->
   <div class="redes">
     <a href="https://instagram.com/thiago.grm" target="_blank" class="btn-contato btn-instagram">
       <i class="fa-brands fa-instagram"></i> Instagram
@@ -65,13 +107,77 @@
       <i class="fa-solid fa-envelope"></i> E-mail
     </a>
   </div>
+
+  <!-- Grid: Formulário + FAQ -->
+  <div class="contato-grid" style="margin-top: 56px;">
+    <!-- Formulário de mensagem -->
+    <div class="contato-form-card">
+      <h3>✉️ Envie uma Mensagem</h3>
+      <p>Preencha o formulário e responderemos em até 24h.</p>
+      <form id="form-contato">
+        <div class="form-group">
+          <label>Nome</label>
+          <input type="text" id="ct-nome" placeholder="Seu nome completo" required>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" id="ct-email" placeholder="seu@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Assunto</label>
+          <select id="ct-assunto">
+            <option value="" disabled selected hidden>Selecione</option>
+            <option>Dúvida sobre agendamento</option>
+            <option>Problema com a conta</option>
+            <option>Sugestão de melhoria</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mensagem</label>
+          <textarea id="ct-msg" placeholder="Descreva sua dúvida ou sugestão..." style="min-height:100px;" required></textarea>
+        </div>
+        <button type="submit" class="botao-agendar" id="btnContato" style="width:100%;justify-content:center;">
+          <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Enviar Mensagem</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-card">
+      <h3>❓ Dúvidas Rápidas</h3>
+      <p>Respostas para as perguntas mais comuns.</p>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-question">Como reservo uma quadra? <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="faq-answer">Acesse a página de Agendamento, escolha a quadra, data e horário e confirme. O processo leva menos de 2 minutos.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">O agendamento é gratuito? <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="faq-answer">Sim! O agendamento pelo site é 100% gratuito. O uso das quadras pode ter taxa, conforme a política da ETEC.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Posso cancelar minha reserva? <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="faq-answer">Sim, acesse a seção "Meus Agendamentos" no Perfil e cancele com até 2 horas de antecedência.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Qual o horário de funcionamento? <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="faq-answer">As quadras funcionam de segunda a sábado, das 7h às 21h, com iluminação noturna disponível.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">Como entrar em contato urgente? <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="faq-answer">Para urgências, entre em contato pelo WhatsApp. Respondemos em poucos minutos durante o horário de funcionamento.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
+
+<div class="toast" id="toast"></div>
 
 <footer>
   <div class="footer-content">
-    <div class="footer-logo">
-      <img src="img/logo.png" alt="Logo Beach Tennis ETEC">
-    </div>
+    <div class="footer-logo"><img src="img/logo.png" alt="Logo Beach Tennis ETEC"></div>
     <div class="footer-social">
       <a href="https://instagram.com/thiago.grm" target="_blank"><i class="fa-brands fa-instagram"></i></a>
       <a href="https://wa.me/5519998365562" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
@@ -82,35 +188,43 @@
   </div>
 </footer>
 
-<script src="script.js"></script>
 <script>
-// ── HAMBURGER MENU ──
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// FAQ
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const item = this.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+// Form contato
+document.getElementById('form-contato').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btnContato');
+  btn.classList.add('btn-loading'); btn.disabled = true;
+  // Simulação de envio
+  setTimeout(() => {
+    btn.classList.remove('btn-loading'); btn.disabled = false;
+    showToast('Mensagem enviada com sucesso! ✅', 'success');
+    this.reset();
+  }, 1500);
+});
+
+// Hamburger
 (function() {
-  var btn = document.getElementById('hamburgerBtn');
-  var overlay = document.getElementById('menuOverlay');
-  var menu = document.getElementById('menuMobile');
-  function abrirMenu() {
-    btn.classList.add('aberto');
-    overlay.classList.add('aberto');
-    menu.classList.add('aberto');
-    document.body.style.overflow = 'hidden';
-  }
-  function fecharMenu() {
-    btn.classList.remove('aberto');
-    overlay.classList.remove('aberto');
-    menu.classList.remove('aberto');
-    document.body.style.overflow = '';
-  }
-  if (btn) btn.addEventListener('click', function() {
-    btn.classList.contains('aberto') ? fecharMenu() : abrirMenu();
-  });
+  var btn = document.getElementById('hamburgerBtn'), overlay = document.getElementById('menuOverlay'), menu = document.getElementById('menuMobile');
+  function abrirMenu() { btn.classList.add('aberto'); overlay.classList.add('aberto'); menu.classList.add('aberto'); document.body.style.overflow = 'hidden'; }
+  function fecharMenu() { btn.classList.remove('aberto'); overlay.classList.remove('aberto'); menu.classList.remove('aberto'); document.body.style.overflow = ''; }
+  if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });
   if (overlay) overlay.addEventListener('click', fecharMenu);
-  // Mark active link
-  var links = document.querySelectorAll('.menu-mobile a');
-  var current = window.location.pathname.split('/').pop() || 'index.html';
-  links.forEach(function(a) {
-    if (a.getAttribute('href') === current) a.classList.add('ativo');
-  });
 })();
 </script>
 </div>

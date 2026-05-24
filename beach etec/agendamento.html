@@ -4,8 +4,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agendamento — Beach Tennis ETEC</title>
+  <meta name="description" content="Reserve sua quadra de Beach Tennis na ETEC. Escolha data, horário e modalidade de forma rápida e fácil.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ── CALENDÁRIO VISUAL ── */
+    .calendario-wrapper {
+      max-width: 680px;
+      margin: 0 auto 32px;
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(27,58,92,0.08);
+      border: 1.5px solid #e8eff5;
+    }
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .cal-nav {
+      background: none;
+      border: 1.5px solid #e0eaf2;
+      border-radius: 8px;
+      width: 36px; height: 36px;
+      cursor: pointer;
+      color: var(--navy);
+      font-size: 0.9rem;
+      transition: background 0.2s, border-color 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cal-nav:hover { background: var(--navy); color: white; border-color: var(--navy); }
+    .cal-month-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: capitalize;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-day-name {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #9BB;
+      text-transform: uppercase;
+      padding: 4px 0 8px;
+      letter-spacing: 0.04em;
+    }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      color: var(--navy);
+      user-select: none;
+    }
+    .cal-day:hover:not(.cal-day-empty):not(.cal-day-past) {
+      background: #e8f0fb;
+    }
+    .cal-day.cal-day-today { background: #edf6ff; color: var(--navy); font-weight: 800; }
+    .cal-day.cal-day-selected { background: var(--coral) !important; color: white !important; }
+    .cal-day.cal-day-empty, .cal-day.cal-day-past { color: #ccc; cursor: default; }
+
+    /* ── HORÁRIOS VISUAIS ── */
+    .horarios-visual {
+      max-width: 680px;
+      margin: 0 auto 32px;
+    }
+    .horarios-visual h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .horarios-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 10px;
+    }
+    .horario-btn {
+      padding: 12px 8px;
+      border: 1.5px solid #e0eaf2;
+      border-radius: 10px;
+      background: white;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s;
+    }
+    .horario-btn:hover:not(.ocupado) { border-color: var(--coral); color: var(--coral); background: #fff5f2; }
+    .horario-btn.selecionado { background: var(--coral); color: white; border-color: var(--coral); }
+    .horario-btn.ocupado { background: #f5f5f5; color: #bbb; cursor: not-allowed; border-color: #eee; font-weight: 400; font-size: 0.8rem; }
+
+    /* ── LOADING BUTTON ── */
+    .btn-loading { position: relative; }
+    .btn-loading .btn-text { opacity: 0; }
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    /* ── TOAST FEEDBACK ── */
+    .toast {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      padding: 14px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: white;
+      z-index: 9999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(.175,.885,.32,1.275);
+      max-width: 320px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #27ae60; }
+    .toast.error { background: #e74c3c; }
+  </style>
 </head>
 <body>
 <div class="site-wrapper">
@@ -23,17 +166,12 @@
       <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
     <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
   </nav>
 </header>
 
-<!-- Mobile Menu Overlay -->
 <div class="menu-mobile-overlay" id="menuOverlay"></div>
-
-<!-- Mobile Menu -->
 <nav class="menu-mobile" id="menuMobile">
   <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
   <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
@@ -91,15 +229,44 @@
         </div>
       </div>
 
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Data</label>
-          <input type="date" name="data" required>
+      <!-- Calendário Visual -->
+      <div class="form-group">
+        <label>Data</label>
+        <div class="calendario-wrapper">
+          <div class="cal-header">
+            <button type="button" class="cal-nav" id="calPrev"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="cal-month-label" id="calMonthLabel"></div>
+            <button type="button" class="cal-nav" id="calNext"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
         </div>
-        <div class="form-group">
-          <label>Horário</label>
-          <input type="time" id="horario" name="horario">
+        <!-- Input oculto para o backend -->
+        <input type="date" name="data" id="inputData" required style="display:none;">
+      </div>
+
+      <!-- Horários Visuais -->
+      <div class="form-group">
+        <div class="horarios-visual">
+          <h4><i class="fa-solid fa-clock" style="color:var(--coral);margin-right:6px;"></i> Horário Disponível</h4>
+          <div class="horarios-grid">
+            <button type="button" class="horario-btn" data-hora="07:00">07:00</button>
+            <button type="button" class="horario-btn" data-hora="08:00">08:00</button>
+            <button type="button" class="horario-btn" data-hora="09:00">09:00</button>
+            <button type="button" class="horario-btn" data-hora="10:00">10:00</button>
+            <button type="button" class="horario-btn" data-hora="11:00">11:00</button>
+            <button type="button" class="horario-btn ocupado">Ocupado</button>
+            <button type="button" class="horario-btn" data-hora="14:00">14:00</button>
+            <button type="button" class="horario-btn" data-hora="15:00">15:00</button>
+            <button type="button" class="horario-btn ocupado">Ocupado</button>
+            <button type="button" class="horario-btn" data-hora="17:00">17:00</button>
+            <button type="button" class="horario-btn" data-hora="18:00">18:00</button>
+            <button type="button" class="horario-btn" data-hora="19:00">19:00</button>
+            <button type="button" class="horario-btn" data-hora="20:00">20:00</button>
+            <button type="button" class="horario-btn" data-hora="21:00">21:00</button>
+          </div>
         </div>
+        <!-- Input oculto para o backend -->
+        <input type="time" id="horario" name="horario" style="display:none;" required>
       </div>
 
       <div class="form-group">
@@ -115,49 +282,43 @@
         <textarea name="obs" placeholder="Algo que devemos saber? (opcional)"></textarea>
       </div>
 
-      <button type="submit" class="botao-agendar" style="width:100%; justify-content:center;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="18" rx="3"/>
-          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="16" x2="15" y2="16"/>
-          <line x1="12" y1="13" x2="12" y2="19"/>
-        </svg>
-        Reservar Quadra
+      <button type="submit" class="botao-agendar" id="btnSubmit" style="width:100%; justify-content:center;">
+        <span class="btn-text">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="3"/>
+            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="16" x2="15" y2="16"/>
+            <line x1="12" y1="13" x2="12" y2="19"/>
+          </svg>
+          Reservar Quadra
+        </span>
       </button>
     </form>
   </div>
-
 </section>
 
 <!-- MODAL DE SUCESSO -->
 <div id="modalSucesso" class="modal">
   <div class="modal-content">
-
     <div class="check">✓</div>
-
     <h2>Agendamento Confirmado!</h2>
-
     <p>Sua reserva foi realizada com sucesso.</p>
-
     <div class="info">
       <span id="infoQuadra"></span>
       <span id="infoModalidade"></span>
       <span id="infoData"></span>
       <span id="infoHorario"></span>
     </div>
-
-    <button onclick="fecharModal()">
-      Fechar
-    </button>
-
+    <button onclick="fecharModal()">Fechar</button>
   </div>
 </div>
 
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <footer>
   <div class="footer-content">
-    <div class="footer-logo">
-      <img src="img/logo.png" alt="Logo Beach Tennis ETEC">
-    </div>
+    <div class="footer-logo"><img src="img/logo.png" alt="Logo Beach Tennis ETEC"></div>
     <div class="footer-social">
       <a href="https://instagram.com/thiago.grm" target="_blank"><i class="fa-brands fa-instagram"></i></a>
       <a href="https://wa.me/5519998365562" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
@@ -170,32 +331,148 @@
 
 <script src="script.js"></script>
 <script>
-// ── HAMBURGER MENU ──
+// Hamburger
 (function() {
-  var btn = document.getElementById('hamburgerBtn');
-  var overlay = document.getElementById('menuOverlay');
-  var menu = document.getElementById('menuMobile');
-  function abrirMenu() {
-    btn.classList.add('aberto');
-    overlay.classList.add('aberto');
-    menu.classList.add('aberto');
-    document.body.style.overflow = 'hidden';
-  }
-  function fecharMenu() {
-    btn.classList.remove('aberto');
-    overlay.classList.remove('aberto');
-    menu.classList.remove('aberto');
-    document.body.style.overflow = '';
-  }
-  if (btn) btn.addEventListener('click', function() {
-    btn.classList.contains('aberto') ? fecharMenu() : abrirMenu();
-  });
+  var btn = document.getElementById('hamburgerBtn'), overlay = document.getElementById('menuOverlay'), menu = document.getElementById('menuMobile');
+  function abrirMenu() { btn.classList.add('aberto'); overlay.classList.add('aberto'); menu.classList.add('aberto'); document.body.style.overflow = 'hidden'; }
+  function fecharMenu() { btn.classList.remove('aberto'); overlay.classList.remove('aberto'); menu.classList.remove('aberto'); document.body.style.overflow = ''; }
+  if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });
   if (overlay) overlay.addEventListener('click', fecharMenu);
-  // Mark active link
-  var links = document.querySelectorAll('.menu-mobile a');
-  var current = window.location.pathname.split('/').pop() || 'index.html';
-  links.forEach(function(a) {
-    if (a.getAttribute('href') === current) a.classList.add('ativo');
+})();
+</script>
+<script>
+// ── CALENDÁRIO ──
+(function() {
+  let viewDate = new Date();
+  let selectedDate = null;
+  const grid = document.getElementById('calGrid');
+  const label = document.getElementById('calMonthLabel');
+  const inputData = document.getElementById('inputData');
+
+  // Pré-selecionar do localStorage
+  const dataSalva = localStorage.getItem('data');
+  if (dataSalva) {
+    selectedDate = new Date(dataSalva + 'T12:00:00');
+    viewDate = new Date(selectedDate);
+    inputData.value = dataSalva;
+  }
+
+  function render() {
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const ano = viewDate.getFullYear(), mes = viewDate.getMonth();
+    label.textContent = viewDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    grid.innerHTML = '';
+    ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-day-name'; el.textContent = d;
+      grid.appendChild(el);
+    });
+    const firstDay = new Date(ano, mes, 1).getDay();
+    for (let i = 0; i < firstDay; i++) {
+      const el = document.createElement('div'); el.className = 'cal-day cal-day-empty'; grid.appendChild(el);
+    }
+    const totalDays = new Date(ano, mes + 1, 0).getDate();
+    for (let d = 1; d <= totalDays; d++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day';
+      el.textContent = d;
+      const thisDate = new Date(ano, mes, d);
+      if (thisDate < hoje) { el.classList.add('cal-day-past'); }
+      else {
+        if (thisDate.toDateString() === hoje.toDateString()) el.classList.add('cal-day-today');
+        if (selectedDate && thisDate.toDateString() === selectedDate.toDateString()) el.classList.add('cal-day-selected');
+        el.addEventListener('click', function() {
+          selectedDate = thisDate;
+          const y = thisDate.getFullYear(), m = String(thisDate.getMonth()+1).padStart(2,'0'), dd = String(thisDate.getDate()).padStart(2,'0');
+          inputData.value = `${y}-${m}-${dd}`;
+          localStorage.setItem('data', inputData.value);
+          render();
+        });
+      }
+      grid.appendChild(el);
+    }
+  }
+
+  document.getElementById('calPrev').addEventListener('click', function() { viewDate.setMonth(viewDate.getMonth()-1); render(); });
+  document.getElementById('calNext').addEventListener('click', function() { viewDate.setMonth(viewDate.getMonth()+1); render(); });
+  render();
+})();
+</script>
+<script>
+// ── HORÁRIOS ──
+(function() {
+  const btns = document.querySelectorAll('.horario-btn:not(.ocupado)');
+  const inputHorario = document.getElementById('horario');
+
+  // Pré-selecionar do localStorage
+  const horaSalva = localStorage.getItem('horario');
+  if (horaSalva) {
+    btns.forEach(b => { if (b.dataset.hora === horaSalva) { b.classList.add('selecionado'); inputHorario.value = horaSalva; } });
+  }
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      btns.forEach(b => b.classList.remove('selecionado'));
+      this.classList.add('selecionado');
+      inputHorario.value = this.dataset.hora;
+      localStorage.setItem('horario', this.dataset.hora);
+    });
+  });
+})();
+</script>
+<script>
+// ── TOAST ──
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => { t.classList.remove('show'); }, 3500);
+}
+</script>
+<script>
+// ── SUBMIT COM LOADING ──
+(function() {
+  const form = document.getElementById('form-agendamento');
+  const btn = document.getElementById('btnSubmit');
+  if (!form) return;
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const data = document.getElementById('inputData').value;
+    const horario = document.getElementById('horario').value;
+    if (!data) { showToast('Por favor, selecione uma data no calendário.', 'error'); return; }
+    if (!horario) { showToast('Por favor, selecione um horário.', 'error'); return; }
+
+    btn.classList.add('btn-loading');
+    btn.disabled = true;
+
+    const dados = {
+      nome: form.querySelector('input[name="nome"]').value,
+      quadra: form.querySelector('select[name="quadra"]').value,
+      data: data,
+      horario: horario,
+      modalidade: form.querySelector('select[name="modalidade"]').value,
+      nivel: form.querySelector('select[name="nivel"]').value
+    };
+
+    fetch("http://localhost:3000/agendar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados)
+    })
+    .then(res => res.text())
+    .then(msg => {
+      btn.classList.remove('btn-loading'); btn.disabled = false;
+      document.getElementById("infoQuadra").innerText = "📍 " + dados.quadra;
+      document.getElementById("infoModalidade").innerText = dados.modalidade;
+      document.getElementById("infoData").innerText = "📅 " + dados.data;
+      document.getElementById("infoHorario").innerText = "⏰ " + dados.horario;
+      abrirModal();
+      form.reset();
+    })
+    .catch(err => {
+      btn.classList.remove('btn-loading'); btn.disabled = false;
+      showToast('Erro ao conectar com o servidor. Tente novamente.', 'error');
+    });
   });
 })();
 </script>

@@ -4,8 +4,156 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perfil — Beach Tennis ETEC</title>
+  <meta name="description" content="Gerencie seu perfil e veja seus agendamentos no Beach Tennis ETEC.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ── FOTO DE PERFIL ── */
+    .foto-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .foto-wrapper .foto {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--coral);
+      display: block;
+    }
+    .foto-upload-btn {
+      position: absolute;
+      bottom: 2px; right: 2px;
+      background: var(--coral);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 28px; height: 28px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: background 0.2s;
+    }
+    .foto-upload-btn:hover { background: #d44; }
+    #foto-input { display: none; }
+
+    /* ── AGENDAMENTOS MELHORADOS ── */
+    .card-agendamento {
+      background: white;
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+      border: 1.5px solid #e8eff5;
+      box-shadow: 0 2px 8px rgba(27,58,92,0.06);
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .card-agendamento:hover { box-shadow: 0 6px 20px rgba(27,58,92,0.1); }
+    .ag-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .ag-quadra {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem; font-weight: 700; color: var(--navy);
+    }
+    .ag-badge {
+      font-size: 0.72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 20px;
+      background: #edf8f1; color: #27ae60;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .ag-info-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+    }
+    .ag-info-item { font-size: 0.85rem; color: #6a8099; }
+    .ag-info-item strong { color: var(--navy); }
+    .ag-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .ag-btn-cancel {
+      background: none; border: 1.5px solid #e8eff5;
+      border-radius: 8px; padding: 7px 14px;
+      font-size: 0.82rem; font-weight: 600; color: #9BB;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .ag-btn-cancel:hover { border-color: #e74c3c; color: #e74c3c; }
+
+    /* ── SKELETON ── */
+    .skeleton-card {
+      background: linear-gradient(90deg, #e0e9f0 25%, #f0f5f9 50%, #e0e9f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 14px; height: 110px; margin-bottom: 14px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ── LOGOUT ── */
+    .btn-logout {
+      background: none; border: 1.5px solid #e8eff5;
+      border-radius: 10px; padding: 10px 20px;
+      font-size: 0.88rem; font-weight: 700;
+      color: #9BB; cursor: pointer;
+      transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+      margin: 0 auto;
+    }
+    .btn-logout:hover { border-color: #e74c3c; color: #e74c3c; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 28px; right: 28px; padding: 14px 22px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: white; z-index: 99999; transform: translateY(80px); opacity: 0; transition: all 0.35s cubic-bezier(.175,.885,.32,1.275); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #27ae60; }
+    .toast.error { background: #e74c3c; }
+    .toast.info { background: var(--navy); }
+
+    /* ── TELA DE NÃO LOGADO ── */
+    .nao-logado-section {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .nao-logado-icon {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e8f0fb, #f0f5ff);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.8rem;
+      margin: 0 auto 28px;
+      border: 2px solid #d0e0f5;
+    }
+    .nao-logado-section h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2rem; font-weight: 800;
+      color: var(--navy); margin-bottom: 10px;
+    }
+    .nao-logado-section p {
+      font-size: 0.95rem; color: #6a8099;
+      max-width: 360px; margin: 0 auto 36px; line-height: 1.6;
+    }
+    .nao-logado-btns {
+      display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+    }
+    .nao-logado-btns a {
+      text-decoration: none;
+      padding: 13px 28px;
+      border-radius: 12px;
+      font-weight: 700; font-size: 0.95rem;
+      display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-entrar {
+      background: var(--coral); color: white;
+      box-shadow: 0 4px 14px rgba(230,100,60,0.3);
+    }
+    .btn-entrar:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(230,100,60,0.35); }
+    .btn-cadastrar {
+      background: white; color: var(--navy);
+      border: 1.5px solid #d0e0f5;
+    }
+    .btn-cadastrar:hover { border-color: var(--navy); background: #f0f5ff; }
+  </style>
 </head>
 <body>
 <div class="site-wrapper">
@@ -22,18 +170,10 @@
       <li><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
       <li><a class="ativo" href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
-    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 </header>
-
-<!-- Mobile Menu Overlay -->
 <div class="menu-mobile-overlay" id="menuOverlay"></div>
-
-<!-- Mobile Menu -->
 <nav class="menu-mobile" id="menuMobile">
   <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
   <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
@@ -44,46 +184,80 @@
   <a class="ativo" href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a>
 </nav>
 
-<section class="form-section">
+<!-- TELA: NÃO LOGADO -->
+<section class="nao-logado-section" id="telaDeslogado">
+  <div class="nao-logado-icon">🔒</div>
+  <h2>Você não está logado</h2>
+  <p>Para acessar seu perfil e gerenciar seus agendamentos, faça login ou crie uma conta gratuita.</p>
+  <div class="nao-logado-btns">
+    <a href="login_usuario.html" class="btn-entrar">
+      <i class="fa-solid fa-right-to-bracket"></i> Fazer Login
+    </a>
+    <a href="cadastro_usuario.html" class="btn-cadastrar">
+      <i class="fa-solid fa-user-plus"></i> Criar Conta Grátis
+    </a>
+  </div>
+</section>
+
+<!-- TELA: PERFIL (logado) -->
+<section class="form-section" id="telaLogado" style="display:none;">
   <div class="section-header" style="margin-bottom:48px;">
     <span class="section-tag">👤 Conta</span>
     <h2>Meu <span class="accent">Perfil</span></h2>
   </div>
 
-<div class="card-perfil">
-  <div class="topo-perfil">
-    <img src="img/pessoa.png" alt="Foto do usuário" class="foto">
-    <h2 id="nome-perfil">Nome do Usuário</h2>
-    <span class="nivel">🎾 Jogador</span>
+  <div class="card-perfil">
+    <div class="topo-perfil">
+      <!-- Foto com upload -->
+      <div class="foto-wrapper">
+        <img src="img/pessoa.png" alt="Foto do usuário" class="foto" id="fotoPerfil">
+        <button class="foto-upload-btn" onclick="document.getElementById('foto-input').click()" title="Alterar foto">
+          <i class="fa-solid fa-camera"></i>
+        </button>
+        <input type="file" id="foto-input" accept="image/*">
+      </div>
+      <h2 id="nome-perfil">Carregando...</h2>
+      <span class="nivel">🎾 Jogador</span>
+    </div>
+
+    <div class="info-perfil">
+      <p><strong>Email:</strong> <span id="email-perfil">-</span></p>
+      <p><strong>Telefone:</strong> <span id="telefone-perfil">-</span></p>
+      <p><strong>Nascimento:</strong> <span id="nascimento-perfil">-</span></p>
+    </div>
+
+    <div class="bio">
+      <p id="bio-perfil">Bem-vindo ao seu perfil! 🏖️</p>
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+      <button class="btn-logout" onclick="fazerLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i> Sair da conta
+      </button>
+    </div>
   </div>
 
-  <div class="info-perfil">
-    <p><strong>Email:</strong> <span id="email-perfil">-</span></p>
-    <p><strong>Telefone:</strong> <span id="telefone-perfil">-</span></p>
-    <p><strong>Nascimento:</strong> <span id="nascimento-perfil">-</span></p>
-  </div>
-
-  <div class="bio">
-    <p id="bio-perfil">
-      Bem-vindo ao seu perfil! 🏖️
-    </p>
-  </div>
-</div>
-
-  <div style="max-width:600px;margin:48px auto 0;">
+  <!-- Agendamentos -->
+  <div style="max-width:640px;margin:48px auto 0;">
     <div class="section-header">
       <span class="section-tag">📅 Histórico</span>
       <h2>Meus <span class="accent">Agendamentos</span></h2>
     </div>
-    <div id="lista-agendamentos"></div>
+    <div id="lista-agendamentos">
+      <!-- Skeleton loading -->
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+    </div>
   </div>
 </section>
+<!-- fim telaLogado -->
+
+<div class="toast" id="toast"></div>
 
 <footer>
   <div class="footer-content">
-    <div class="footer-logo">
-      <img src="img/logo.png" alt="Logo Beach Tennis ETEC">
-    </div>
+    <div class="footer-logo"><img src="img/logo.png" alt="Logo Beach Tennis ETEC"></div>
     <div class="footer-social">
       <a href="https://instagram.com/thiago.grm" target="_blank"><i class="fa-brands fa-instagram"></i></a>
       <a href="https://wa.me/5519998365562" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
@@ -95,40 +269,118 @@
 </footer>
 
 <script src="script.js"></script>
-
 <script>
-document.addEventListener("DOMContentLoaded", function(){
-
-  const usuarioString = localStorage.getItem("usuario");
-
-console.log("PEGANDO:", usuarioString); // debug
-
-if(!usuarioString){
-  alert("Você não está logado!");
-  return;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-const usuario = JSON.parse(usuarioString);
+// Logout
+function fazerLogout() {
+  if (confirm('Tem certeza que deseja sair?')) {
+    localStorage.removeItem('usuario');
+    showToast('Até logo! 👋', 'info');
+    setTimeout(() => window.location.href = 'login_usuario.html', 1000);
+  }
+}
 
-  if(!usuario){
-    alert("Você não está logado!");
-    window.location.href = "cadastro_usuario.html";
+// Upload foto de perfil
+document.getElementById('foto-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    document.getElementById('fotoPerfil').src = ev.target.result;
+    localStorage.setItem('fotoPerfil', ev.target.result);
+    showToast('Foto atualizada! ✅', 'success');
+  };
+  reader.readAsDataURL(file);
+});
+
+// Carregar dados do usuário
+document.addEventListener("DOMContentLoaded", function() {
+  const usuarioStr = localStorage.getItem("usuario");
+  const telaDeslogado = document.getElementById('telaDeslogado');
+  const telaLogado = document.getElementById('telaLogado');
+
+  if (!usuarioStr) {
+    // Mostra tela de não logado
+    telaDeslogado.style.display = 'flex';
+    telaLogado.style.display = 'none';
     return;
   }
 
-  // Preencher dados
-  document.getElementById("nome-perfil").innerText = usuario.nome + " " + usuario.sobrenome;
-  document.getElementById("email-perfil").innerText = usuario.email;
-  document.getElementById("telefone-perfil").innerText = usuario.telefone;
-  document.getElementById("nascimento-perfil").innerText = usuario.nascimento;
+  // Logado: exibe perfil
+  telaDeslogado.style.display = 'none';
+  telaLogado.style.display = 'block';
 
+  const usuario = JSON.parse(usuarioStr);
+  document.getElementById("nome-perfil").innerText = (usuario.nome || '') + ' ' + (usuario.sobrenome || '');
+  document.getElementById("email-perfil").innerText = usuario.email || '-';
+  document.getElementById("telefone-perfil").innerText = usuario.telefone || '-';
+
+  if (usuario.nascimento) {
+    const data = new Date(usuario.nascimento + 'T12:00:00');
+    document.getElementById("nascimento-perfil").innerText = data.toLocaleDateString("pt-BR");
+  }
+
+  // Foto salva
+  const fotoSalva = localStorage.getItem('fotoPerfil');
+  if (fotoSalva) document.getElementById('fotoPerfil').src = fotoSalva;
+  else if (usuario.foto) document.getElementById('fotoPerfil').src = usuario.foto;
+
+  // Carregar agendamentos
+  const lista = document.getElementById("lista-agendamentos");
+  fetch("http://localhost:3000/agendamentos")
+    .then(res => res.json())
+    .then(dados => {
+      lista.innerHTML = '';
+      if (!dados.length) {
+        lista.innerHTML = `
+          <div style="text-align:center;padding:40px;color:#9BB;">
+            <div style="font-size:2.5rem;margin-bottom:12px;">📅</div>
+            <p style="font-weight:600;">Nenhum agendamento ainda.</p>
+            <a href="agendamento.html" style="color:var(--coral);font-weight:700;text-decoration:none;">Fazer minha primeira reserva →</a>
+          </div>`;
+        return;
+      }
+      dados.forEach(ag => {
+        const div = document.createElement('div');
+        div.className = 'card-agendamento';
+        div.innerHTML = `
+          <div class="ag-header">
+            <div class="ag-quadra">📍 ${ag.quadra}</div>
+            <span class="ag-badge">Confirmado</span>
+          </div>
+          <div class="ag-info-grid">
+            <div class="ag-info-item"><strong>Data:</strong> ${ag.data}</div>
+            <div class="ag-info-item"><strong>Horário:</strong> ${ag.horario}</div>
+            <div class="ag-info-item"><strong>Modalidade:</strong> ${ag.modalidade}</div>
+            <div class="ag-info-item"><strong>Nível:</strong> ${ag.nivel}</div>
+          </div>
+          <div class="ag-actions">
+            <button class="ag-btn-cancel"><i class="fa-solid fa-xmark"></i> Cancelar reserva</button>
+          </div>
+        `;
+        div.querySelector('.ag-btn-cancel').addEventListener('click', function() {
+          if (confirm('Deseja cancelar esta reserva?')) {
+            div.style.opacity = '0.5';
+            showToast('Reserva cancelada.', 'info');
+            setTimeout(() => div.remove(), 600);
+          }
+        });
+        lista.appendChild(div);
+      });
+    })
+    .catch(err => {
+      lista.innerHTML = '<div class="card-agendamento" style="text-align:center;color:#9BB;"><p>Servidor offline — não foi possível carregar agendamentos.</p></div>';
+    });
 });
-</script>
-<script>
+
+// Hamburger
 (function() {
-  var btn = document.getElementById('hamburgerBtn');
-  var overlay = document.getElementById('menuOverlay');
-  var menu = document.getElementById('menuMobile');
+  var btn = document.getElementById('hamburgerBtn'), overlay = document.getElementById('menuOverlay'), menu = document.getElementById('menuMobile');
   function abrirMenu() { btn.classList.add('aberto'); overlay.classList.add('aberto'); menu.classList.add('aberto'); document.body.style.overflow = 'hidden'; }
   function fecharMenu() { btn.classList.remove('aberto'); overlay.classList.remove('aberto'); menu.classList.remove('aberto'); document.body.style.overflow = ''; }
   if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });

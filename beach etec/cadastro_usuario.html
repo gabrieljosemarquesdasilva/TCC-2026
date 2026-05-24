@@ -4,12 +4,51 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro — Beach Tennis ETEC</title>
-
-  <!-- Google login -->
+  <meta name="description" content="Crie sua conta gratuita no Beach Tennis ETEC e comece a reservar quadras.">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .input-wrapper { position: relative; }
+    .input-wrapper input { padding-right: 44px; }
+    .toggle-senha {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: #9BB; font-size: 0.95rem; padding: 4px;
+      transition: color 0.2s;
+    }
+    .toggle-senha:hover { color: var(--navy); }
+
+    /* Força de senha */
+    .senha-forca { margin-top: 8px; }
+    .forca-barra {
+      height: 4px; border-radius: 4px;
+      background: #e8eff5;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .forca-fill {
+      height: 100%; border-radius: 4px;
+      width: 0%; transition: width 0.3s, background 0.3s;
+    }
+    .forca-texto { font-size: 0.78rem; font-weight: 600; color: #9BB; }
+    .forca-fraca .forca-fill { width: 33%; background: #e74c3c; }
+    .forca-media .forca-fill { width: 66%; background: #f39c12; }
+    .forca-forte .forca-fill { width: 100%; background: #27ae60; }
+    .forca-fraca .forca-texto { color: #e74c3c; }
+    .forca-media .forca-texto { color: #f39c12; }
+    .forca-forte .forca-texto { color: #27ae60; }
+
+    /* Toast e loading (mesmos do login) */
+    .toast { position: fixed; bottom: 28px; right: 28px; padding: 14px 22px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: white; z-index: 99999; transform: translateY(80px); opacity: 0; transition: all 0.35s cubic-bezier(.175,.885,.32,1.275); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #27ae60; }
+    .toast.error { background: #e74c3c; }
+    .btn-loading { position: relative; }
+    .btn-loading .btn-text { opacity: 0; }
+    .btn-loading::after { content: ''; position: absolute; width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+  </style>
 </head>
 <body>
 <div class="site-wrapper">
@@ -26,18 +65,10 @@
       <li><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
       <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
-    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 </header>
-
-<!-- Mobile Menu Overlay -->
 <div class="menu-mobile-overlay" id="menuOverlay"></div>
-
-<!-- Mobile Menu -->
 <nav class="menu-mobile" id="menuMobile">
   <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
   <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
@@ -50,14 +81,12 @@
 
 <section class="auth-section" style="align-items:flex-start;padding-top:40px;">
   <div class="auth-card" style="max-width:520px;">
-
     <div style="text-align:center; margin-bottom:32px;">
       <span style="font-size:2.5rem;">🏖️</span>
       <h2 style="margin-top:8px;">Criar Conta</h2>
       <p class="sub">Entre para a comunidade Beach Tennis ETEC!</p>
     </div>
 
-    <!-- Google -->
     <div id="loginDiv" style="margin-bottom:24px;"></div>
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
@@ -66,34 +95,41 @@
       <div style="flex:1;height:1px;background:#E8EFF5;"></div>
     </div>
 
-    <!-- FORM -->
     <form id="inscricao-form">
-
       <div class="form-grid">
         <div class="form-group">
           <label>Nome</label>
-          <input type="text" id="nome" required>
+          <input type="text" id="nome" placeholder="João" required>
         </div>
-
         <div class="form-group">
           <label>Sobrenome</label>
-          <input type="text" id="sobrenome" required>
+          <input type="text" id="sobrenome" placeholder="Silva" required>
         </div>
       </div>
 
       <div class="form-group">
         <label>E-mail</label>
-        <input type="email" id="email" required>
+        <input type="email" id="email" placeholder="seu@email.com" required>
       </div>
 
       <div class="form-group">
         <label>Telefone</label>
-        <input type="tel" id="telefone" required>
+        <input type="tel" id="telefone" placeholder="(19) 99999-9999" required>
       </div>
 
       <div class="form-group">
         <label>Senha</label>
-        <input type="password" id="senha" required>
+        <div class="input-wrapper">
+          <input type="password" id="senha" placeholder="Crie uma senha forte" required>
+          <button type="button" class="toggle-senha" id="toggleSenha" aria-label="Mostrar senha">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+        <!-- Indicador de força da senha -->
+        <div class="senha-forca" id="senhaForca">
+          <div class="forca-barra"><div class="forca-fill" id="forcaFill"></div></div>
+          <span class="forca-texto" id="forcaTexto">Digite uma senha</span>
+        </div>
       </div>
 
       <div class="form-group">
@@ -101,20 +137,22 @@
         <input type="date" id="nascimento" required>
       </div>
 
-      <button type="submit" class="botao-agendar" style="width:100%;">
-        <i class="fa-solid fa-user-plus"></i> Confirmar Inscrição
+      <button type="submit" class="botao-agendar" id="btnCadastro" style="width:100%;">
+        <span class="btn-text"><i class="fa-solid fa-user-plus"></i> Confirmar Inscrição</span>
       </button>
-
     </form>
 
+    <p style="text-align:center;margin-top:24px;color:#9BB;font-size:0.9rem;">
+      Já tem conta? <a href="./login_usuario.html" class="switch">Entrar</a>
+    </p>
   </div>
 </section>
 
+<div class="toast" id="toast"></div>
+
 <footer>
   <div class="footer-content">
-    <div class="footer-logo">
-      <img src="img/logo.png" alt="Logo Beach Tennis ETEC">
-    </div>
+    <div class="footer-logo"><img src="img/logo.png" alt="Logo Beach Tennis ETEC"></div>
     <div class="footer-social">
       <a href="https://instagram.com/thiago.grm" target="_blank"><i class="fa-brands fa-instagram"></i></a>
       <a href="https://wa.me/5519998365562" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
@@ -125,14 +163,55 @@
   </div>
 </footer>
 
-<!-- SCRIPT SEM BUG -->
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
 
+// Toggle senha
+document.getElementById('toggleSenha').addEventListener('click', function() {
+  const input = document.getElementById('senha');
+  const icon = this.querySelector('i');
+  if (input.type === 'password') { input.type = 'text'; icon.className = 'fa-solid fa-eye-slash'; }
+  else { input.type = 'password'; icon.className = 'fa-solid fa-eye'; }
+});
+
+// Força da senha
+document.getElementById('senha').addEventListener('input', function() {
+  const val = this.value;
+  const wrapper = document.getElementById('senhaForca');
+  const texto = document.getElementById('forcaTexto');
+  wrapper.className = 'senha-forca';
+  if (!val) { texto.textContent = 'Digite uma senha'; return; }
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  if (score <= 1) { wrapper.classList.add('forca-fraca'); texto.textContent = 'Senha fraca'; }
+  else if (score === 2 || score === 3) { wrapper.classList.add('forca-media'); texto.textContent = 'Senha média'; }
+  else { wrapper.classList.add('forca-forte'); texto.textContent = 'Senha forte ✓'; }
+});
+
+// Máscara telefone
+document.getElementById('telefone').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g, '').slice(0, 11);
+  if (v.length > 6) v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+  else if (v.length > 2) v = '(' + v.slice(0,2) + ') ' + v.slice(2);
+  else if (v.length > 0) v = '(' + v;
+  this.value = v;
+});
+
+// Submit
+document.addEventListener("DOMContentLoaded", function() {
   const form = document.getElementById("inscricao-form");
+  const btn = document.getElementById("btnCadastro");
 
-  form.addEventListener("submit", function(e){
+  form.addEventListener("submit", function(e) {
     e.preventDefault();
+    btn.classList.add('btn-loading'); btn.disabled = true;
 
     const dados = {
       nome: document.getElementById("nome").value,
@@ -143,8 +222,6 @@ document.addEventListener("DOMContentLoaded", function(){
       nascimento: document.getElementById("nascimento").value
     };
 
-    console.log("SALVANDO:", dados); // TESTE
-
     fetch("http://localhost:3000/cadastrar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -152,53 +229,25 @@ document.addEventListener("DOMContentLoaded", function(){
     })
     .then(res => res.text())
     .then(msg => {
-
-      alert(msg);
-
-      // 🔥 SALVA CERTO
+      btn.classList.remove('btn-loading'); btn.disabled = false;
       localStorage.setItem("usuario", JSON.stringify(dados));
-
-      // 🔁 REDIRECIONA
-      window.location.href = "perfil.html";
+      showToast('Conta criada com sucesso! ✅', 'success');
+      setTimeout(() => window.location.href = "perfil.html", 1200);
     })
     .catch(err => {
-      console.error(err);
-      alert("Erro ao conectar com servidor");
+      btn.classList.remove('btn-loading'); btn.disabled = false;
+      showToast('Erro ao conectar com servidor.', 'error');
     });
-
   });
-
 });
-</script>
 
-<script>
-// ── HAMBURGER MENU ──
+// Hamburger
 (function() {
-  var btn = document.getElementById('hamburgerBtn');
-  var overlay = document.getElementById('menuOverlay');
-  var menu = document.getElementById('menuMobile');
-  function abrirMenu() {
-    btn.classList.add('aberto');
-    overlay.classList.add('aberto');
-    menu.classList.add('aberto');
-    document.body.style.overflow = 'hidden';
-  }
-  function fecharMenu() {
-    btn.classList.remove('aberto');
-    overlay.classList.remove('aberto');
-    menu.classList.remove('aberto');
-    document.body.style.overflow = '';
-  }
-  if (btn) btn.addEventListener('click', function() {
-    btn.classList.contains('aberto') ? fecharMenu() : abrirMenu();
-  });
+  var btn = document.getElementById('hamburgerBtn'), overlay = document.getElementById('menuOverlay'), menu = document.getElementById('menuMobile');
+  function abrirMenu() { btn.classList.add('aberto'); overlay.classList.add('aberto'); menu.classList.add('aberto'); document.body.style.overflow = 'hidden'; }
+  function fecharMenu() { btn.classList.remove('aberto'); overlay.classList.remove('aberto'); menu.classList.remove('aberto'); document.body.style.overflow = ''; }
+  if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });
   if (overlay) overlay.addEventListener('click', fecharMenu);
-  // Mark active link
-  var links = document.querySelectorAll('.menu-mobile a');
-  var current = window.location.pathname.split('/').pop() || 'index.html';
-  links.forEach(function(a) {
-    if (a.getAttribute('href') === current) a.classList.add('ativo');
-  });
 })();
 </script>
 </div>

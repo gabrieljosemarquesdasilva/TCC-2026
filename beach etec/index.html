@@ -3,9 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beach Tennis ETEC</title>
+  <title>Beach Tennis ETEC — Reserve sua Quadra</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Agende sua quadra de Beach Tennis na ETEC de forma rápida e fácil. Reserve online em segundos e venha jogar!">
+  <meta name="keywords" content="beach tennis, ETEC, agendamento, quadra, reserva, esporte">
+  <meta name="author" content="Beach Tennis ETEC">
+  <meta property="og:title" content="Beach Tennis ETEC — Reserve sua Quadra">
+  <meta property="og:description" content="Agende sua quadra de Beach Tennis na ETEC de forma rápida e fácil.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#1B3A5C">
+
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── SKELETON LOADER ── */
+    .skeleton {
+      background: linear-gradient(90deg, #e0e9f0 25%, #f0f5f9 50%, #e0e9f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── STATS SECTION ── */
+    .stats-section {
+      background: linear-gradient(135deg, var(--navy) 0%, #0f2540 100%);
+      padding: 64px 24px;
+    }
+    .stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .stat-item {
+      text-align: center;
+      color: white;
+    }
+    .stat-number {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--coral);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.65);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── COMO FUNCIONA ── */
+    .como-section {
+      padding: 80px 24px;
+      background: #f7fafc;
+    }
+    .como-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      max-width: 900px;
+      margin: 48px auto 0;
+    }
+    .como-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(27,58,92,0.08);
+      border: 1.5px solid #e8eff5;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .como-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(27,58,92,0.13);
+    }
+    .como-icon {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .como-step {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--coral);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+    .como-card h3 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+    .como-card p {
+      font-size: 0.88rem;
+      color: #6a8099;
+      line-height: 1.5;
+    }
+
+    /* ── MODO ESCURO ── */
+    body.dark-mode {
+      --bg: #0d1b2a;
+      --text: #e2ecf5;
+      --card-bg: #152333;
+      background: var(--bg);
+      color: var(--text);
+    }
+    body.dark-mode .como-section { background: #0f1e2e; }
+    body.dark-mode .como-card { background: #1a2e42; border-color: #223349; }
+    body.dark-mode .como-card h3 { color: #d0e8ff; }
+    body.dark-mode .como-card p { color: #7a9bb8; }
+    body.dark-mode .quadra { background: #1a2e42; border-color: #223349; }
+    body.dark-mode header { background: rgba(13,27,42,0.97); }
+
+    /* ── TOGGLE DARK MODE ── */
+    .dark-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: white;
+      padding: 8px;
+      border-radius: 50%;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .dark-toggle:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── FAQ ── */
+    .faq-section {
+      padding: 80px 24px;
+      background: white;
+    }
+    body.dark-mode .faq-section { background: #0f1e2e; }
+
+    .faq-list {
+      max-width: 720px;
+      margin: 48px auto 0;
+    }
+    .faq-item {
+      border-bottom: 1.5px solid #e8eff5;
+    }
+    body.dark-mode .faq-item { border-color: #1e3249; }
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 20px 0;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--navy);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.2s;
+    }
+    body.dark-mode .faq-question { color: #d0e8ff; }
+    .faq-question:hover { color: var(--coral); }
+    .faq-question i { transition: transform 0.3s; font-size: 0.9rem; color: var(--coral); }
+    .faq-item.open .faq-question i { transform: rotate(180deg); }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      font-size: 0.92rem;
+      color: #6a8099;
+      line-height: 1.6;
+    }
+    body.dark-mode .faq-answer { color: #7a9bb8; }
+    .faq-item.open .faq-answer {
+      max-height: 200px;
+      padding-bottom: 18px;
+    }
+  </style>
 </head>
 <body>
 <div class="site-wrapper">
@@ -24,18 +226,16 @@
       <li><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
       <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
+    <button class="dark-toggle" id="darkToggle" title="Alternar modo escuro" aria-label="Modo escuro">
+      <i class="fa-solid fa-moon"></i>
+    </button>
     <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
+      <span></span><span></span><span></span>
     </button>
   </nav>
 </header>
 
-<!-- Mobile Menu Overlay -->
 <div class="menu-mobile-overlay" id="menuOverlay"></div>
-
-<!-- Mobile Menu -->
 <nav class="menu-mobile" id="menuMobile">
   <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
   <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
@@ -79,34 +279,63 @@
   </div>
 </section>
 
+<!-- COMO FUNCIONA -->
+<section class="como-section">
+  <div class="section-header reveal">
+    <span class="section-tag">⚡ Simples assim</span>
+    <h2>Como <span class="accent">Funciona</span></h2>
+    <p>Reserve sua quadra em 3 passos rápidos.</p>
+  </div>
+  <div class="como-grid">
+    <div class="como-card reveal">
+      <span class="como-icon">👤</span>
+      <div class="como-step">Passo 1</div>
+      <h3>Crie sua Conta</h3>
+      <p>Cadastre-se gratuitamente em menos de 1 minuto.</p>
+    </div>
+    <div class="como-card reveal reveal-delay-1">
+      <span class="como-icon">📅</span>
+      <div class="como-step">Passo 2</div>
+      <h3>Escolha Data e Hora</h3>
+      <p>Selecione a quadra, o dia e o horário que preferir.</p>
+    </div>
+    <div class="como-card reveal reveal-delay-2">
+      <span class="como-icon">🎾</span>
+      <div class="como-step">Passo 3</div>
+      <h3>Confirme e Jogue!</h3>
+      <p>Receba a confirmação e chegue pronto para jogar.</p>
+    </div>
+  </div>
+</section>
+
 <!-- QUADRAS DISPONÍVEIS -->
 <section class="quadras-section">
-  <div class="section-header">
+  <div class="section-header reveal">
     <span class="section-tag">⚡ Hoje</span>
     <h2>Quadras <span class="accent">Disponíveis</span></h2>
     <p>Escolha um horário e reserve sua quadra em segundos.</p>
   </div>
 
   <div class="linha-quadras">
-    <div class="quadra">
+    <div class="quadra reveal">
       <h3>Quadra 1</h3>
       <div class="horarios">
         <span onclick="selecionarHorario(this, 'Quadra 1')">18:00</span>
-        <span onclick="selecionarHorario(this)">19:00</span>
-        <span onclick="selecionarHorario(this)">20:00</span>
+        <span onclick="selecionarHorario(this, 'Quadra 1')">19:00</span>
+        <span onclick="selecionarHorario(this, 'Quadra 1')">20:00</span>
       </div>
     </div>
-    <div class="quadra">
+    <div class="quadra reveal reveal-delay-1">
       <h3>Quadra 2</h3>
       <div class="horarios">
-        <span onclick="selecionarHorario(this)">18:00</span>
-        <span onclick="selecionarHorario(this)">19:00</span>
-        <span onclick="selecionarHorario(this)">20:00</span>
+        <span onclick="selecionarHorario(this, 'Quadra 2')">18:00</span>
+        <span onclick="selecionarHorario(this, 'Quadra 2')">19:00</span>
+        <span onclick="selecionarHorario(this, 'Quadra 2')">20:00</span>
       </div>
     </div>
   </div>
 
-  <div style="text-align:center;">
+  <div style="text-align:center;" class="reveal">
     <a href="agendamento.html" class="botao-agendar">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="4" width="18" height="18" rx="3"/>
@@ -114,118 +343,142 @@
         <line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="16" x2="15" y2="16"/>
         <line x1="12" y1="13" x2="12" y2="19"/>
       </svg>
-      Agendar Agora
+      Ver Todos os Horários
     </a>
   </div>
 </section>
 
 <!-- DEPOIMENTOS -->
 <section class="depoimentos-section">
-  <div class="section-header">
+  <div class="section-header reveal">
     <span class="section-tag">⭐ Avaliações</span>
     <h2 style="color:white;">O Que Dizem <span class="accent-light">Nossos Jogadores</span></h2>
     <p style="color:rgba(255,255,255,0.6);">Quem já reservou uma quadra e voltou para contar.</p>
   </div>
   <div class="depoimentos-track-wrapper">
     <div class="depoimentos-track">
-
       <div class="depoimento-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Reservei em menos de 1 minuto pelo site. Chegamos, a quadra estava pronta. Voltaremos com certeza!"</p>
         <div class="depo-autor">
-          <div class="depo-avatar">MF</div>
-          <div>
-            <strong>Èverton Fernandes</strong>
-            <span>Caconde, SP</span>
-          </div>
+          <div class="depo-avatar">EF</div>
+          <div><strong>Éverton Fernandes</strong><span>Caconde, SP</span></div>
         </div>
       </div>
-
       <div class="depoimento-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Adorei a facilidade do agendamento online. Quadra impecável, areia excelente, equipe atenciosa!"</p>
         <div class="depo-autor">
-          <div class="depo-avatar">JS</div>
-          <div>
-            <strong>Kaio Arruda</strong>
-            <span>São José do Rio Pardo, SP</span>
-          </div>
+          <div class="depo-avatar">KA</div>
+          <div><strong>Kaio Arruda</strong><span>São José do Rio Pardo, SP</span></div>
         </div>
       </div>
-
       <div class="depoimento-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Sistema muito prático! Consegui reservar para minha turma inteira sem complicação. Recomendo demais."</p>
         <div class="depo-autor">
-          <div class="depo-avatar">RL</div>
-          <div>
-            <strong>Janaina Galego</strong>
-            <span>Itobi, SP</span>
-          </div>
+          <div class="depo-avatar">JG</div>
+          <div><strong>Janaina Galego</strong><span>Itobi, SP</span></div>
         </div>
       </div>
-
       <div class="depoimento-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"A melhor iniciativa da ETEC! Gosto muito do atendimento e do respeito que vocês têm com os alunos."</p>
         <div class="depo-autor">
-          <div class="depo-avatar">CA</div>
-          <div>
-            <strong>Melaine Alves.</strong>
-            <span>Tapiratiba, SP</span>
-          </div>
+          <div class="depo-avatar">MA</div>
+          <div><strong>Melaine Alves</strong><span>Tapiratiba, SP</span></div>
         </div>
       </div>
-
       <div class="depoimento-card">
         <div class="depo-stars">★★★★★</div>
-        <p class="depo-texto">"Fácil, rápido e eficiente. O site cumpre com tudo que promete. Parabéns pela excelência no atendimento!"</p>
+        <p class="depo-texto">"Fácil, rápido e eficiente. O site cumpre com tudo que promete. Parabéns pela excelência!"</p>
         <div class="depo-autor">
-          <div class="depo-avatar">PT</div>
-          <div>
-            <strong>Cleber Ferreira</strong>
-            <span>Itobi, SP</span>
-          </div>
+          <div class="depo-avatar">CF</div>
+          <div><strong>Cleber Ferreira</strong><span>Itobi, SP</span></div>
         </div>
       </div>
-
       <div class="depoimento-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Já joguei em várias quadras de beach tennis, mas a organização daqui é diferenciada. Sistema incrível!"</p>
         <div class="depo-autor">
-          <div class="depo-avatar">VL</div>
-          <div>
-            <strong>Lidiane Castilho</strong>
-            <span>Xique Xique, BA</span>
-          </div>
+          <div class="depo-avatar">LC</div>
+          <div><strong>Lidiane Castilho</strong><span>Xique Xique, BA</span></div>
         </div>
       </div>
-
-      <!-- Duplicate for infinite loop -->
+      <!-- Duplicados para loop infinito -->
       <div class="depoimento-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Reservei em menos de 1 minuto pelo site. Chegamos, a quadra estava pronta. Voltaremos com certeza!"</p>
         <div class="depo-autor">
-          <div class="depo-avatar">MF</div>
-          <div>
-            <strong>Paty Ferreira</strong>
-            <span>Itamogi, MG</span>
-          </div>
+          <div class="depo-avatar">PF</div>
+          <div><strong>Paty Ferreira</strong><span>Itamogi, MG</span></div>
         </div>
       </div>
-
       <div class="depoimento-card">
         <div class="depo-stars">★★★★★</div>
         <p class="depo-texto">"Adorei a facilidade do agendamento online. Quadra impecável, areia excelente, equipe atenciosa!"</p>
         <div class="depo-autor">
           <div class="depo-avatar">JS</div>
-          <div>
-            <strong>Super Jonny.</strong>
-            <span>Aura City, 67</span>
-          </div>
+          <div><strong>João Silva</strong><span>São Paulo, SP</span></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
 
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="section-header reveal">
+    <span class="section-tag">❓ Dúvidas</span>
+    <h2>Perguntas <span class="accent">Frequentes</span></h2>
+    <p>Tudo que você precisa saber antes de reservar.</p>
+  </div>
+
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <button class="faq-question">
+        Como faço para reservar uma quadra?
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        Basta criar sua conta, acessar a página de Agendamento, escolher a quadra, data e horário desejados e confirmar. O processo todo leva menos de 2 minutos!
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">
+        Preciso criar uma conta para agendar?
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        Sim, o cadastro é necessário para identificar sua reserva e garantir seu horário. O cadastro é gratuito e rápido — pode ser feito com e-mail ou conta Google.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">
+        Quais modalidades são permitidas nas quadras?
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        As quadras comportam Beach Tennis, Vôlei de Areia e FutVôlei. Você pode escolher a modalidade no momento do agendamento.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">
+        Posso cancelar ou alterar minha reserva?
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        Sim! Acesse a seção "Meus Agendamentos" no seu Perfil para visualizar, cancelar ou entrar em contato sobre suas reservas.
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">
+        As quadras têm iluminação noturna?
+        <i class="fa-solid fa-chevron-down"></i>
+      </button>
+      <div class="faq-answer">
+        Sim! Todas as quadras possuem iluminação noturna de alta potência, permitindo jogos até as 21h.
+      </div>
     </div>
   </div>
 </section>
@@ -251,9 +504,7 @@
 (function() {
   const slides = document.querySelectorAll('.hero-slide');
   const dots = document.querySelectorAll('.hero-dot');
-  let current = 0;
-  let timer;
-
+  let current = 0, timer;
   function goTo(index) {
     slides[current].classList.remove('active');
     dots[current].classList.remove('active');
@@ -261,49 +512,88 @@
     slides[current].classList.add('active');
     dots[current].classList.add('active');
   }
-
   function next() { goTo(current + 1); }
-
   function startTimer() { timer = setInterval(next, 5000); }
   function resetTimer() { clearInterval(timer); startTimer(); }
-
   dots.forEach(dot => {
-    dot.addEventListener('click', function() {
-      goTo(parseInt(this.dataset.index));
-      resetTimer();
-    });
+    dot.addEventListener('click', function() { goTo(parseInt(this.dataset.index)); resetTimer(); });
   });
-
   startTimer();
 })();
 </script>
 <script>
-// ── HAMBURGER MENU ──
+// Hamburger Menu
 (function() {
   var btn = document.getElementById('hamburgerBtn');
   var overlay = document.getElementById('menuOverlay');
   var menu = document.getElementById('menuMobile');
-  function abrirMenu() {
-    btn.classList.add('aberto');
-    overlay.classList.add('aberto');
-    menu.classList.add('aberto');
-    document.body.style.overflow = 'hidden';
-  }
-  function fecharMenu() {
-    btn.classList.remove('aberto');
-    overlay.classList.remove('aberto');
-    menu.classList.remove('aberto');
-    document.body.style.overflow = '';
-  }
-  if (btn) btn.addEventListener('click', function() {
-    btn.classList.contains('aberto') ? fecharMenu() : abrirMenu();
-  });
+  function abrirMenu() { btn.classList.add('aberto'); overlay.classList.add('aberto'); menu.classList.add('aberto'); document.body.style.overflow = 'hidden'; }
+  function fecharMenu() { btn.classList.remove('aberto'); overlay.classList.remove('aberto'); menu.classList.remove('aberto'); document.body.style.overflow = ''; }
+  if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });
   if (overlay) overlay.addEventListener('click', fecharMenu);
-  // Mark active link
   var links = document.querySelectorAll('.menu-mobile a');
   var current = window.location.pathname.split('/').pop() || 'index.html';
-  links.forEach(function(a) {
-    if (a.getAttribute('href') === current) a.classList.add('ativo');
+  links.forEach(function(a) { if (a.getAttribute('href') === current) a.classList.add('ativo'); });
+})();
+</script>
+<script>
+// Scroll Reveal
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => observer.observe(el));
+})();
+</script>
+<script>
+// Contador de stats
+(function() {
+  const nums = document.querySelectorAll('.stat-number[data-target]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const target = parseInt(el.dataset.target);
+        let current = 0;
+        const step = Math.ceil(target / 50);
+        const interval = setInterval(() => {
+          current += step;
+          if (current >= target) { current = target; clearInterval(interval); }
+          el.textContent = current + (target === 98 ? '%' : '+');
+        }, 30);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  nums.forEach(n => observer.observe(n));
+})();
+</script>
+<script>
+// FAQ Accordion
+(function() {
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const item = this.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+})();
+</script>
+<script>
+// Modo Escuro
+(function() {
+  const toggle = document.getElementById('darkToggle');
+  const icon = toggle.querySelector('i');
+  const saved = localStorage.getItem('darkMode');
+  if (saved === 'on') { document.body.classList.add('dark-mode'); icon.className = 'fa-solid fa-sun'; }
+  toggle.addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    localStorage.setItem('darkMode', isDark ? 'on' : 'off');
   });
 })();
 </script>
