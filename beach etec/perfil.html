@@ -280,6 +280,7 @@ function showToast(msg, type) {
 function fazerLogout() {
   if (confirm('Tem certeza que deseja sair?')) {
     localStorage.removeItem('usuario');
+    localStorage.removeItem("usuario-verificacao");
     showToast('Até logo! 👋', 'info');
     setTimeout(() => window.location.href = 'login_usuario.html', 1000);
   }
