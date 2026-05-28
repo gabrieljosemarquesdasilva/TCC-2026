@@ -161,9 +161,9 @@
       <li><a class="ativo" href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a></li>
       <li><a href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a></li>
       <li><a href="contato.html"><i class="fa-solid fa-envelope"></i> Contato</a></li>
-      <li><a href="cadastro_usuario.html"><i class="fa-solid fa-user-plus"></i> Cadastro</a></li>
-      <li><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
-      <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
+      <li id="btn-cadastro"><a href="cadastro_usuario.html"><i class="fa-solid fa-user-plus"></i> Cadastro</a></li>
+      <li id="btn-login"><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+      <li id="btn-perfil"><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
     <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -475,6 +475,28 @@ function showToast(msg, type) {
     });
   });
 })();
+</script>
+
+<script>
+  // Verifica se existe usuário logado
+const usuarioLogado = localStorage.getItem("usuario-verificacao");
+
+const btnLogin = document.getElementById("btn-login");
+const btnCadastro = document.getElementById("btn-cadastro");
+const btnPerfil = document.getElementById("btn-perfil");
+
+if (usuarioLogado) {
+    // Usuário logado
+    btnLogin.style.display = "none";
+    btnCadastro.style.display = "none";
+    btnPerfil.style.display = "block";
+} else {
+    // Usuário não logado
+    btnLogin.style.display = "block";
+    btnCadastro.style.display = "block";
+    btnPerfil.style.display = "none";
+}
+
 </script>
 </div>
 </body>
