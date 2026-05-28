@@ -4,8 +4,86 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sobre — Beach Tennis ETEC</title>
+  <meta name="description" content="Conheça a história do Beach Tennis ETEC, nossas quadras e a equipe por trás do projeto TCC 2026.">
+  <meta name="keywords" content="beach tennis, ETEC, sobre, quadras, projeto TCC, equipe">
+  <meta property="og:title" content="Sobre — Beach Tennis ETEC">
+  <meta property="og:description" content="Conheça nossa história, quadras e equipe.">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ── EQUIPE ── */
+    .equipe-section {
+      padding: 80px 24px;
+      background: white;
+    }
+    .equipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 28px;
+      max-width: 840px;
+      margin: 48px auto 0;
+    }
+    .equipe-card {
+      text-align: center;
+      background: #f7fafc;
+      border-radius: 20px;
+      padding: 32px 20px;
+      border: 1.5px solid #e8eff5;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .equipe-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(27,58,92,0.1); }
+    .equipe-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--coral), #f97316);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem; font-weight: 800; color: white;
+      margin: 0 auto 16px;
+    }
+    .equipe-card h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.1rem; font-weight: 800; color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .equipe-card .equipe-role {
+      font-size: 0.8rem; color: var(--coral);
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .equipe-card p { font-size: 0.83rem; color: #6a8099; line-height: 1.5; }
+
+    /* ── FAQ ── */
+    .faq-section { padding: 80px 24px; background: #f7fafc; }
+    .faq-list { max-width: 720px; margin: 48px auto 0; }
+    .faq-item { border-bottom: 1.5px solid #e8eff5; }
+    .faq-question { width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--navy); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.2s; }
+    .faq-question:hover { color: var(--coral); }
+    .faq-question i { transition: transform 0.3s; font-size: 0.9rem; color: var(--coral); }
+    .faq-item.open .faq-question i { transform: rotate(180deg); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; font-size: 0.92rem; color: #6a8099; line-height: 1.6; }
+    .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 18px; }
+
+    /* ── CTA FINAL ── */
+    .cta-section {
+      padding: 80px 24px;
+      background: linear-gradient(135deg, var(--navy) 0%, #0f2540 100%);
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 2.4rem; font-weight: 800; color: white;
+      margin-bottom: 12px;
+    }
+    .cta-section p { color: rgba(255,255,255,0.65); font-size: 1rem; margin-bottom: 32px; }
+  </style>
 </head>
 <body>
 <div class="site-wrapper">
@@ -22,18 +100,10 @@
       <li><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
       <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
-    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
   </nav>
 </header>
-
-<!-- Mobile Menu Overlay -->
 <div class="menu-mobile-overlay" id="menuOverlay"></div>
-
-<!-- Mobile Menu -->
 <nav class="menu-mobile" id="menuMobile">
   <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
   <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
@@ -44,13 +114,14 @@
   <a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a>
 </nav>
 
+<!-- NOSSA HISTÓRIA -->
 <section class="sobre-section">
-  <div class="section-header">
+  <div class="section-header reveal">
     <span class="section-tag">🏖️ Quem somos</span>
     <h2>Nossa <span class="accent">História</span></h2>
   </div>
 
-  <div class="historia-card">
+  <div class="historia-card reveal">
     <p class="historia-lead">
       A Beach Tennis ETEC nasceu em 2024 dentro das salas de aula do curso técnico de Informática da ETEC, com uma missão simples: <strong>unir tecnologia e esporte em um projeto real.</strong>
     </p>
@@ -65,17 +136,17 @@
     </p>
   </div>
 
-  <div class="section-header" style="margin-top:72px;">
+  <!-- QUADRAS -->
+  <div class="section-header reveal" style="margin-top:72px;">
     <span class="section-tag">🎾 Estrutura</span>
     <h2>Nossas <span class="accent">Quadras</span></h2>
+    <p>Três ambientes pensados para todos os níveis — do iniciante ao profissional.</p>
   </div>
 
   <!-- QUADRA 1 -->
-  <div class="quadra-card">
+  <div class="quadra-card reveal">
     <div class="quadra-slideshow" id="slide-quadra1">
-      <div class="quadra-slides-wrapper">
-        <!-- As imagens serão carregadas dinamicamente da pasta img/quadra1/ -->
-      </div>
+      <div class="quadra-slides-wrapper"></div>
       <button class="slide-btn slide-prev" onclick="mudarSlide('quadra1', -1)"><i class="fa-solid fa-chevron-left"></i></button>
       <button class="slide-btn slide-next" onclick="mudarSlide('quadra1', 1)"><i class="fa-solid fa-chevron-right"></i></button>
       <div class="slide-dots" id="dots-quadra1"></div>
@@ -84,15 +155,17 @@
       <span class="quadra-badge">Quadra 1</span>
       <h3>Arena dos Pássaros</h3>
       <p>Quadra de areia profissional com iluminação noturna de alta potência. Perfeita para jogos noturnos e treinos intensivos. Estrutura completa com vestiários e área de apoio.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+        <span style="background:#edf8f1;color:#27ae60;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">💡 Iluminação noturna</span>
+        <span style="background:#edf6ff;color:#2980b9;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">🏟️ Areia profissional</span>
+      </div>
     </div>
   </div>
 
   <!-- QUADRA 2 -->
-  <div class="quadra-card">
+  <div class="quadra-card reveal">
     <div class="quadra-slideshow" id="slide-quadra2">
-      <div class="quadra-slides-wrapper">
-        <!-- As imagens serão carregadas dinamicamente da pasta img/quadra2/ -->
-      </div>
+      <div class="quadra-slides-wrapper"></div>
       <button class="slide-btn slide-prev" onclick="mudarSlide('quadra2', -1)"><i class="fa-solid fa-chevron-left"></i></button>
       <button class="slide-btn slide-next" onclick="mudarSlide('quadra2', 1)"><i class="fa-solid fa-chevron-right"></i></button>
       <div class="slide-dots" id="dots-quadra2"></div>
@@ -101,15 +174,17 @@
       <span class="quadra-badge">Quadra 2</span>
       <h3>Arena dos Amigos</h3>
       <p>Espaço amplo e confortável, ideal para partidas recreativas e eventos esportivos. Ambiente descontraído para quem quer curtir o jogo com os amigos.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+        <span style="background:#fff5f2;color:var(--coral);padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">🎉 Eventos</span>
+        <span style="background:#edf8f1;color:#27ae60;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">👥 Recreativo</span>
+      </div>
     </div>
   </div>
 
   <!-- QUADRA 3 -->
-  <div class="quadra-card">
+  <div class="quadra-card reveal">
     <div class="quadra-slideshow" id="slide-quadra3">
-      <div class="quadra-slides-wrapper">
-        <!-- As imagens serão carregadas dinamicamente da pasta img/quadra3/ -->
-      </div>
+      <div class="quadra-slides-wrapper"></div>
       <button class="slide-btn slide-prev" onclick="mudarSlide('quadra3', -1)"><i class="fa-solid fa-chevron-left"></i></button>
       <button class="slide-btn slide-next" onclick="mudarSlide('quadra3', 1)"><i class="fa-solid fa-chevron-right"></i></button>
       <div class="slide-dots" id="dots-quadra3"></div>
@@ -118,25 +193,46 @@
       <span class="quadra-badge">Quadra 3</span>
       <h3>Arena Premium</h3>
       <p>Quadra moderna com estrutura premium e areia selecionada. Perfeita para competições e jogos de alto nível. Equipamentos de linha profissional inclusos.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+        <span style="background:#fef9e7;color:#d4ac0d;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">⭐ Premium</span>
+        <span style="background:#edf6ff;color:#2980b9;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">🏆 Competição</span>
+      </div>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="footer-content">
-    <div class="footer-logo">
-      <img src="img/logo.png" alt="Logo Beach Tennis ETEC">
-    </div>
-    <div class="footer-links">
-      <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
-      <a href="agendamento.html"><i class="fa-solid fa-calendar-check"></i> Agendamento</a>
-      <a href="sobre.html"><i class="fa-solid fa-circle-info"></i> Sobre</a>
-      <a href="contato.html"><i class="fa-solid fa-envelope"></i> Contato</a>
-    </div>
-    <p class="footer-copy">Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="section-header reveal">
+    <span class="section-tag">❓ Dúvidas</span>
+    <h2>Perguntas <span class="accent">Frequentes</span></h2>
+    <p>Tudo que você precisa saber sobre as quadras e o projeto.</p>
   </div>
-</footer>
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <button class="faq-question">Qual é o horário de funcionamento? <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="faq-answer">As quadras funcionam de segunda a sábado, das 7h às 21h. Aos domingos, das 8h às 18h. Todas possuem iluminação noturna.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">Quais modalidades são aceitas? <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="faq-answer">Beach Tennis, Vôlei de Areia e FutVôlei. A modalidade pode ser selecionada no momento do agendamento.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">Preciso levar equipamento? <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="faq-answer">A Quadra 3 (Premium) já inclui equipamentos profissionais. Para as demais, recomendamos trazer seus próprios equipamentos.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">É possível reservar para grupos ou eventos? <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="faq-answer">Sim! Para grupos maiores ou eventos, entre em contato pelo WhatsApp ou pelo formulário da página de Contato.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">O projeto é apenas para alunos da ETEC? <i class="fa-solid fa-chevron-down"></i></button>
+      <div class="faq-answer">Não! O sistema é aberto para toda a comunidade. Qualquer pessoa pode criar uma conta e agendar uma quadra.</div>
+    </div>
+  </div>
+</section>
 
+<!-- MODAL IMAGEM -->
 <div id="modal-img" class="modal">
   <span class="fechar" onclick="fecharImagem()">&times;</span>
   <button class="modal-nav modal-prev" onclick="navegarModal(-1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -144,148 +240,97 @@
   <button class="modal-nav modal-next" onclick="navegarModal(1)"><i class="fa-solid fa-chevron-right"></i></button>
 </div>
 
+<footer>
+  <div class="footer-content">
+    <div class="footer-logo"><img src="img/logo.png" alt="Logo Beach Tennis ETEC"></div>
+    <div class="footer-social">
+      <a href="https://instagram.com/thiago.grm" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://wa.me/5519998365562" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+      <a href="https://facebook.com/suapagina" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+      <a href="mailto:contact@gabrielmarques.com"><i class="fa-solid fa-envelope"></i></a>
+    </div>
+    <p class="footer-copy">Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
+  </div>
+</footer>
+
 <script src="script.js"></script>
 <script>
-// ── MODAL STATE ──
+// ── SCROLL REVEAL ──
+(function() {
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => obs.observe(el));
+})();
+</script>
+<script>
+// ── SLIDESHOWS DAS QUADRAS ──
 let modalState = { quadraId: null, index: 0 };
-
-// ── SLIDESHOW DAS QUADRAS ──
-// Configuração das quadras: nome da pasta e extensões das imagens
-// Adicione aqui os nomes dos arquivos de imagem de cada quadra
 const quadrasConfig = {
-  quadra1: [
-    'img/quadra1/foto1.jpg',
-    'img/quadra1/foto2.jpg',
-    'img/quadra1/foto3.jpg',
-    'img/quadra1/foto4.jpg'
-  ],
-  quadra2: [
-    'img/quadra2/foto1.jpg',
-    'img/quadra2/foto2.jpg',
-    'img/quadra2/foto3.jpg',
-    'img/quadra2/foto4.jpg'
-  ],
-  quadra3: [
-    'img/quadra3/foto1.jpg',
-    'img/quadra3/foto2.jpg',
-    'img/quadra3/foto3.jpg',
-    'img/quadra3/foto4.jpg'
-  ]
+  quadra1: ['img/quadra1/foto1.jpg','img/quadra1/foto2.jpg','img/quadra1/foto3.jpg','img/quadra1/foto4.jpg'],
+  quadra2: ['img/quadra2/foto1.jpg','img/quadra2/foto2.jpg','img/quadra2/foto3.jpg','img/quadra2/foto4.jpg'],
+  quadra3: ['img/quadra3/foto1.jpg','img/quadra3/foto2.jpg','img/quadra3/foto3.jpg','img/quadra3/foto4.jpg']
 };
-
 const slideshowState = {};
 
 function iniciarSlideshow(quadraId) {
   const config = quadrasConfig[quadraId];
   const wrapper = document.querySelector(`#slide-${quadraId} .quadra-slides-wrapper`);
   const dotsContainer = document.getElementById(`dots-${quadraId}`);
-
-  if (!wrapper || !config || config.length === 0) return;
-
+  if (!wrapper || !config) return;
   slideshowState[quadraId] = { current: 0, total: config.length, timer: null };
-
-  // Cria os slides
   config.forEach((src, i) => {
     const img = document.createElement('img');
-    img.src = src;
-    img.alt = `${quadraId} foto ${i + 1}`;
+    img.src = src; img.alt = `${quadraId} foto ${i+1}`;
     img.className = 'quadra-slide-img' + (i === 0 ? ' active' : '');
-    img.onclick = () => {
-      const idx = slideshowState[quadraId].current;
-      modalState.quadraId = quadraId;
-      modalState.index = idx;
-      abrirImagem(quadrasConfig[quadraId][idx]);
-    };
+    img.onclick = () => { modalState = { quadraId, index: slideshowState[quadraId].current }; abrirImagem(quadrasConfig[quadraId][modalState.index]); };
     wrapper.appendChild(img);
-
-    // Cria o dot
     const dot = document.createElement('span');
     dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
     dot.onclick = () => { irParaSlide(quadraId, i); resetTimer(quadraId); };
     dotsContainer.appendChild(dot);
   });
-
   iniciarTimer(quadraId);
 }
 
 function irParaSlide(quadraId, index) {
   const state = slideshowState[quadraId];
   if (!state) return;
-
   const slides = document.querySelectorAll(`#slide-${quadraId} .quadra-slide-img`);
   const dots = document.querySelectorAll(`#dots-${quadraId} .slide-dot`);
-
   slides[state.current].classList.remove('active');
   dots[state.current].classList.remove('active');
-
   state.current = (index + state.total) % state.total;
-
   slides[state.current].classList.add('active');
   dots[state.current].classList.add('active');
 }
 
-function mudarSlide(quadraId, direcao) {
-  const state = slideshowState[quadraId];
-  if (!state) return;
-  irParaSlide(quadraId, state.current + direcao);
-  resetTimer(quadraId);
-}
+function mudarSlide(quadraId, dir) { irParaSlide(quadraId, slideshowState[quadraId].current + dir); resetTimer(quadraId); }
+function iniciarTimer(quadraId) { slideshowState[quadraId].timer = setInterval(() => irParaSlide(quadraId, slideshowState[quadraId].current + 1), 4000); }
+function resetTimer(quadraId) { clearInterval(slideshowState[quadraId].timer); iniciarTimer(quadraId); }
 
-function iniciarTimer(quadraId) {
-  slideshowState[quadraId].timer = setInterval(() => {
-    irParaSlide(quadraId, slideshowState[quadraId].current + 1);
-  }, 4000);
-}
-
-function resetTimer(quadraId) {
-  clearInterval(slideshowState[quadraId].timer);
-  iniciarTimer(quadraId);
-}
-
-// Inicializa todos os slideshows ao carregar a página
-document.addEventListener('DOMContentLoaded', () => {
-  Object.keys(quadrasConfig).forEach(id => iniciarSlideshow(id));
-});
-</script>
-<script>
-function navegarModal(direcao) {
+function navegarModal(dir) {
   const { quadraId } = modalState;
   if (!quadraId) return;
   const total = quadrasConfig[quadraId].length;
-  modalState.index = (modalState.index + direcao + total) % total;
-  // Sync slideshow with modal navigation
+  modalState.index = (modalState.index + dir + total) % total;
   irParaSlide(quadraId, modalState.index);
   resetTimer(quadraId);
   document.getElementById('img-grande').src = quadrasConfig[quadraId][modalState.index];
 }
-
+// ── HAMBURGER ──
 (function() {
-  var btn = document.getElementById('hamburgerBtn');
-  var overlay = document.getElementById('menuOverlay');
-  var menu = document.getElementById('menuMobile');
-  function abrirMenu() {
-    btn.classList.add('aberto');
-    overlay.classList.add('aberto');
-    menu.classList.add('aberto');
-    document.body.style.overflow = 'hidden';
-  }
-  function fecharMenu() {
-    btn.classList.remove('aberto');
-    overlay.classList.remove('aberto');
-    menu.classList.remove('aberto');
-    document.body.style.overflow = '';
-  }
-  if (btn) btn.addEventListener('click', function() {
-    btn.classList.contains('aberto') ? fecharMenu() : abrirMenu();
-  });
+  var btn = document.getElementById('hamburgerBtn'), overlay = document.getElementById('menuOverlay'), menu = document.getElementById('menuMobile');
+  function abrirMenu() { btn.classList.add('aberto'); overlay.classList.add('aberto'); menu.classList.add('aberto'); document.body.style.overflow = 'hidden'; }
+  function fecharMenu() { btn.classList.remove('aberto'); overlay.classList.remove('aberto'); menu.classList.remove('aberto'); document.body.style.overflow = ''; }
+  if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });
   if (overlay) overlay.addEventListener('click', fecharMenu);
-  // Mark active link
-  var links = document.querySelectorAll('.menu-mobile a');
-  var current = window.location.pathname.split('/').pop() || 'index.html';
-  links.forEach(function(a) {
-    if (a.getAttribute('href') === current) a.classList.add('ativo');
-  });
 })();
+
+document.addEventListener('DOMContentLoaded', () => {
+  Object.keys(quadrasConfig).forEach(id => iniciarSlideshow(id));
+});
 </script>
 </div>
 </body>
