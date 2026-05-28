@@ -90,6 +90,7 @@
     })
     .catch(err => showToast('Erro ao autenticar com Google.', 'error'));
   }
+  // arrumar
   window.onload = function () {
     google.accounts.id.initialize({ client_id: '314377682610-qnrudcuk611ou7kse4v4m9a86v980pth.apps.googleusercontent.com', callback: handleCredentialResponse });
     google.accounts.id.renderButton(document.getElementById("loginDiv"), { theme: "filled_blue", size: "large", shape: "pill" });
@@ -232,7 +233,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
   const btn = document.getElementById('btnLogin');
   btn.classList.add('btn-loading'); btn.disabled = true;
 
-  // Simula autenticação (integrar com backend real)
+  // Simula autenticação (não fiz ainda)
   setTimeout(() => {
     btn.classList.remove('btn-loading'); btn.disabled = false;
     showToast('Função de login em desenvolvimento.', 'info');
