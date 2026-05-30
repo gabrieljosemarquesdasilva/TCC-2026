@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Beach Tennis ETEC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0A1628 0%,#0a2a4a 60%,#1a0a28 100%);position:relative;overflow:hidden}
+    body::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(255,107,53,.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 20%,rgba(0,119,182,.1) 0%,transparent 50%)}
+    .card{background:rgba(255,255,255,.97);border-radius:28px;padding:52px 44px;width:100%;max-width:420px;box-shadow:0 40px 100px rgba(0,0,0,.5);position:relative;z-index:1}
+    .logo-area{text-align:center;margin-bottom:36px}
+    .logo-icon{width:76px;height:76px;background:linear-gradient(135deg,#0077B6,#FF6B35);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:white;margin:0 auto 18px;box-shadow:0 12px 32px rgba(0,119,182,.35)}
+    h1{font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;font-weight:900;text-transform:uppercase;color:#0A1628;letter-spacing:.04em;line-height:1}
+    .subtitle{font-size:.85rem;color:#6a8099;margin-top:6px}
+    label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#6a8099;margin-bottom:7px}
+    .field{margin-bottom:20px}
+    .input-wrap{position:relative}
+    .input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#9BB;font-size:.85rem}
+    input[type=text],input[type=password]{width:100%;padding:13px 14px 13px 40px;border:2px solid #e8eff5;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:#0A1628;background:#fafcff;outline:none;transition:border-color .2s,box-shadow .2s}
+    input:focus{border-color:#0077B6;box-shadow:0 0 0 4px rgba(0,119,182,.08)}
+    .toggle-pw{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9BB;font-size:.85rem;padding:4px;transition:color .2s}
+    .toggle-pw:hover{color:#0077B6}
+    .btn-entrar{width:100%;padding:15px;background:linear-gradient(135deg,#0077B6,#FF6B35);color:white;border:none;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 6px 24px rgba(0,119,182,.3);position:relative;margin-top:8px}
+    .btn-entrar:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,119,182,.4)}
+    .btn-entrar:active{transform:translateY(0)}
+    .erro{background:#fef2f2;border:1.5px solid #fecaca;color:#dc2626;border-radius:10px;padding:11px 16px;font-size:.85rem;margin-bottom:18px;display:none;align-items:center;gap:8px}
+    .erro.show{display:flex}
+    .btn-loading .lbl{opacity:0}
+    .btn-loading::after{content:'';position:absolute;width:20px;height:20px;border:2.5px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;top:50%;left:50%;transform:translate(-50%,-50%)}
+    @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+    .hint{text-align:center;margin-top:22px;font-size:.78rem;color:#aab;padding:12px;background:#f7fafc;border-radius:10px;border:1px solid #e8eff5}
+    .hint strong{color:#0077B6}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo-area">
+    <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <h1>Painel Admin</h1>
+    <p class="subtitle">Beach Tennis ETEC — Acesso restrito</p>
+  </div>
+  <div class="erro" id="erroBox"><i class="fa-solid fa-circle-exclamation"></i><span id="erroMsg"></span></div>
+  <div class="field">
+    <label>Usuário</label>
+    <div class="input-wrap">
+      <i class="fa-solid fa-user"></i>
+      <input type="text" id="adUser" placeholder="admin" autocomplete="username">
+    </div>
+  </div>
+  <div class="field">
+    <label>Senha</label>
+    <div class="input-wrap">
+      <i class="fa-solid fa-lock"></i>
+      <input type="password" id="adSenha" placeholder="••••••••" autocomplete="current-password" id="adSenhaInput">
+      <button class="toggle-pw" onclick="togglePw()" type="button"><i class="fa-regular fa-eye" id="eyeIcon"></i></button>
+    </div>
+  </div>
+  <button class="btn-entrar" id="btnEntrar" onclick="login()">
+    <span class="lbl"><i class="fa-solid fa-right-to-bracket"></i> Entrar no Painel</span>
+  </button>
+  <div class="hint">Login padrão: <strong>admin</strong> / <strong>admin123</strong></div>
+</div>
+<script>
+function togglePw(){
+  const i=document.getElementById('adSenha');
+  const eye=document.getElementById('eyeIcon');
+  i.type=i.type==='password'?'text':'password';
+  eye.className=i.type==='password'?'fa-regular fa-eye':'fa-regular fa-eye-slash';
+}
+function mostrarErro(msg){
+  const b=document.getElementById('erroBox');
+  document.getElementById('erroMsg').textContent=msg;
+  b.classList.add('show');
+}
+function login(){
+  const btn=document.getElementById('btnEntrar');
+  const usuario=document.getElementById('adUser').value.trim();
+  const senha=document.getElementById('adSenha').value;
+  if(!usuario||!senha){mostrarErro('Preencha usuário e senha.');return;}
+  document.getElementById('erroBox').classList.remove('show');
+  btn.classList.add('btn-loading');btn.disabled=true;
+  fetch('http://localhost:3000/admin/auth',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({usuario,senha})
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    btn.classList.remove('btn-loading');btn.disabled=false;
+    if(d.sucesso){
+      localStorage.setItem('adminToken',d.token);
+      localStorage.setItem('adminNome',d.admin);
+      window.location.href='admin_dashboard.html';
+    }else mostrarErro(d.erro||'Credenciais incorretas.');
+  })
+  .catch(()=>{btn.classList.remove('btn-loading');btn.disabled=false;mostrarErro('Erro ao conectar com o servidor.');});
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+</script>
+</body>
+</html>
