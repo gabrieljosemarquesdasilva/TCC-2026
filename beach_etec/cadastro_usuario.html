@@ -193,8 +193,9 @@ document.addEventListener("DOMContentLoaded", function() {
     .then(data => {
       btn.classList.remove('btn-loading'); btn.disabled = false;
       if (data.sucesso) {
-        const u = { nome: dados.nome+(dados.sobrenome?" "+dados.sobrenome:""), email: dados.email, foto: null };
+        const u = { nome: dados.nome+(dados.sobrenome?" "+dados.sobrenome:""), email: dados.email, foto: null, telefone: dados.telefone||"", nascimento: dados.nascimento||"" };
         localStorage.setItem("usuario", JSON.stringify(u));
+        localStorage.setItem("usuario-verificacao", "true");
         showToast('Conta criada com sucesso! ✅', 'success');
         setTimeout(() => window.location.href = "perfil.html", 1100);
       } else {

@@ -73,7 +73,17 @@
         <input type="file" id="foto-input" accept="image/*">
       </div>
       <h2 id="nome-perfil">Carregando...</h2>
-      <span class="nivel">🎾 Jogador</span>
+
+      <!-- Nível do jogador -->
+      <div class="nivel-container">
+        <span style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9BB;display:block;margin-bottom:10px;">Nível do Jogador</span>
+        <div class="nivel-btns">
+          <button class="nivel-btn" data-nivel="Iniciante"    onclick="setNivel(this)">🌱 Iniciante</button>
+          <button class="nivel-btn" data-nivel="Intermediário" onclick="setNivel(this)">⚡ Intermediário</button>
+          <button class="nivel-btn" data-nivel="Avançado"     onclick="setNivel(this)">🔥 Avançado</button>
+          <button class="nivel-btn" data-nivel="Profissional" onclick="setNivel(this)">🏆 Profissional</button>
+        </div>
+      </div>
     </div>
 
     <div class="info-perfil">
@@ -111,6 +121,11 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Botão admin — só aparece para contas admin -->
+<a href="admin_login.html" id="btnAdminFloat" style="display:none;position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,#0077B6,#FF6B35);color:white;text-decoration:none;padding:12px 20px;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 8px 24px rgba(0,119,182,.4);display:none;align-items:center;gap:9px;z-index:999;transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(0,119,182,.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(0,119,182,.4)'">
+  <i class="fa-solid fa-shield-halved"></i> Painel Admin
+</a>
+
 <footer>
   <div class="footer-content">
     <div class="footer-logo"><img src="img/logo.png" alt="Logo Beach Tennis ETEC"></div>
@@ -136,10 +151,27 @@ function showToast(msg, type) {
 function fazerLogout() {
   if (confirm('Tem certeza que deseja sair?')) {
     localStorage.removeItem('usuario');
-    localStorage.removeItem("usuario-verificacao");
+    localStorage.removeItem('usuario-verificacao');
+    localStorage.removeItem('nivelJogador');
     showToast('Até logo! 👋', 'info');
     setTimeout(() => window.location.href = 'login_usuario.html', 1000);
   }
+}
+
+// Nível do jogador
+function setNivel(btn) {
+  document.querySelectorAll('.nivel-btn').forEach(b => b.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  const nivel = btn.dataset.nivel;
+  localStorage.setItem('nivelJogador', nivel);
+  // Atualiza o objeto usuário no localStorage
+  const usuarioStr = localStorage.getItem('usuario');
+  if (usuarioStr) {
+    const u = JSON.parse(usuarioStr);
+    u.nivel = nivel;
+    localStorage.setItem('usuario', JSON.stringify(u));
+  }
+  showToast('Nível atualizado: ' + nivel + ' ✅', 'success');
 }
 
 // Upload foto de perfil
@@ -162,30 +194,44 @@ document.addEventListener("DOMContentLoaded", function() {
   const telaLogado = document.getElementById('telaLogado');
 
   if (!usuarioStr) {
-    // Mostra tela de não logado
     telaDeslogado.style.display = 'flex';
     telaLogado.style.display = 'none';
     return;
   }
 
-  // Logado: exibe perfil
   telaDeslogado.style.display = 'none';
   telaLogado.style.display = 'block';
 
   const usuario = JSON.parse(usuarioStr);
-  document.getElementById("nome-perfil").innerText = (usuario.nome || '') + ' ' + (usuario.sobrenome || '');
+  document.getElementById("nome-perfil").innerText = usuario.nome || '';
   document.getElementById("email-perfil").innerText = usuario.email || '-';
   document.getElementById("telefone-perfil").innerText = usuario.telefone || '-';
 
   if (usuario.nascimento) {
-    const data = new Date(usuario.nascimento + 'T12:00:00');
-    document.getElementById("nascimento-perfil").innerText = data.toLocaleDateString("pt-BR");
+    // Supabase retorna date como "YYYY-MM-DD" ou com T
+    const raw = String(usuario.nascimento).split('T')[0];
+    const [y, m, d] = raw.split('-');
+    document.getElementById("nascimento-perfil").innerText = `${d}/${m}/${y}`;
+  } else {
+    document.getElementById("nascimento-perfil").innerText = '-';
   }
 
   // Foto salva
   const fotoSalva = localStorage.getItem('fotoPerfil');
   if (fotoSalva) document.getElementById('fotoPerfil').src = fotoSalva;
   else if (usuario.foto) document.getElementById('fotoPerfil').src = usuario.foto;
+
+  // Botão admin flutuante
+  const btnAdmin = document.getElementById('btnAdminFloat');
+  if (btnAdmin && localStorage.getItem('isAdmin') === 'true') {
+    btnAdmin.style.display = 'flex';
+  }
+  const nivelSalvo = localStorage.getItem('nivelJogador') || usuario.nivel || '';
+  if (nivelSalvo) {
+    document.querySelectorAll('.nivel-btn').forEach(btn => {
+      btn.classList.toggle('ativo', btn.dataset.nivel === nivelSalvo);
+    });
+  }
 
   // Carregar agendamentos
   const lista = document.getElementById("lista-agendamentos");
@@ -230,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function() {
         lista.appendChild(div);
       });
     })
-    .catch(err => {
+    .catch(() => {
       lista.innerHTML = '<div class="card-agendamento" style="text-align:center;color:#9BB;"><p>Servidor offline — não foi possível carregar agendamentos.</p></div>';
     });
 });

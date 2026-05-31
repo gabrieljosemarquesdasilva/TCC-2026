@@ -187,6 +187,9 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     btn.classList.remove('btn-loading'); btn.disabled = false;
     if (data.sucesso) {
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
+      localStorage.setItem('usuario-verificacao', 'true');
+      if (data.isAdmin) localStorage.setItem('isAdmin', 'true');
+      else localStorage.removeItem('isAdmin');
       showToast('Login realizado! ✅', 'success');
       setTimeout(() => window.location.href = 'perfil.html', 1100);
     } else {
