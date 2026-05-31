@@ -90,44 +90,20 @@
         </div>
       </div>
 
-      <!-- Calendário Visual -->
+      <!-- Data -->
       <div class="form-group">
         <label>Data</label>
-        <div class="calendario-wrapper">
-          <div class="cal-header">
-            <button type="button" class="cal-nav" id="calPrev"><i class="fa-solid fa-chevron-left"></i></button>
-            <div class="cal-month-label" id="calMonthLabel"></div>
-            <button type="button" class="cal-nav" id="calNext"><i class="fa-solid fa-chevron-right"></i></button>
-          </div>
-          <div class="cal-grid" id="calGrid"></div>
-        </div>
-        <!-- Input oculto para o backend -->
-        <input type="date" name="data" id="inputData" required style="display:none;">
+        <input type="date" name="data" id="inputData" required class="date-input" min="">
       </div>
 
-      <!-- Horários Visuais -->
+      <!-- Horários -->
       <div class="form-group">
         <div class="horarios-visual">
           <h4><i class="fa-solid fa-clock" style="color:var(--coral);margin-right:6px;"></i> Horário Disponível</h4>
-          <div class="horarios-grid">
-            <button type="button" class="horario-btn" data-hora="07:00">07:00</button>
-            <button type="button" class="horario-btn" data-hora="08:00">08:00</button>
-            <button type="button" class="horario-btn" data-hora="09:00">09:00</button>
-            <button type="button" class="horario-btn" data-hora="10:00">10:00</button>
-            <button type="button" class="horario-btn" data-hora="11:00">11:00</button>
-            <button type="button" class="horario-btn ocupado">Ocupado</button>
-            <button type="button" class="horario-btn" data-hora="14:00">14:00</button>
-            <button type="button" class="horario-btn" data-hora="15:00">15:00</button>
-            <button type="button" class="horario-btn ocupado">Ocupado</button>
-            <button type="button" class="horario-btn" data-hora="17:00">17:00</button>
-            <button type="button" class="horario-btn" data-hora="18:00">18:00</button>
-            <button type="button" class="horario-btn" data-hora="19:00">19:00</button>
-            <button type="button" class="horario-btn" data-hora="20:00">20:00</button>
-            <button type="button" class="horario-btn" data-hora="21:00">21:00</button>
-          </div>
+          <div class="horarios-grid" id="horariosGrid"></div>
+          <p class="sem-horarios" id="semHorarios" style="display:none;color:var(--muted);font-size:.85rem;text-align:center;padding:20px">Selecione uma data e quadra primeiro.</p>
         </div>
-        <!-- Input oculto para o backend -->
-        <input type="time" id="horario" name="horario" style="display:none;" required>
+        <input type="hidden" id="horario" name="horario" required>
       </div>
 
       <div class="form-group">
@@ -162,15 +138,22 @@
 <div id="modalSucesso" class="modal">
   <div class="modal-content">
     <div class="check">✓</div>
-    <h2>Agendamento Confirmado!</h2>
-    <p>Sua reserva foi realizada com sucesso.</p>
+    <h2>Reserva Enviada!</h2>
+    <p>Sua solicitação foi recebida e está <strong>aguardando confirmação</strong> do administrativo. Você será notificado em breve.</p>
     <div class="info">
       <span id="infoQuadra"></span>
       <span id="infoModalidade"></span>
       <span id="infoData"></span>
       <span id="infoHorario"></span>
     </div>
-    <button onclick="fecharModal()">Fechar</button>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="fecharModal();location.href='perfil.html'">
+        <i class="fa-solid fa-user"></i> Ver Meus Agendamentos
+      </button>
+      <button class="btn-outline" onclick="fecharModal()">
+        <i class="fa-solid fa-plus"></i> Reservar Novamente
+      </button>
+    </div>
   </div>
 </div>
 
@@ -202,84 +185,87 @@
 })();
 </script>
 <script>
-// ── CALENDÁRIO ──
+// ── DATA ──
 (function() {
-  let viewDate = new Date();
-  let selectedDate = null;
-  const grid = document.getElementById('calGrid');
-  const label = document.getElementById('calMonthLabel');
-  const inputData = document.getElementById('inputData');
-
-  // Pré-selecionar do localStorage
-  const dataSalva = localStorage.getItem('data');
-  if (dataSalva) {
-    selectedDate = new Date(dataSalva + 'T12:00:00');
-    viewDate = new Date(selectedDate);
-    inputData.value = dataSalva;
-  }
-
-  function render() {
-    const hoje = new Date(); hoje.setHours(0,0,0,0);
-    const ano = viewDate.getFullYear(), mes = viewDate.getMonth();
-    label.textContent = viewDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-    grid.innerHTML = '';
-    ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(d => {
-      const el = document.createElement('div');
-      el.className = 'cal-day-name'; el.textContent = d;
-      grid.appendChild(el);
-    });
-    const firstDay = new Date(ano, mes, 1).getDay();
-    for (let i = 0; i < firstDay; i++) {
-      const el = document.createElement('div'); el.className = 'cal-day cal-day-empty'; grid.appendChild(el);
-    }
-    const totalDays = new Date(ano, mes + 1, 0).getDate();
-    for (let d = 1; d <= totalDays; d++) {
-      const el = document.createElement('div');
-      el.className = 'cal-day';
-      el.textContent = d;
-      const thisDate = new Date(ano, mes, d);
-      if (thisDate < hoje) { el.classList.add('cal-day-past'); }
-      else {
-        if (thisDate.toDateString() === hoje.toDateString()) el.classList.add('cal-day-today');
-        if (selectedDate && thisDate.toDateString() === selectedDate.toDateString()) el.classList.add('cal-day-selected');
-        el.addEventListener('click', function() {
-          selectedDate = thisDate;
-          const y = thisDate.getFullYear(), m = String(thisDate.getMonth()+1).padStart(2,'0'), dd = String(thisDate.getDate()).padStart(2,'0');
-          inputData.value = `${y}-${m}-${dd}`;
-          localStorage.setItem('data', inputData.value);
-          render();
-        });
-      }
-      grid.appendChild(el);
-    }
-  }
-
-  document.getElementById('calPrev').addEventListener('click', function() { viewDate.setMonth(viewDate.getMonth()-1); render(); });
-  document.getElementById('calNext').addEventListener('click', function() { viewDate.setMonth(viewDate.getMonth()+1); render(); });
-  render();
+  const input = document.getElementById('inputData');
+  const hoje = new Date();
+  const y = hoje.getFullYear(), m = String(hoje.getMonth()+1).padStart(2,'0'), d = String(hoje.getDate()).padStart(2,'0');
+  input.min = `${y}-${m}-${d}`;
+  const salva = localStorage.getItem('data');
+  if (salva) input.value = salva;
+  input.addEventListener('change', function() {
+    localStorage.setItem('data', this.value);
+    carregarHorarios();
+  });
 })();
 </script>
 <script>
-// ── HORÁRIOS ──
-(function() {
-  const btns = document.querySelectorAll('.horario-btn:not(.ocupado)');
-  const inputHorario = document.getElementById('horario');
+// ── HORÁRIOS DINÂMICOS ──
+const TODOS_HORARIOS = ['07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
 
-  // Pré-selecionar do localStorage
-  const horaSalva = localStorage.getItem('horario');
-  if (horaSalva) {
-    btns.forEach(b => { if (b.dataset.hora === horaSalva) { b.classList.add('selecionado'); inputHorario.value = horaSalva; } });
+function carregarHorarios() {
+  const data = document.getElementById('inputData').value;
+  const quadra = document.getElementById('quadra').value;
+  const grid = document.getElementById('horariosGrid');
+  const sem = document.getElementById('semHorarios');
+  const input = document.getElementById('horario');
+
+  if (!data || !quadra) {
+    grid.innerHTML = '';
+    sem.style.display = 'block';
+    sem.textContent = 'Selecione uma data e quadra primeiro.';
+    return;
   }
 
-  btns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      btns.forEach(b => b.classList.remove('selecionado'));
-      this.classList.add('selecionado');
-      inputHorario.value = this.dataset.hora;
-      localStorage.setItem('horario', this.dataset.hora);
+  sem.style.display = 'none';
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</div>';
+
+  fetch('http://localhost:3000/horarios-disponiveis?data=' + encodeURIComponent(data) + '&quadra=' + encodeURIComponent(quadra))
+    .then(r => r.json())
+    .then(res => {
+      const ocupados = res.ocupados || [];
+      grid.innerHTML = '';
+      const horaSalva = localStorage.getItem('horario');
+      let temDisponivel = false;
+
+      TODOS_HORARIOS.forEach(h => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'horario-btn';
+        btn.dataset.hora = h;
+        btn.textContent = h;
+
+        if (ocupados.includes(h)) {
+          btn.classList.add('ocupado');
+          btn.textContent = 'Ocupado';
+        } else {
+          temDisponivel = true;
+          if (horaSalva === h) {
+            btn.classList.add('selecionado');
+            input.value = h;
+          }
+          btn.addEventListener('click', function() {
+            grid.querySelectorAll('.horario-btn:not(.ocupado)').forEach(b => b.classList.remove('selecionado'));
+            this.classList.add('selecionado');
+            input.value = this.dataset.hora;
+            localStorage.setItem('horario', this.dataset.hora);
+          });
+        }
+        grid.appendChild(btn);
+      });
+
+      if (!temDisponivel) {
+        sem.style.display = 'block';
+        sem.textContent = 'Nenhum horário disponível nesta data.';
+      }
+    })
+    .catch(() => {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;color:var(--red)">Erro ao carregar horários.</div>';
     });
-  });
-})();
+}
+
+document.getElementById('quadra').addEventListener('change', carregarHorarios);
+carregarHorarios();
 </script>
 <script>
 // ── TOAST ──

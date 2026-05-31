@@ -109,6 +109,9 @@
       <span class="section-tag">📅 Histórico</span>
       <h2>Meus <span class="accent">Agendamentos</span></h2>
     </div>
+    <div style="text-align:right;margin-bottom:12px">
+      <button onclick="carregarAgendamentos()" class="btn-refresh"><i class="fa-solid fa-rotate"></i> Atualizar</button>
+    </div>
     <div id="lista-agendamentos">
       <!-- Skeleton loading -->
       <div class="skeleton-card"></div>
@@ -234,8 +237,18 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Carregar agendamentos
+  carregarAgendamentos();
+});
+
+function carregarAgendamentos(){
   const lista = document.getElementById("lista-agendamentos");
-  fetch("http://localhost:3000/agendamentos")
+  lista.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</div>';
+  const API = 'http://localhost:3000';
+  const usuarioStr = localStorage.getItem("usuario");
+  const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
+  const nomeFiltro = usuario ? usuario.nome : '';
+  const url = nomeFiltro ? API+'/agendamentos?nome='+encodeURIComponent(nomeFiltro) : API+'/agendamentos';
+  fetch(url)
     .then(res => res.json())
     .then(dados => {
       lista.innerHTML = '';
@@ -248,13 +261,18 @@ document.addEventListener("DOMContentLoaded", function() {
           </div>`;
         return;
       }
+      const statusBadge = {
+          pendente: '<span class="ag-badge pendente">⏳ Pendente</span>',
+          confirmado: '<span class="ag-badge confirmado">✅ Confirmado</span>',
+          cancelado: '<span class="ag-badge cancelado">❌ Cancelado</span>'
+        };
       dados.forEach(ag => {
         const div = document.createElement('div');
         div.className = 'card-agendamento';
         div.innerHTML = `
           <div class="ag-header">
             <div class="ag-quadra">📍 ${ag.quadra}</div>
-            <span class="ag-badge">Confirmado</span>
+            ${statusBadge[ag.status]||'<span class="ag-badge">—</span>'}
           </div>
           <div class="ag-info-grid">
             <div class="ag-info-item"><strong>Data:</strong> ${ag.data}</div>
@@ -263,23 +281,29 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="ag-info-item"><strong>Nível:</strong> ${ag.nivel}</div>
           </div>
           <div class="ag-actions">
-            <button class="ag-btn-cancel"><i class="fa-solid fa-xmark"></i> Cancelar reserva</button>
+            ${ag.status==='pendente'?'<button class="ag-btn-cancel" data-id="'+ag.id+'"><i class="fa-solid fa-xmark"></i> Cancelar reserva</button>':''}
           </div>
         `;
-        div.querySelector('.ag-btn-cancel').addEventListener('click', function() {
+        const btn = div.querySelector('.ag-btn-cancel');
+        if (btn) btn.addEventListener('click', function() {
           if (confirm('Deseja cancelar esta reserva?')) {
-            div.style.opacity = '0.5';
-            showToast('Reserva cancelada.', 'info');
-            setTimeout(() => div.remove(), 600);
+            fetch(API+'/agendamentos/'+ag.id, {method:'DELETE'})
+              .then(r => r.json())
+              .then(d => {
+                if (d.sucesso) showToast('Reserva cancelada.', 'info');
+                else showToast(d.erro||'Erro.', 'error');
+                carregarAgendamentos();
+              })
+              .catch(() => showToast('Erro ao cancelar.', 'error'));
           }
         });
         lista.appendChild(div);
       });
     })
     .catch(() => {
-      lista.innerHTML = '<div class="card-agendamento" style="text-align:center;color:#9BB;"><p>Servidor offline — não foi possível carregar agendamentos.</p></div>';
+      lista.innerHTML = '<div class="card-agendamento" style="text-align:center;color:#9BB;"><p>Servidor offline — não foi possível carregar agendamentos. <button onclick="carregarAgendamentos()" style="background:var(--coral);color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600;margin-top:8px">Tentar novamente</button></p></div>';
     });
-});
+}
 
 // Hamburger
 (function() {

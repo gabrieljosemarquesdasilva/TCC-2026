@@ -34,11 +34,15 @@
     <button class="btn-sair" onclick="sair()"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
   </div>
 </aside>
+<div class="sb-overlay" onclick="toggleMenu()"></div>
 
 <!-- MAIN -->
 <main class="dash-main">
   <div class="topbar">
-    <div class="page-title" id="ptitle">Visão Geral</div>
+    <div class="topbar-l">
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="page-title" id="ptitle">Visão Geral</div>
+    </div>
     <div class="topbar-r">
       <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input id="srch" type="text" placeholder="Buscar usuário..." oninput="filtrar()"></div>
       <span class="clock" id="clk"></span>
@@ -63,16 +67,26 @@
     <div class="dash-view" id="v-usuarios">
       <div class="box">
         <div class="box-head"><h3><i class="fa-solid fa-users" style="color:var(--ocean)"></i>Todos os Usuários</h3><span id="lblUsers">—</span></div>
-        <table class="dash-table"><thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Cadastrado</th><th>Ações</th></tr></thead>
+        <div class="user-search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="srchUsers" type="text" placeholder="Buscar por nome ou e-mail..." oninput="filtrarUsuarios()">
+        </div>
+        <table class="dash-table"><thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Tipo</th><th>Cadastrado</th><th>Ações</th></tr></thead>
         <tbody id="tbUsers"></tbody></table>
       </div>
     </div>
 
     <!-- AGENDAMENTOS -->
     <div class="dash-view" id="v-agendamentos">
+      <div class="ag-tabs">
+        <button class="ag-tab on" data-status="pendente" onclick="trocarAbaAg(this)"><i class="fa-solid fa-clock"></i> Pendentes <span id="badgePendentes" class="ag-badge">0</span></button>
+        <button class="ag-tab" data-status="confirmado" onclick="trocarAbaAg(this)"><i class="fa-solid fa-check-circle"></i> Confirmadas</button>
+        <button class="ag-tab" data-status="cancelado" onclick="trocarAbaAg(this)"><i class="fa-solid fa-ban"></i> Canceladas</button>
+        <button class="ag-tab" data-status="" onclick="trocarAbaAg(this)"><i class="fa-solid fa-list"></i> Todas</button>
+      </div>
       <div class="box">
-        <div class="box-head"><h3><i class="fa-solid fa-calendar-check" style="color:var(--coral)"></i>Todos os Agendamentos</h3><span id="lblAgs">—</span></div>
-        <table class="dash-table"><thead><tr><th>Nome</th><th>Quadra</th><th>Data</th><th>Horário</th><th>Modalidade</th><th>Nível</th><th>Ação</th></tr></thead>
+        <div class="box-head"><h3><i class="fa-solid fa-calendar-check" style="color:var(--coral)"></i><span id="lblAgsTitle">Pendentes</span></h3><span id="lblAgs">—</span></div>
+        <table class="dash-table"><thead><tr><th>Nome</th><th>Quadra</th><th>Data</th><th>Horário</th><th>Modalidade</th><th>Nível</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tbAgs"></tbody></table>
       </div>
     </div>
@@ -121,6 +135,20 @@
           <div class="fg"><label>E-mail de contato</label><input id="c_email" type="text" placeholder="contato@beachtennis.com"></div>
           <div class="fg"><label>Horário de funcionamento</label><input id="c_horario" type="text" placeholder="Seg–Dom, 6h–22h"></div>
           <button class="btn-save-section" onclick="salvarSecao('contato','Contato')"><i class="fa-solid fa-floppy-disk"></i> Salvar Contato</button>
+        </div>
+        <!-- Redes Sociais -->
+        <div class="content-section">
+          <h4><i class="fa-solid fa-share-nodes" style="color:var(--coral)"></i> Redes Sociais</h4>
+          <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Os links alterados aqui atualizam automaticamente no rodapé do site.</p>
+          <div class="frow">
+            <div class="fg"><label><i class="fa-brands fa-instagram" style="color:#e4405f"></i> Instagram (URL)</label><input id="c_social_ig" type="text" placeholder="https://instagram.com/seuperfil"></div>
+            <div class="fg"><label><i class="fa-brands fa-whatsapp" style="color:#25d366"></i> WhatsApp (URL)</label><input id="c_social_wa" type="text" placeholder="https://wa.me/551999999999"></div>
+          </div>
+          <div class="frow">
+            <div class="fg"><label><i class="fa-brands fa-facebook" style="color:#1877f2"></i> Facebook (URL)</label><input id="c_social_fb" type="text" placeholder="https://facebook.com/suapagina"></div>
+            <div class="fg"><label><i class="fa-solid fa-envelope" style="color:var(--ocean)"></i> E-mail (URL)</label><input id="c_social_email" type="text" placeholder="mailto:contato@beachtennis.com"></div>
+          </div>
+          <button class="btn-save-section" onclick="salvarSecao('social','Redes Sociais')" style="background:var(--coral)"><i class="fa-solid fa-floppy-disk"></i> Salvar Redes Sociais</button>
         </div>
         <!-- Stats -->
         <div class="content-section">
@@ -233,6 +261,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   loadStats();
   loadUsers();
   loadAgs();
+  carregarBadgePendentes();
   loadConteudo();
 });
 
@@ -243,6 +272,11 @@ function relogio(){
 }
 
 const titulos={overview:'Visão Geral',usuarios:'Usuários',agendamentos:'Agendamentos',conteudo:'Editar Conteúdo',historico:'Histórico de Alterações'};
+function toggleMenu(){
+  document.querySelector('.sb').classList.toggle('open');
+  document.querySelector('.sb-overlay').classList.toggle('on');
+}
+
 function go(name,el){
   document.querySelectorAll('.dash-view').forEach(v=>v.classList.remove('on'));
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
@@ -251,6 +285,7 @@ function go(name,el){
   document.getElementById('ptitle').textContent=titulos[name];
   document.getElementById('srch').value='';
   if(name==='historico') loadHistorico();
+  if(window.innerWidth<=900){document.querySelector('.sb').classList.remove('open');document.querySelector('.sb-overlay').classList.remove('on')}
 }
 
 function api(url,opts={}){
@@ -288,30 +323,37 @@ function loadUsers(){
 }
 function renderUsers(list){
   const tb=document.getElementById('tbUsers');
-  if(!list.length){tb.innerHTML=`<tr><td colspan="5"><div class="dash-empty"><i class="fa-solid fa-users"></i>Nenhum usuário.</div></td></tr>`;return;}
+  if(!list.length){tb.innerHTML=`<tr><td colspan="6"><div class="dash-empty"><i class="fa-solid fa-users"></i>Nenhum usuário.</div></td></tr>`;return;}
   tb.innerHTML=list.map(u=>`<tr>
-    <td><strong>${u.nome} ${u.sobrenome||''}</strong></td>
-    <td>${u.email}</td><td>${u.telefone||'—'}</td><td>${fmtDt(u.criado_em)}</td>
-    <td><div class="acts">
+    <td data-label="Nome"><strong>${u.nome} ${u.sobrenome||''}</strong>${u.is_admin?' <span class="dtag dtag-ok" style="font-size:.6rem">Admin</span>':''}</td>
+    <td data-label="E-mail">${u.email}</td><td data-label="Telefone">${u.telefone||'—'}</td>
+    <td data-label="Tipo">${u.is_admin?'<span class="dtag dtag-ok">Admin</span>':'<span class="dtag dtag-ocean">Usuário</span>'}</td>
+    <td data-label="Cadastrado">${fmtDt(u.criado_em)}</td>
+    <td data-label="Ações"><div class="acts">
       <button class="btn-t btn-edit" onclick="abrirEdit(${u.id})"><i class="fa-solid fa-pen"></i> Editar</button>
-      <button class="btn-t btn-pw"   onclick="abrirPw(${u.id},'${u.nome}')"><i class="fa-solid fa-key"></i> Senha</button>
-      <button class="btn-t btn-del"  onclick="delUser(${u.id},'${u.nome}')"><i class="fa-solid fa-trash"></i></button>
+      <button class="btn-t btn-pw"   onclick="abrirPw(${u.id},'${(u.nome||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-key"></i> Senha</button>
+      <button class="btn-t btn-del"  onclick="delUser(${u.id},'${(u.nome||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>
     </div></td></tr>`).join('');
 }
 function renderUlt(list){
   const tb=document.getElementById('tbUlt');
   if(!list.length){tb.innerHTML=`<tr><td colspan="4"><div class="dash-empty"><i class="fa-solid fa-users"></i>Nenhum.</div></td></tr>`;return;}
   tb.innerHTML=list.map(u=>`<tr>
-    <td><strong>${u.nome} ${u.sobrenome||''}</strong></td>
-    <td>${u.email}</td><td>${u.telefone||'—'}</td><td>${fmtDt(u.criado_em)}</td></tr>`).join('');
+    <td data-label="Nome"><strong>${u.nome} ${u.sobrenome||''}</strong></td>
+    <td data-label="E-mail">${u.email}</td><td data-label="Telefone">${u.telefone||'—'}</td><td data-label="Cadastrado">${fmtDt(u.criado_em)}</td></tr>`).join('');
 }
 function filtrar(){
   const q=document.getElementById('srch').value.toLowerCase();
   renderUsers(allUsers.filter(u=>(u.nome+' '+(u.sobrenome||'')+' '+u.email).toLowerCase().includes(q)));
 }
+function filtrarUsuarios(){
+  const q=document.getElementById('srchUsers').value.toLowerCase();
+  renderUsers(allUsers.filter(u=>(u.nome+' '+(u.sobrenome||'')+' '+u.email).toLowerCase().includes(q)));
+}
 
 function abrirEdit(id){
   api('/admin/usuarios/'+id).then(u=>{
+    if(u.erro){toast(u.erro,'e');return;}
     document.getElementById('eId').value=u.id;
     document.getElementById('eNome').value=u.nome;
     document.getElementById('eSob').value=u.sobrenome||'';
@@ -319,7 +361,7 @@ function abrirEdit(id){
     document.getElementById('eTel').value=u.telefone||'';
     document.getElementById('eNasc').value=u.nascimento?u.nascimento.split('T')[0]:'';
     abrir('mEdit');
-  });
+  }).catch(()=>toast('Erro ao carregar usuário.','e'));
 }
 function salvarUser(){
   const id=document.getElementById('eId').value;
@@ -328,7 +370,7 @@ function salvarUser(){
   api('/admin/usuarios/'+id,{method:'PUT',body:JSON.stringify(p)}).then(d=>{
     if(d.sucesso){toast('Usuário atualizado! ✅','s');fechar('mEdit');loadUsers();}
     else toast(d.erro||'Erro.','e');
-  });
+  }).catch(()=>toast('Erro ao salvar.','e'));
 }
 function abrirPw(id,nome){
   document.getElementById('pwId').value=id;
@@ -352,29 +394,101 @@ function delUser(id,nome){
   api('/admin/usuarios/'+id,{method:'DELETE'}).then(d=>{
     if(d.sucesso){toast('Usuário removido.','i');loadUsers();loadStats();}
     else toast(d.erro||'Erro.','e');
-  });
+  }).catch(()=>toast('Erro ao remover usuário.','e'));
 }
 
 /* ── agendamentos ── */
+let agStatusFiltro = 'pendente';
+
 function loadAgs(){
-  api('/admin/agendamentos').then(d=>{
-    document.getElementById('lblAgs').textContent=d.length+' agendamentos';
+  const url = agStatusFiltro ? '/admin/agendamentos?status='+agStatusFiltro : '/admin/agendamentos';
+  api(url).then(d=>{
+    const total = d.length;
+    document.getElementById('lblAgs').textContent=total+' agendamentos';
+    const titulos = {pendente:'Pendentes',confirmado:'Confirmadas','':'Todas'};
+    document.getElementById('lblAgsTitle').textContent=titulos[agStatusFiltro]||'Agendamentos';
     const tb=document.getElementById('tbAgs');
-    if(!d.length){tb.innerHTML=`<tr><td colspan="7"><div class="dash-empty"><i class="fa-solid fa-calendar-xmark"></i>Nenhum agendamento.</div></td></tr>`;return;}
-    tb.innerHTML=d.map(a=>`<tr>
-      <td><strong>${a.nome}</strong></td>
-      <td><span class="dtag dtag-ocean">${a.quadra}</span></td>
-      <td>${fmtD(a.data)}</td>
-      <td><strong style="color:var(--ocean)">${a.horario}</strong></td>
-      <td>${a.modalidade||'—'}</td><td>${a.nivel||'—'}</td>
-      <td><button class="btn-t btn-del" onclick="delAg(${a.id})"><i class="fa-solid fa-trash"></i> Remover</button></td>
-    </tr>`).join('');
+    if(!total){tb.innerHTML=`<tr><td colspan="8"><div class="dash-empty"><i class="fa-solid fa-calendar-xmark"></i>Nenhum agendamento.</div></td></tr>`;return;}
+    tb.innerHTML=d.map(a=>{
+      const statusHtml = a.status==='pendente'
+        ? `<div class="status-menu-wrap">
+            <button class="status-btn" onclick="abrirStatusMenu(this,${a.id})">
+              <span class="dtag dtag-orange" style="cursor:pointer">⏳ Pendente</span>
+            </button>
+            <div class="status-menu" id="statusMenu_${a.id}">
+              <button class="sm-item sm-ok" onclick="confirmarAg(${a.id});fecharStatusMenu(${a.id})"><i class="fa-solid fa-check-circle"></i> Confirmar</button>
+              <button class="sm-item sm-no" onclick="reprovarAg(${a.id});fecharStatusMenu(${a.id})"><i class="fa-solid fa-ban"></i> Reprovar</button>
+            </div>
+          </div>`
+        : a.status==='confirmado'
+          ? '<span class="dtag dtag-ok" style="font-size:.82rem;padding:6px 14px">✅ Confirmado</span>'
+          : '<span class="dtag dtag-purple" style="font-size:.82rem;padding:6px 14px">❌ Cancelado</span>';
+      return `<tr>
+        <td data-label="Nome"><strong>${a.nome}</strong></td>
+        <td data-label="Quadra"><span class="dtag dtag-ocean">${a.quadra}</span></td>
+        <td data-label="Data">${fmtD(a.data)}</td>
+        <td data-label="Horário"><strong style="color:var(--ocean)">${a.horario}</strong></td>
+        <td data-label="Modalidade">${a.modalidade||'—'}</td><td data-label="Nível">${a.nivel||'—'}</td>
+        <td data-label="Status">${statusHtml}</td>
+        <td data-label="Ações"><button class="btn-t btn-del" onclick="delAg(${a.id})" title="Excluir permanentemente"><i class="fa-solid fa-trash"></i></button></td>
+      </tr>`;
+    }).join('');
   });
 }
+
+function trocarAbaAg(el){
+  document.querySelectorAll('.ag-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  agStatusFiltro = el.dataset.status;
+  loadAgs();
+  carregarBadgePendentes();
+}
+
+function carregarBadgePendentes(){
+  api('/admin/agendamentos?status=pendente').then(d=>{
+    document.getElementById('badgePendentes').textContent=d.length;
+  });
+}
+
+function confirmarAg(id){
+  api('/admin/agendamentos/'+id+'/status',{method:'PUT',body:JSON.stringify({status:'confirmado'})}).then(d=>{
+    if(d.sucesso){toast('Agendamento confirmado! ✅','s');loadAgs();loadStats();carregarBadgePendentes();}
+    else toast(d.erro||'Erro.','e');
+  }).catch(()=>toast('Erro ao confirmar.','e'));
+}
+
+function reprovarAg(id){
+  api('/admin/agendamentos/'+id+'/status',{method:'PUT',body:JSON.stringify({status:'cancelado'})}).then(d=>{
+    if(d.sucesso){toast('Agendamento cancelado.','i');loadAgs();loadStats();carregarBadgePendentes();}
+    else toast(d.erro||'Erro.','e');
+  }).catch(()=>toast('Erro ao reprovar.','e'));
+}
+
+function abrirStatusMenu(btn,id){
+  fecharTodosStatusMenus();
+  const menu=document.getElementById('statusMenu_'+id);
+  if(menu){
+    menu.classList.add('on');
+    const rect=btn.getBoundingClientRect();
+    menu.style.top=(rect.bottom+4)+'px';
+    menu.style.left=rect.left+'px';
+    document.addEventListener('click',fecharStatusPorFora=(e)=>{
+      if(!e.target.closest('.status-menu-wrap'))fecharStatusMenu(id);
+    },{once:true});
+  }
+}
+function fecharStatusMenu(id){
+  const menu=document.getElementById('statusMenu_'+id);
+  if(menu)menu.classList.remove('on');
+}
+function fecharTodosStatusMenus(){
+  document.querySelectorAll('.status-menu.on').forEach(m=>m.classList.remove('on'));
+}
+
 function delAg(id){
   if(!confirm('Remover agendamento?'))return;
   api('/admin/agendamentos/'+id,{method:'DELETE'}).then(d=>{
-    if(d.sucesso){toast('Removido.','i');loadAgs();loadStats();}
+    if(d.sucesso){toast('Removido.','i');loadAgs();loadStats();carregarBadgePendentes();}
   });
 }
 
@@ -393,6 +507,8 @@ function loadConteudo(){
     set('c_email',d.contato_email); set('c_horario',d.contato_horario);
     set('c_stat_quadras',d.stat_quadras); set('c_stat_alunos',d.stat_alunos);
     set('c_stat_anos',d.stat_anos); set('c_stat_torneios',d.stat_torneios);
+    set('c_social_ig',d.social_ig); set('c_social_wa',d.social_wa);
+    set('c_social_fb',d.social_fb); set('c_social_email',d.social_email);
     renderFaqEditor(d.faq||[]);
   }).catch(()=>{});
 }
@@ -405,6 +521,7 @@ function salvarSecao(sec, nome){
   else if(sec==='quadras')payload={...payload,q1_nome:g('c_q1_nome'),q1_desc:g('c_q1_desc'),q2_nome:g('c_q2_nome'),q2_desc:g('c_q2_desc'),q3_nome:g('c_q3_nome'),q3_desc:g('c_q3_desc')};
   else if(sec==='contato')payload={...payload,contato_end:g('c_end'),contato_tel:g('c_tel'),contato_email:g('c_email'),contato_horario:g('c_horario')};
   else if(sec==='stats')  payload={...payload,stat_quadras:g('c_stat_quadras'),stat_alunos:g('c_stat_alunos'),stat_anos:g('c_stat_anos'),stat_torneios:g('c_stat_torneios')};
+  else if(sec==='social') payload={...payload,social_ig:g('c_social_ig'),social_wa:g('c_social_wa'),social_fb:g('c_social_fb'),social_email:g('c_social_email')};
   else if(sec==='faq')    payload={...payload,faq:lerFaqEditor()};
   api('/admin/conteudo',{method:'PUT',body:JSON.stringify(payload)}).then(d=>{
     if(d.sucesso) toast('Conteúdo salvo! Já está ao vivo ✅','s');

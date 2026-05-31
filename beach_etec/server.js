@@ -6,8 +6,9 @@ const crypto  = require("crypto");
 const fs      = require("fs");
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: true }));
 app.use(express.json());
+app.use(express.static(__dirname));
 
 // ── Conexão Supabase via variáveis de ambiente ──────────
 const db = new Pool({
@@ -71,11 +72,31 @@ app.post("/login-google", async (req, res) => {
 });
 
 /* ═══ AGENDAMENTOS ═══ */
+app.get("/horarios-disponiveis", async (req, res) => {
+  const { data, quadra } = req.query;
+  if (!data || !quadra) return res.status(400).json({ erro: "Data e quadra obrigatórios." });
+  try {
+    const r = await db.query(
+      "SELECT horario FROM agendamentos WHERE data=$1 AND quadra=$2",
+      [data, quadra]
+    );
+    const ocupados = r.rows.map(row => String(row.horario).substring(0, 5));
+    res.json({ ocupados });
+  } catch(e) { res.status(500).json({ erro: "Erro ao consultar." }); }
+});
+
 app.post("/agendar", async (req, res) => {
   const { nome, quadra, data, horario, modalidade, nivel } = req.body;
   try {
+    const conflito = await db.query(
+      "SELECT id FROM agendamentos WHERE quadra=$1 AND data=$2 AND horario=$3 AND status!='cancelado'",
+      [quadra, data, horario]
+    );
+    if (conflito.rows.length) {
+      return res.status(409).json({ erro: "Este horário já está ocupado para esta quadra." });
+    }
     await db.query(
-      "INSERT INTO agendamentos(nome,quadra,data,horario,modalidade,nivel) VALUES($1,$2,$3,$4,$5,$6)",
+      "INSERT INTO agendamentos(nome,quadra,data,horario,modalidade,nivel,status) VALUES($1,$2,$3,$4,$5,$6,'pendente')",
       [nome, quadra, data, horario, modalidade, nivel]
     );
     res.json({ sucesso: true, mensagem: "Agendado! ✅" });
@@ -84,9 +105,24 @@ app.post("/agendar", async (req, res) => {
 
 app.get("/agendamentos", async (req, res) => {
   try {
-    const r = await db.query("SELECT * FROM agendamentos ORDER BY data DESC");
+    let query = "SELECT * FROM agendamentos";
+    let params = [];
+    if (req.query.nome) {
+      query += " WHERE nome=$1";
+      params.push(req.query.nome);
+    }
+    query += " ORDER BY data DESC";
+    const r = await db.query(query, params);
     res.json(r.rows);
   } catch(e) { res.status(500).json({ erro: "Erro." }); }
+});
+
+app.delete("/agendamentos/:id", async (req, res) => {
+  try {
+    const r = await db.query("DELETE FROM agendamentos WHERE id=$1 RETURNING id", [req.params.id]);
+    if (!r.rows.length) return res.status(404).json({ erro: "Agendamento não encontrado." });
+    res.json({ sucesso: true, mensagem: "Reserva cancelada." });
+  } catch(e) { res.status(500).json({ erro: "Erro ao cancelar." }); }
 });
 
 /* ═══ ADMIN AUTH ═══ */
@@ -141,7 +177,13 @@ app.get("/admin/stats", adminAuth, async (req, res) => {
 /* ═══ ADMIN — USUÁRIOS ═══ */
 app.get("/admin/usuarios", adminAuth, async (req, res) => {
   try {
-    const r = await db.query("SELECT id,nome,sobrenome,email,telefone,nascimento,criado_em FROM usuarios ORDER BY criado_em DESC");
+    const r = await db.query(`
+      SELECT u.id,u.nome,u.sobrenome,u.email,u.telefone,u.nascimento,u.criado_em,
+        CASE WHEN a.id IS NOT NULL THEN true ELSE false END as is_admin
+      FROM usuarios u
+      LEFT JOIN admins a ON u.email = a.email
+      ORDER BY u.criado_em DESC
+    `);
     res.json(r.rows);
   } catch(e) { res.status(500).json({ erro: "Erro." }); }
 });
@@ -186,9 +228,28 @@ app.delete("/admin/usuarios/:id", adminAuth, async (req, res) => {
 /* ═══ ADMIN — AGENDAMENTOS ═══ */
 app.get("/admin/agendamentos", adminAuth, async (req, res) => {
   try {
-    const r = await db.query("SELECT * FROM agendamentos ORDER BY data DESC, horario ASC");
+    const { status } = req.query;
+    let query = "SELECT * FROM agendamentos";
+    let params = [];
+    if (status) {
+      query += " WHERE status=$1";
+      params.push(status);
+    }
+    query += " ORDER BY data DESC, horario ASC";
+    const r = await db.query(query, params);
     res.json(r.rows);
   } catch(e) { res.status(500).json({ erro: "Erro." }); }
+});
+
+app.put("/admin/agendamentos/:id/status", adminAuth, async (req, res) => {
+  const { status } = req.body;
+  if (!['pendente','confirmado','cancelado'].includes(status))
+    return res.status(400).json({ erro: "Status inválido." });
+  try {
+    const r = await db.query("UPDATE agendamentos SET status=$1 WHERE id=$2 RETURNING id", [status, req.params.id]);
+    if (!r.rows.length) return res.status(404).json({ erro: "Agendamento não encontrado." });
+    res.json({ sucesso: true, mensagem: "Status atualizado!" });
+  } catch(e) { res.status(500).json({ erro: "Erro ao atualizar." }); }
 });
 
 app.delete("/admin/agendamentos/:id", adminAuth, async (req, res) => {

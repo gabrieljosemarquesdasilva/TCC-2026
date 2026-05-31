@@ -84,55 +84,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
 
-    // ── ENVIO DO FORMULÁRIO ──
-    const form = document.getElementById("form-agendamento");
-
-    if(form){
-        form.addEventListener("submit", function(e){
-            e.preventDefault();
-
-            const dados = {
-                nome: document.querySelector('input[name="nome"]').value,
-                quadra: document.querySelector('select[name="quadra"]').value,
-                data: document.querySelector('input[name="data"]').value,
-                horario: document.querySelector('input[name="horario"]').value,
-                modalidade: document.querySelector('select[name="modalidade"]').value,
-                nivel: document.querySelector('select[name="nivel"]').value
-            };
-
-            fetch("http://localhost:3000/agendar", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(dados)
-            })
-            .then(res => res.text())
-            .then(msg => {
-
-    // pegar dados do formulário
-    const quadra = document.querySelector('select[name="quadra"]').value;
-    const modalidade = document.querySelector('select[name="modalidade"]').value;
-    const data = document.querySelector('input[name="data"]').value;
-    const horario = document.querySelector('input[name="horario"]').value;
-
-    // inserir informações no modal
-    document.getElementById("infoQuadra").innerText = "📍 " + quadra;
-    document.getElementById("infoModalidade").innerText = modalidade;
-    document.getElementById("infoData").innerText = "📅 " + data;
-    document.getElementById("infoHorario").innerText = "⏰ " + horario;
-
-    // abrir modal
-    abrirModal();
-
-    form.reset();
-})
-            .catch(err => {
-                console.error(err);
-                alert("Erro ao conectar com o servidor");
-            });
-        });
-    }
+    // ── ENVIO DO FORMULÁRIO (removido — duplicado com o inline do agendamento.html)
 
 
     // ── LISTAR AGENDAMENTOS (PERFIL) ──
@@ -153,6 +105,9 @@ document.addEventListener("DOMContentLoaded", function(){
                 let item = document.createElement("div");
                 item.classList.add("card-agendamento");
 
+                const statusCores = {pendente:'var(--coral)',confirmado:'var(--green)',cancelado:'var(--muted)'};
+                const statusLabels = {pendente:'⏳ Pendente',confirmado:'✅ Confirmado',cancelado:'❌ Cancelado'};
+
                 item.innerHTML = `
                     <p><strong>Nome:</strong> ${ag.nome}</p>
                     <p><strong>Quadra:</strong> ${ag.quadra}</p>
@@ -160,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     <p><strong>Horário:</strong> ${ag.horario}</p>
                     <p><strong>Modalidade:</strong> ${ag.modalidade}</p>
                     <p><strong>Nível:</strong> ${ag.nivel}</p>
+                    <p><strong>Status:</strong> <span style="color:${statusCores[ag.status]||'var(--muted)'};font-weight:700">${statusLabels[ag.status]||ag.status||'—'}</span></p>
                     <hr>
                 `;
 
@@ -238,3 +194,24 @@ if(usuario){
         nascimento.innerText = data.toLocaleDateString("pt-BR");
     }
 }
+
+// ── CARREGAR REDES SOCIAIS NO RODAPÉ ──
+(function(){
+  fetch("http://localhost:3000/conteudo")
+    .then(r=>r.json())
+    .then(d=>{
+      const map=[
+        {sel:'a[href*="instagram.com"]',key:'social_ig'},
+        {sel:'a[href*="wa.me"]',key:'social_wa'},
+        {sel:'a[href*="facebook.com"]',key:'social_fb'},
+        {sel:'a[href^="mailto:"]',key:'social_email'}
+      ];
+      map.forEach(({sel,key})=>{
+        if(d[key]){
+          const el=document.querySelector(sel);
+          if(el&&el.closest('.footer-social'))el.href=d[key];
+        }
+      });
+    })
+    .catch(()=>{});
+})();

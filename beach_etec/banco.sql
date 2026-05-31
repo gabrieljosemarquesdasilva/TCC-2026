@@ -7,8 +7,12 @@ CREATE TABLE IF NOT EXISTS agendamentos (
   data       DATE,
   horario    TIME,
   modalidade VARCHAR(50),
-  nivel      VARCHAR(50)
+  nivel      VARCHAR(50),
+  status     VARCHAR(20) DEFAULT 'pendente'
 );
+
+-- Se já existe a tabela sem a coluna status, rode:
+-- ALTER TABLE agendamentos ADD COLUMN status VARCHAR(20) DEFAULT 'pendente';
 
 CREATE TABLE IF NOT EXISTS login (
   id        SERIAL PRIMARY KEY,
