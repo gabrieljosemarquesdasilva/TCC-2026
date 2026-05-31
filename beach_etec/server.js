@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const { Pool } = require("pg");
 const cors    = require("cors");
@@ -8,14 +9,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ── Conexão Supabase via variáveis de ambiente ──────────
 const db = new Pool({
-  host:     "db.servfjolajkiozwzyjgq.supabase.co",
-  port:     5432,
-  database: "postgres",
-  user:     "postgres",
-  password: "SUA_SENHA_AQUI",
-  ssl:      { rejectUnauthorized: false }
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
+
 db.connect(err => {
   if (err) console.error("Erro ao conectar:", err.message);
   else     console.log("✅ Conectado ao Supabase!");
@@ -49,11 +48,8 @@ app.post("/login", async (req, res) => {
     );
     if (!r.rows.length) return res.status(401).json({ erro: "E-mail ou senha incorretos." });
     const u = r.rows[0];
-
-    // Verifica se é admin
     const adm = await db.query("SELECT id FROM admins WHERE email=$1", [email]);
     const isAdmin = adm.rows.length > 0;
-
     res.json({ sucesso: true, isAdmin, usuario: {
       id: u.id, nome: u.nome+(u.sobrenome?" "+u.sobrenome:""),
       email: u.email, foto: null,
@@ -203,106 +199,70 @@ app.delete("/admin/agendamentos/:id", adminAuth, async (req, res) => {
 });
 
 /* ═══ ADMIN — CONTEÚDO + HISTÓRICO ═══ */
-const CONTENT_FILE  = "./site_content.json";
-const HISTORY_FILE  = "./site_content_history.json";
-const DEFAULT_FILE  = "./site_content_default.json";
+const CONTENT_FILE = "./site_content.json";
+const HISTORY_FILE = "./site_content_history.json";
+const DEFAULT_FILE = "./site_content_default.json";
 
 function lerJSON(file) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); }
   catch { return file === HISTORY_FILE ? [] : {}; }
 }
-
 function salvarJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2), "utf8");
 }
-
-// Garante que existe o arquivo padrão na primeira execução
-if (!fs.existsSync(DEFAULT_FILE)) {
-  salvarJSON(DEFAULT_FILE, lerJSON(CONTENT_FILE));
-}
+if (!fs.existsSync(DEFAULT_FILE)) salvarJSON(DEFAULT_FILE, lerJSON(CONTENT_FILE));
 
 app.get("/admin/conteudo", adminAuth, (req, res) => res.json(lerJSON(CONTENT_FILE)));
 
 app.put("/admin/conteudo", adminAuth, (req, res) => {
   try {
-    const atual  = lerJSON(CONTENT_FILE);
-    const novo   = Object.assign({}, atual, req.body);
-    const hist   = lerJSON(HISTORY_FILE);
-
-    // Salva snapshot no histórico (máx 50 entradas)
-    hist.unshift({
-      id:        Date.now(),
-      timestamp: new Date().toISOString(),
-      secao:     req.body._secao || "Geral",
-      snapshot:  atual
-    });
+    const atual = lerJSON(CONTENT_FILE);
+    const novo  = Object.assign({}, atual, req.body);
+    const hist  = lerJSON(HISTORY_FILE);
+    hist.unshift({ id: Date.now(), timestamp: new Date().toISOString(), secao: req.body._secao||"Geral", snapshot: atual });
     if (hist.length > 50) hist.splice(50);
-
     salvarJSON(HISTORY_FILE, hist);
     salvarJSON(CONTENT_FILE, novo);
-
     res.json({ sucesso: true, mensagem: "Conteúdo salvo!" });
   } catch(e) { res.status(500).json({ erro: "Erro ao salvar conteúdo." }); }
 });
 
-// Listar histórico
 app.get("/admin/conteudo/historico", adminAuth, (req, res) => {
   const hist = lerJSON(HISTORY_FILE);
-  // Retorna sem o snapshot completo para não pesar
   res.json(hist.map(h => ({
-    id: h.id,
-    timestamp: h.timestamp,
-    secao: h.secao,
+    id: h.id, timestamp: h.timestamp, secao: h.secao,
     preview: JSON.stringify(h.snapshot).substring(0, 120) + "..."
   })));
 });
 
-// Rollback para entrada específica do histórico
 app.post("/admin/conteudo/rollback/:id", adminAuth, (req, res) => {
   try {
-    const hist = lerJSON(HISTORY_FILE);
+    const hist  = lerJSON(HISTORY_FILE);
     const entry = hist.find(h => String(h.id) === String(req.params.id));
     if (!entry) return res.status(404).json({ erro: "Entrada não encontrada." });
-
     const atual = lerJSON(CONTENT_FILE);
-    // Salva estado atual no histórico antes de reverter
-    hist.unshift({
-      id: Date.now(),
-      timestamp: new Date().toISOString(),
-      secao: "Rollback automático",
-      snapshot: atual
-    });
+    hist.unshift({ id: Date.now(), timestamp: new Date().toISOString(), secao: "Rollback automático", snapshot: atual });
     salvarJSON(HISTORY_FILE, hist);
     salvarJSON(CONTENT_FILE, entry.snapshot);
-
-    res.json({ sucesso: true, mensagem: "Conteúdo restaurado para versão anterior!" });
+    res.json({ sucesso: true, mensagem: "Conteúdo restaurado!" });
   } catch(e) { res.status(500).json({ erro: "Erro ao restaurar." }); }
 });
 
-// Rollback para padrão
 app.post("/admin/conteudo/restaurar-padrao", adminAuth, (req, res) => {
   try {
     const padrao = lerJSON(DEFAULT_FILE);
-    if (!Object.keys(padrao).length)
-      return res.status(404).json({ erro: "Conteúdo padrão não encontrado." });
-
+    if (!Object.keys(padrao).length) return res.status(404).json({ erro: "Padrão não encontrado." });
     const atual = lerJSON(CONTENT_FILE);
     const hist  = lerJSON(HISTORY_FILE);
-    hist.unshift({
-      id: Date.now(),
-      timestamp: new Date().toISOString(),
-      secao: "Restauração para padrão",
-      snapshot: atual
-    });
+    hist.unshift({ id: Date.now(), timestamp: new Date().toISOString(), secao: "Restauração para padrão", snapshot: atual });
     salvarJSON(HISTORY_FILE, hist);
     salvarJSON(CONTENT_FILE, padrao);
-
-    res.json({ sucesso: true, mensagem: "Conteúdo restaurado para o padrão original!" });
+    res.json({ sucesso: true, mensagem: "Padrão restaurado!" });
   } catch(e) { res.status(500).json({ erro: "Erro ao restaurar padrão." }); }
 });
 
-// Rota pública para o site ler conteúdo
 app.get("/conteudo", (req, res) => res.json(lerJSON(CONTENT_FILE)));
 
 /* ═══ INICIAR ═══ */
-app.listen(3000, () => console.log("🏖️  Servidor rodando em http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🏖️  Servidor rodando na porta ${PORT}`));

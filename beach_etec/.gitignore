@@ -1,0 +1,5 @@
+# Cole o conteúdo deste arquivo em .gitignore na raiz do projeto
+
+node_modules/
+.env
+site_content_history.json
