@@ -13,7 +13,7 @@ const db = new Pool({
   port:     5432,
   database: "postgres",
   user:     "postgres",
-  password: "SUA_SENHA_AQUI",   // ← troque pela senha do Supabase
+  password: "9Tb1nmbjBKmeObYB",   // ← troque pela senha do Supabase
   ssl:      { rejectUnauthorized: false }
 });
 
