@@ -1,18 +1,20 @@
 -- Rode no Supabase SQL Editor
 
 CREATE TABLE IF NOT EXISTS agendamentos (
-  id         SERIAL PRIMARY KEY,
-  nome       VARCHAR(100),
-  quadra     VARCHAR(50),
-  data       DATE,
-  horario    TIME,
-  modalidade VARCHAR(50),
-  nivel      VARCHAR(50),
-  status     VARCHAR(20) DEFAULT 'pendente'
+  id          SERIAL PRIMARY KEY,
+  nome        VARCHAR(100),
+  quadra      VARCHAR(50),
+  data        DATE,
+  horario     TIME,
+  modalidade  VARCHAR(50),
+  nivel       VARCHAR(50),
+  status      VARCHAR(20) DEFAULT 'pendente',
+  usuario_id  INT REFERENCES usuarios(id) ON DELETE SET NULL
 );
 
--- Se já existe a tabela sem a coluna status, rode:
--- ALTER TABLE agendamentos ADD COLUMN status VARCHAR(20) DEFAULT 'pendente';
+-- Se a tabela já existia, rode os ALTERs abaixo no Supabase:
+-- ALTER TABLE agendamentos ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'pendente';
+-- ALTER TABLE agendamentos ADD COLUMN IF NOT EXISTS usuario_id INT REFERENCES usuarios(id) ON DELETE SET NULL;
 
 CREATE TABLE IF NOT EXISTS login (
   id        SERIAL PRIMARY KEY,
@@ -47,6 +49,13 @@ CREATE TABLE IF NOT EXISTS admin_sessoes (
   token     VARCHAR(255) NOT NULL UNIQUE,
   admin_id  INT NOT NULL,
   criado_em TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS usuario_sessoes (
+  id          SERIAL PRIMARY KEY,
+  token       VARCHAR(255) NOT NULL UNIQUE,
+  usuario_id  INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+  criado_em   TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Admin padrão: usuario=admin / senha=admin123

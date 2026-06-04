@@ -57,7 +57,7 @@ function login(){
   if(!usuario||!senha){mostrarErro('Preencha usuário e senha.');return;}
   document.getElementById('erroBox').classList.remove('show');
   btn.classList.add('admin-btn-loading');btn.disabled=true;
-  fetch('http://localhost:3000/admin/auth',{
+  fetch('/admin/auth',{
     method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({usuario,senha})
   })

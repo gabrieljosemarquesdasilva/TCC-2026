@@ -17,7 +17,7 @@
   function handleCredentialResponse(response) {
     const idToken = jwtDecode(response.credential);
     const dadosUsuario = { google_id: idToken.sub, nome: idToken.name, email: idToken.email, foto: idToken.picture };
-    fetch("http://localhost:3000/login-google", {
+    fetch("/login-google", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dadosUsuario)
     })
@@ -178,7 +178,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
   const senha = document.getElementById('login-senha').value;
   if (!email || !senha) { showToast('Preencha e-mail e senha.', 'error'); return; }
   btn.classList.add('btn-loading'); btn.disabled = true;
-  fetch('http://localhost:3000/login', {
+  fetch('/login', {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ email, senha })
   })
@@ -188,6 +188,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     if (data.sucesso) {
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
       localStorage.setItem('usuario-verificacao', 'true');
+      if (data.token) localStorage.setItem('user-token', data.token);
       if (data.isAdmin) localStorage.setItem('isAdmin', 'true');
       else localStorage.removeItem('isAdmin');
       showToast('Login realizado! ✅', 'success');

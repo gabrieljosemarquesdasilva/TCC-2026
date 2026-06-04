@@ -98,10 +98,9 @@
           <h3><i class="fa-solid fa-globe" style="color:var(--ocean)"></i>Editar Conteúdo do Site</h3>
           <span class="live-badge">Ao vivo</span>
         </div>
-        <p style="font-size:.85rem;color:var(--muted)">Alterações salvas aqui aparecem imediatamente no site. Um histórico completo é mantido para você poder reverter qualquer mudança.</p>
+        <p style="font-size:.85rem;color:var(--muted)">Alterações salvas aqui aparecem imediatamente no site.</p>
       </div>
       <div class="content-grid">
-        <!-- Hero -->
         <div class="content-section">
           <h4><i class="fa-solid fa-house" style="color:var(--coral)"></i> Página Inicial — Hero</h4>
           <div class="fg"><label>Título principal</label><input id="c_hero_titulo" type="text" placeholder="Jogue Beach Tennis"></div>
@@ -109,63 +108,56 @@
           <div class="fg"><label>Texto do botão CTA</label><input id="c_hero_btn" type="text" placeholder="Agendar Agora"></div>
           <button class="btn-save-section" onclick="salvarSecao('hero','Hero')"><i class="fa-solid fa-floppy-disk"></i> Salvar Hero</button>
         </div>
-        <!-- Sobre -->
         <div class="content-section">
           <h4><i class="fa-solid fa-circle-info" style="color:var(--ocean)"></i> Seção "Sobre"</h4>
           <div class="fg"><label>Título da seção</label><input id="c_sobre_titulo" type="text" placeholder="Sobre nós"></div>
           <div class="fg"><label>Texto descritivo</label><textarea id="c_sobre_texto" rows="4" placeholder="Descrição do clube..."></textarea></div>
           <button class="btn-save-section" onclick="salvarSecao('sobre','Sobre')"><i class="fa-solid fa-floppy-disk"></i> Salvar Sobre</button>
         </div>
-        <!-- Quadras -->
         <div class="content-section">
           <h4><i class="fa-solid fa-table-tennis-paddle-ball" style="color:var(--green)"></i> Quadras</h4>
-          <div class="fg"><label>Nome Quadra 1</label><input id="c_q1_nome" type="text" placeholder="Quadra 1"></div>
-          <div class="fg"><label>Descrição Quadra 1</label><input id="c_q1_desc" type="text" placeholder="Quadra coberta premium"></div>
-          <div class="fg"><label>Nome Quadra 2</label><input id="c_q2_nome" type="text" placeholder="Quadra 2"></div>
-          <div class="fg"><label>Descrição Quadra 2</label><input id="c_q2_desc" type="text" placeholder="Quadra ao ar livre"></div>
-          <div class="fg"><label>Nome Quadra 3</label><input id="c_q3_nome" type="text" placeholder="Quadra 3"></div>
-          <div class="fg"><label>Descrição Quadra 3</label><input id="c_q3_desc" type="text" placeholder="Quadra semi-coberta"></div>
+          <div class="fg"><label>Nome Quadra 1</label><input id="c_q1_nome" type="text"></div>
+          <div class="fg"><label>Descrição Quadra 1</label><input id="c_q1_desc" type="text"></div>
+          <div class="fg"><label>Nome Quadra 2</label><input id="c_q2_nome" type="text"></div>
+          <div class="fg"><label>Descrição Quadra 2</label><input id="c_q2_desc" type="text"></div>
+          <div class="fg"><label>Nome Quadra 3</label><input id="c_q3_nome" type="text"></div>
+          <div class="fg"><label>Descrição Quadra 3</label><input id="c_q3_desc" type="text"></div>
           <button class="btn-save-section" onclick="salvarSecao('quadras','Quadras')"><i class="fa-solid fa-floppy-disk"></i> Salvar Quadras</button>
         </div>
-        <!-- Contato -->
         <div class="content-section">
           <h4><i class="fa-solid fa-phone" style="color:var(--purple)"></i> Informações de Contato</h4>
-          <div class="fg"><label>Endereço</label><input id="c_end" type="text" placeholder="Rua das Praias, 123"></div>
-          <div class="fg"><label>Telefone / WhatsApp</label><input id="c_tel" type="text" placeholder="(11) 99999-9999"></div>
-          <div class="fg"><label>E-mail de contato</label><input id="c_email" type="text" placeholder="contato@beachtennis.com"></div>
-          <div class="fg"><label>Horário de funcionamento</label><input id="c_horario" type="text" placeholder="Seg–Dom, 6h–22h"></div>
+          <div class="fg"><label>Endereço</label><input id="c_end" type="text"></div>
+          <div class="fg"><label>Telefone / WhatsApp</label><input id="c_tel" type="text"></div>
+          <div class="fg"><label>E-mail de contato</label><input id="c_email" type="text"></div>
+          <div class="fg"><label>Horário de funcionamento</label><input id="c_horario" type="text"></div>
           <button class="btn-save-section" onclick="salvarSecao('contato','Contato')"><i class="fa-solid fa-floppy-disk"></i> Salvar Contato</button>
         </div>
-        <!-- Redes Sociais -->
         <div class="content-section">
           <h4><i class="fa-solid fa-share-nodes" style="color:var(--coral)"></i> Redes Sociais</h4>
-          <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px">Os links alterados aqui atualizam automaticamente no rodapé do site.</p>
           <div class="frow">
-            <div class="fg"><label><i class="fa-brands fa-instagram" style="color:#e4405f"></i> Instagram (URL)</label><input id="c_social_ig" type="text" placeholder="https://instagram.com/seuperfil"></div>
-            <div class="fg"><label><i class="fa-brands fa-whatsapp" style="color:#25d366"></i> WhatsApp (URL)</label><input id="c_social_wa" type="text" placeholder="https://wa.me/551999999999"></div>
+            <div class="fg"><label><i class="fa-brands fa-instagram" style="color:#e4405f"></i> Instagram</label><input id="c_social_ig" type="text"></div>
+            <div class="fg"><label><i class="fa-brands fa-whatsapp" style="color:#25d366"></i> WhatsApp</label><input id="c_social_wa" type="text"></div>
           </div>
           <div class="frow">
-            <div class="fg"><label><i class="fa-brands fa-facebook" style="color:#1877f2"></i> Facebook (URL)</label><input id="c_social_fb" type="text" placeholder="https://facebook.com/suapagina"></div>
-            <div class="fg"><label><i class="fa-solid fa-envelope" style="color:var(--ocean)"></i> E-mail (URL)</label><input id="c_social_email" type="text" placeholder="mailto:contato@beachtennis.com"></div>
+            <div class="fg"><label><i class="fa-brands fa-facebook" style="color:#1877f2"></i> Facebook</label><input id="c_social_fb" type="text"></div>
+            <div class="fg"><label><i class="fa-solid fa-envelope" style="color:var(--ocean)"></i> E-mail</label><input id="c_social_email" type="text"></div>
           </div>
           <button class="btn-save-section" onclick="salvarSecao('social','Redes Sociais')" style="background:var(--coral)"><i class="fa-solid fa-floppy-disk"></i> Salvar Redes Sociais</button>
         </div>
-        <!-- Stats -->
         <div class="content-section">
           <h4><i class="fa-solid fa-trophy" style="color:var(--coral)"></i> Números do Site</h4>
           <div class="frow">
-            <div class="fg"><label>Quadras</label><input id="c_stat_quadras" type="text" placeholder="3"></div>
-            <div class="fg"><label>Alunos</label><input id="c_stat_alunos" type="text" placeholder="200+"></div>
+            <div class="fg"><label>Quadras</label><input id="c_stat_quadras" type="text"></div>
+            <div class="fg"><label>Alunos</label><input id="c_stat_alunos" type="text"></div>
           </div>
           <div class="frow">
-            <div class="fg"><label>Anos de experiência</label><input id="c_stat_anos" type="text" placeholder="5+"></div>
-            <div class="fg"><label>Torneios</label><input id="c_stat_torneios" type="text" placeholder="50+"></div>
+            <div class="fg"><label>Anos de experiência</label><input id="c_stat_anos" type="text"></div>
+            <div class="fg"><label>Torneios</label><input id="c_stat_torneios" type="text"></div>
           </div>
           <button class="btn-save-section" onclick="salvarSecao('stats','Números')"><i class="fa-solid fa-floppy-disk"></i> Salvar Números</button>
         </div>
-        <!-- FAQ -->
         <div class="content-section">
-          <h4><i class="fa-solid fa-circle-question" style="color:var(--ocean)"></i> FAQ — Perguntas Frequentes</h4>
+          <h4><i class="fa-solid fa-circle-question" style="color:var(--ocean)"></i> FAQ</h4>
           <div id="faqEditor"></div>
           <button class="btn-save-section" style="background:var(--ocean);margin-top:8px" onclick="adicionarFaq()"><i class="fa-solid fa-plus"></i> Nova Pergunta</button>
           <button class="btn-save-section" onclick="salvarSecao('faq','FAQ')" style="margin-top:8px"><i class="fa-solid fa-floppy-disk"></i> Salvar FAQ</button>
@@ -182,7 +174,7 @@
             <i class="fa-solid fa-rotate-left"></i> Restaurar Padrão Original
           </button>
         </div>
-        <p style="font-size:.85rem;color:var(--muted);margin-bottom:0">Cada alteração salva é registrada aqui. Clique em <strong>Reverter</strong> para voltar ao estado daquele momento.</p>
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:0">Cada alteração salva é registrada aqui.</p>
       </div>
       <div id="listaHistorico">
         <div class="dash-empty"><i class="fa-solid fa-clock-rotate-left"></i><p>Nenhuma alteração registrada ainda.</p></div>
@@ -192,7 +184,7 @@
   </div>
 </main>
 
-<!-- MODAL EDITAR USUÁRIO -->
+<!-- MODAIS -->
 <div class="overlay" id="mEdit">
   <div class="modal">
     <button class="m-close" onclick="fechar('mEdit')"><i class="fa-solid fa-xmark"></i></button>
@@ -214,7 +206,6 @@
   </div>
 </div>
 
-<!-- MODAL SENHA -->
 <div class="overlay" id="mPw">
   <div class="modal">
     <button class="m-close" onclick="fechar('mPw')"><i class="fa-solid fa-xmark"></i></button>
@@ -230,7 +221,6 @@
   </div>
 </div>
 
-<!-- MODAL PREVIEW HISTÓRICO -->
 <div class="overlay" id="mHist">
   <div class="modal" style="max-width:600px">
     <button class="m-close" onclick="fechar('mHist')"><i class="fa-solid fa-xmark"></i></button>
@@ -247,16 +237,55 @@
 <div class="admin-toast" id="toast"></div>
 
 <script>
-const API='http://localhost:3000';
-let TK=localStorage.getItem('adminToken')||'';
-let allUsers=[];
+const API = '';
+let TK = localStorage.getItem('adminToken') || '';
+let allUsers = [];
 
-if(!TK) window.location.href='admin_login.html';
+// ── Autenticação via user-token (sem login extra) ──
+async function iniciarSessaoAdmin() {
+  const userToken = localStorage.getItem('user-token');
+  const isAdmin   = localStorage.getItem('isAdmin');
 
-document.addEventListener('DOMContentLoaded',()=>{
-  const n=localStorage.getItem('adminNome')||'Admin';
-  document.getElementById('sbNome').textContent=n;
-  document.getElementById('sbAv').textContent=n[0].toUpperCase();
+  // Se não é admin ou não está logado, volta ao perfil
+  if (!userToken || isAdmin !== 'true') {
+    window.location.href = 'perfil.html';
+    return false;
+  }
+
+  // Se já tem adminToken válido, usa direto
+  if (TK) return true;
+
+  // Troca user-token por adminToken
+  try {
+    const r = await fetch('/admin/auth-user', {
+      method: 'POST',
+      headers: { 'x-user-token': userToken }
+    });
+    const d = await r.json();
+    if (d.sucesso) {
+      localStorage.setItem('adminToken', d.token);
+      localStorage.setItem('adminNome', d.admin);
+      TK = d.token;
+      return true;
+    } else {
+      alert(d.erro || 'Acesso negado.');
+      window.location.href = 'perfil.html';
+      return false;
+    }
+  } catch(e) {
+    alert('Erro ao autenticar. Tente novamente.');
+    window.location.href = 'perfil.html';
+    return false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const ok = await iniciarSessaoAdmin();
+  if (!ok) return;
+
+  const n = localStorage.getItem('adminNome') || 'Admin';
+  document.getElementById('sbNome').textContent = n;
+  document.getElementById('sbAv').textContent   = n[0].toUpperCase();
   relogio();
   loadStats();
   loadUsers();
@@ -265,44 +294,47 @@ document.addEventListener('DOMContentLoaded',()=>{
   loadConteudo();
 });
 
-function relogio(){
-  const el=document.getElementById('clk');
-  const atualizar=()=>{ el.textContent=new Date().toLocaleString('pt-BR'); };
-  atualizar(); setInterval(atualizar,1000);
+function relogio() {
+  const el = document.getElementById('clk');
+  const atualizar = () => { el.textContent = new Date().toLocaleString('pt-BR'); };
+  atualizar(); setInterval(atualizar, 1000);
 }
 
-const titulos={overview:'Visão Geral',usuarios:'Usuários',agendamentos:'Agendamentos',conteudo:'Editar Conteúdo',historico:'Histórico de Alterações'};
-function toggleMenu(){
+const titulos = { overview:'Visão Geral', usuarios:'Usuários', agendamentos:'Agendamentos', conteudo:'Editar Conteúdo', historico:'Histórico de Alterações' };
+function toggleMenu() {
   document.querySelector('.sb').classList.toggle('open');
   document.querySelector('.sb-overlay').classList.toggle('on');
 }
 
-function go(name,el){
-  document.querySelectorAll('.dash-view').forEach(v=>v.classList.remove('on'));
-  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));
+function go(name, el) {
+  document.querySelectorAll('.dash-view').forEach(v => v.classList.remove('on'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('on'));
   document.getElementById('v-'+name).classList.add('on');
   el.classList.add('on');
-  document.getElementById('ptitle').textContent=titulos[name];
-  document.getElementById('srch').value='';
-  if(name==='historico') loadHistorico();
-  if(window.innerWidth<=900){document.querySelector('.sb').classList.remove('open');document.querySelector('.sb-overlay').classList.remove('on')}
+  document.getElementById('ptitle').textContent = titulos[name];
+  document.getElementById('srch').value = '';
+  if (name === 'historico') loadHistorico();
+  if (window.innerWidth <= 900) { document.querySelector('.sb').classList.remove('open'); document.querySelector('.sb-overlay').classList.remove('on'); }
 }
 
-function api(url,opts={}){
-  return fetch(API+url,{...opts,headers:{'Content-Type':'application/json','x-admin-token':TK,...(opts.headers||{})}})
-    .then(r=>{ if(r.status===401){localStorage.removeItem('adminToken');window.location.href='admin_login.html';} return r.json(); });
+function api(url, opts={}) {
+  return fetch(API+url, { ...opts, headers: { 'Content-Type':'application/json', 'x-admin-token':TK, ...(opts.headers||{}) } })
+    .then(r => {
+      if (r.status === 401) { localStorage.removeItem('adminToken'); window.location.href = 'perfil.html'; }
+      return r.json();
+    });
 }
 
 /* ── stats ── */
-function loadStats(){
-  api('/admin/stats').then(d=>{
-    const cards=[
-      {n:d.total_usuarios,    l:'Usuários cadastrados',  i:'fa-users',         c:'c1'},
-      {n:d.total_agendamentos,l:'Total agendamentos',    i:'fa-calendar-check',c:'c2'},
-      {n:d.agendamentos_hoje, l:'Agendamentos hoje',     i:'fa-clock',         c:'c3'},
-      {n:d.novos_hoje,        l:'Novos hoje',            i:'fa-user-plus',     c:'c4'}
+function loadStats() {
+  api('/admin/stats').then(d => {
+    const cards = [
+      { n:d.total_usuarios,     l:'Usuários cadastrados',  i:'fa-users',          c:'c1' },
+      { n:d.total_agendamentos, l:'Total agendamentos',    i:'fa-calendar-check', c:'c2' },
+      { n:d.agendamentos_hoje,  l:'Agendamentos hoje',     i:'fa-clock',          c:'c3' },
+      { n:d.novos_hoje,         l:'Novos hoje',            i:'fa-user-plus',      c:'c4' }
     ];
-    document.getElementById('statRow').innerHTML=cards.map(s=>`
+    document.getElementById('statRow').innerHTML = cards.map(s => `
       <div class="stat-card ${s.c}">
         <div class="sc-icon"><i class="fa-solid ${s.i}"></i></div>
         <div class="sc-num">${s.n}</div>
@@ -312,19 +344,19 @@ function loadStats(){
 }
 
 /* ── usuários ── */
-function loadUsers(){
-  api('/admin/usuarios').then(d=>{
-    allUsers=d;
+function loadUsers() {
+  api('/admin/usuarios').then(d => {
+    allUsers = d;
     renderUsers(d);
-    renderUlt(d.slice(0,5));
-    document.getElementById('lblUsers').textContent=d.length+' usuários';
-    document.getElementById('lblUlt').textContent='últimos 5';
+    renderUlt(d.slice(0, 5));
+    document.getElementById('lblUsers').textContent = d.length + ' usuários';
+    document.getElementById('lblUlt').textContent = 'últimos 5';
   });
 }
-function renderUsers(list){
-  const tb=document.getElementById('tbUsers');
-  if(!list.length){tb.innerHTML=`<tr><td colspan="6"><div class="dash-empty"><i class="fa-solid fa-users"></i>Nenhum usuário.</div></td></tr>`;return;}
-  tb.innerHTML=list.map(u=>`<tr>
+function renderUsers(list) {
+  const tb = document.getElementById('tbUsers');
+  if (!list.length) { tb.innerHTML = `<tr><td colspan="6"><div class="dash-empty"><i class="fa-solid fa-users"></i>Nenhum usuário.</div></td></tr>`; return; }
+  tb.innerHTML = list.map(u => `<tr>
     <td data-label="Nome"><strong>${u.nome} ${u.sobrenome||''}</strong>${u.is_admin?' <span class="dtag dtag-ok" style="font-size:.6rem">Admin</span>':''}</td>
     <td data-label="E-mail">${u.email}</td><td data-label="Telefone">${u.telefone||'—'}</td>
     <td data-label="Tipo">${u.is_admin?'<span class="dtag dtag-ok">Admin</span>':'<span class="dtag dtag-ocean">Usuário</span>'}</td>
@@ -335,82 +367,80 @@ function renderUsers(list){
       <button class="btn-t btn-del"  onclick="delUser(${u.id},'${(u.nome||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash"></i></button>
     </div></td></tr>`).join('');
 }
-function renderUlt(list){
-  const tb=document.getElementById('tbUlt');
-  if(!list.length){tb.innerHTML=`<tr><td colspan="4"><div class="dash-empty"><i class="fa-solid fa-users"></i>Nenhum.</div></td></tr>`;return;}
-  tb.innerHTML=list.map(u=>`<tr>
+function renderUlt(list) {
+  const tb = document.getElementById('tbUlt');
+  if (!list.length) { tb.innerHTML = `<tr><td colspan="4"><div class="dash-empty"><i class="fa-solid fa-users"></i>Nenhum.</div></td></tr>`; return; }
+  tb.innerHTML = list.map(u => `<tr>
     <td data-label="Nome"><strong>${u.nome} ${u.sobrenome||''}</strong></td>
-    <td data-label="E-mail">${u.email}</td><td data-label="Telefone">${u.telefone||'—'}</td><td data-label="Cadastrado">${fmtDt(u.criado_em)}</td></tr>`).join('');
+    <td data-label="E-mail">${u.email}</td><td data-label="Telefone">${u.telefone||'—'}</td>
+    <td data-label="Cadastrado">${fmtDt(u.criado_em)}</td></tr>`).join('');
 }
-function filtrar(){
-  const q=document.getElementById('srch').value.toLowerCase();
-  renderUsers(allUsers.filter(u=>(u.nome+' '+(u.sobrenome||'')+' '+u.email).toLowerCase().includes(q)));
+function filtrar() {
+  const q = document.getElementById('srch').value.toLowerCase();
+  renderUsers(allUsers.filter(u => (u.nome+' '+(u.sobrenome||'')+' '+u.email).toLowerCase().includes(q)));
 }
-function filtrarUsuarios(){
-  const q=document.getElementById('srchUsers').value.toLowerCase();
-  renderUsers(allUsers.filter(u=>(u.nome+' '+(u.sobrenome||'')+' '+u.email).toLowerCase().includes(q)));
+function filtrarUsuarios() {
+  const q = document.getElementById('srchUsers').value.toLowerCase();
+  renderUsers(allUsers.filter(u => (u.nome+' '+(u.sobrenome||'')+' '+u.email).toLowerCase().includes(q)));
 }
-
-function abrirEdit(id){
-  api('/admin/usuarios/'+id).then(u=>{
-    if(u.erro){toast(u.erro,'e');return;}
-    document.getElementById('eId').value=u.id;
-    document.getElementById('eNome').value=u.nome;
-    document.getElementById('eSob').value=u.sobrenome||'';
-    document.getElementById('eEmail').value=u.email;
-    document.getElementById('eTel').value=u.telefone||'';
-    document.getElementById('eNasc').value=u.nascimento?u.nascimento.split('T')[0]:'';
+function abrirEdit(id) {
+  api('/admin/usuarios/'+id).then(u => {
+    if (u.erro) { toast(u.erro,'e'); return; }
+    document.getElementById('eId').value    = u.id;
+    document.getElementById('eNome').value  = u.nome;
+    document.getElementById('eSob').value   = u.sobrenome||'';
+    document.getElementById('eEmail').value = u.email;
+    document.getElementById('eTel').value   = u.telefone||'';
+    document.getElementById('eNasc').value  = u.nascimento ? u.nascimento.split('T')[0] : '';
     abrir('mEdit');
-  }).catch(()=>toast('Erro ao carregar usuário.','e'));
+  }).catch(() => toast('Erro ao carregar usuário.','e'));
 }
-function salvarUser(){
-  const id=document.getElementById('eId').value;
-  const p={nome:document.getElementById('eNome').value.trim(),sobrenome:document.getElementById('eSob').value.trim(),email:document.getElementById('eEmail').value.trim(),telefone:document.getElementById('eTel').value.trim(),nascimento:document.getElementById('eNasc').value||null};
-  if(!p.nome||!p.email){toast('Nome e e-mail obrigatórios.','e');return;}
-  api('/admin/usuarios/'+id,{method:'PUT',body:JSON.stringify(p)}).then(d=>{
-    if(d.sucesso){toast('Usuário atualizado! ✅','s');fechar('mEdit');loadUsers();}
+function salvarUser() {
+  const id = document.getElementById('eId').value;
+  const p  = { nome:document.getElementById('eNome').value.trim(), sobrenome:document.getElementById('eSob').value.trim(), email:document.getElementById('eEmail').value.trim(), telefone:document.getElementById('eTel').value.trim(), nascimento:document.getElementById('eNasc').value||null };
+  if (!p.nome || !p.email) { toast('Nome e e-mail obrigatórios.','e'); return; }
+  api('/admin/usuarios/'+id, { method:'PUT', body:JSON.stringify(p) }).then(d => {
+    if (d.sucesso) { toast('Usuário atualizado! ✅','s'); fechar('mEdit'); loadUsers(); }
     else toast(d.erro||'Erro.','e');
-  }).catch(()=>toast('Erro ao salvar.','e'));
+  }).catch(() => toast('Erro ao salvar.','e'));
 }
-function abrirPw(id,nome){
-  document.getElementById('pwId').value=id;
-  document.getElementById('pwNome').textContent=nome;
-  document.getElementById('pw1').value='';document.getElementById('pw2').value='';
+function abrirPw(id, nome) {
+  document.getElementById('pwId').value = id;
+  document.getElementById('pwNome').textContent = nome;
+  document.getElementById('pw1').value = ''; document.getElementById('pw2').value = '';
   abrir('mPw');
 }
-function salvarPw(){
-  const id=document.getElementById('pwId').value;
-  const p1=document.getElementById('pw1').value;
-  const p2=document.getElementById('pw2').value;
-  if(!p1||p1.length<6){toast('Mínimo 6 caracteres.','e');return;}
-  if(p1!==p2){toast('As senhas não coincidem.','e');return;}
-  api('/admin/usuarios/'+id+'/senha',{method:'PUT',body:JSON.stringify({nova_senha:p1})}).then(d=>{
-    if(d.sucesso){toast('Senha redefinida! ✅','s');fechar('mPw');}
+function salvarPw() {
+  const id = document.getElementById('pwId').value;
+  const p1 = document.getElementById('pw1').value;
+  const p2 = document.getElementById('pw2').value;
+  if (!p1 || p1.length < 6) { toast('Mínimo 6 caracteres.','e'); return; }
+  if (p1 !== p2) { toast('As senhas não coincidem.','e'); return; }
+  api('/admin/usuarios/'+id+'/senha', { method:'PUT', body:JSON.stringify({nova_senha:p1}) }).then(d => {
+    if (d.sucesso) { toast('Senha redefinida! ✅','s'); fechar('mPw'); }
     else toast(d.erro||'Erro.','e');
   });
 }
-function delUser(id,nome){
-  if(!confirm(`Deletar "${nome}"? Não pode ser desfeito.`))return;
-  api('/admin/usuarios/'+id,{method:'DELETE'}).then(d=>{
-    if(d.sucesso){toast('Usuário removido.','i');loadUsers();loadStats();}
+function delUser(id, nome) {
+  if (!confirm(`Deletar "${nome}"? Não pode ser desfeito.`)) return;
+  api('/admin/usuarios/'+id, { method:'DELETE' }).then(d => {
+    if (d.sucesso) { toast('Usuário removido.','i'); loadUsers(); loadStats(); }
     else toast(d.erro||'Erro.','e');
-  }).catch(()=>toast('Erro ao remover usuário.','e'));
+  }).catch(() => toast('Erro ao remover usuário.','e'));
 }
 
 /* ── agendamentos ── */
 let agStatusFiltro = 'pendente';
-
-function loadAgs(){
+function loadAgs() {
   const url = agStatusFiltro ? '/admin/agendamentos?status='+agStatusFiltro : '/admin/agendamentos';
-  api(url).then(d=>{
-    const total = d.length;
-    document.getElementById('lblAgs').textContent=total+' agendamentos';
-    const titulos = {pendente:'Pendentes',confirmado:'Confirmadas','':'Todas'};
-    document.getElementById('lblAgsTitle').textContent=titulos[agStatusFiltro]||'Agendamentos';
-    const tb=document.getElementById('tbAgs');
-    if(!total){tb.innerHTML=`<tr><td colspan="8"><div class="dash-empty"><i class="fa-solid fa-calendar-xmark"></i>Nenhum agendamento.</div></td></tr>`;return;}
-    tb.innerHTML=d.map(a=>{
-      const statusHtml = a.status==='pendente'
+  api(url).then(d => {
+    document.getElementById('lblAgs').textContent = d.length + ' agendamentos';
+    const tits = { pendente:'Pendentes', confirmado:'Confirmadas', '':'Todas' };
+    document.getElementById('lblAgsTitle').textContent = tits[agStatusFiltro] || 'Agendamentos';
+    const tb = document.getElementById('tbAgs');
+    if (!d.length) { tb.innerHTML = `<tr><td colspan="8"><div class="dash-empty"><i class="fa-solid fa-calendar-xmark"></i>Nenhum agendamento.</div></td></tr>`; return; }
+    tb.innerHTML = d.map(a => {
+      const statusHtml = a.status === 'pendente'
         ? `<div class="status-menu-wrap">
             <button class="status-btn" onclick="abrirStatusMenu(this,${a.id})">
               <span class="dtag dtag-orange" style="cursor:pointer">⏳ Pendente</span>
@@ -420,7 +450,7 @@ function loadAgs(){
               <button class="sm-item sm-no" onclick="reprovarAg(${a.id});fecharStatusMenu(${a.id})"><i class="fa-solid fa-ban"></i> Reprovar</button>
             </div>
           </div>`
-        : a.status==='confirmado'
+        : a.status === 'confirmado'
           ? '<span class="dtag dtag-ok" style="font-size:.82rem;padding:6px 14px">✅ Confirmado</span>'
           : '<span class="dtag dtag-purple" style="font-size:.82rem;padding:6px 14px">❌ Cancelado</span>';
       return `<tr>
@@ -430,74 +460,58 @@ function loadAgs(){
         <td data-label="Horário"><strong style="color:var(--ocean)">${a.horario}</strong></td>
         <td data-label="Modalidade">${a.modalidade||'—'}</td><td data-label="Nível">${a.nivel||'—'}</td>
         <td data-label="Status">${statusHtml}</td>
-        <td data-label="Ações"><button class="btn-t btn-del" onclick="delAg(${a.id})" title="Excluir permanentemente"><i class="fa-solid fa-trash"></i></button></td>
+        <td data-label="Ações"><button class="btn-t btn-del" onclick="delAg(${a.id})"><i class="fa-solid fa-trash"></i></button></td>
       </tr>`;
     }).join('');
   });
 }
-
-function trocarAbaAg(el){
-  document.querySelectorAll('.ag-tab').forEach(t=>t.classList.remove('on'));
+function trocarAbaAg(el) {
+  document.querySelectorAll('.ag-tab').forEach(t => t.classList.remove('on'));
   el.classList.add('on');
   agStatusFiltro = el.dataset.status;
-  loadAgs();
-  carregarBadgePendentes();
+  loadAgs(); carregarBadgePendentes();
 }
-
-function carregarBadgePendentes(){
-  api('/admin/agendamentos?status=pendente').then(d=>{
-    document.getElementById('badgePendentes').textContent=d.length;
+function carregarBadgePendentes() {
+  api('/admin/agendamentos?status=pendente').then(d => { document.getElementById('badgePendentes').textContent = d.length; });
+}
+function confirmarAg(id) {
+  api('/admin/agendamentos/'+id+'/status', { method:'PUT', body:JSON.stringify({status:'confirmado'}) }).then(d => {
+    if (d.sucesso) { toast('Agendamento confirmado! ✅','s'); loadAgs(); loadStats(); carregarBadgePendentes(); }
+    else toast(d.erro||'Erro.','e');
   });
 }
-
-function confirmarAg(id){
-  api('/admin/agendamentos/'+id+'/status',{method:'PUT',body:JSON.stringify({status:'confirmado'})}).then(d=>{
-    if(d.sucesso){toast('Agendamento confirmado! ✅','s');loadAgs();loadStats();carregarBadgePendentes();}
+function reprovarAg(id) {
+  api('/admin/agendamentos/'+id+'/status', { method:'PUT', body:JSON.stringify({status:'cancelado'}) }).then(d => {
+    if (d.sucesso) { toast('Agendamento cancelado.','i'); loadAgs(); loadStats(); carregarBadgePendentes(); }
     else toast(d.erro||'Erro.','e');
-  }).catch(()=>toast('Erro ao confirmar.','e'));
+  });
 }
-
-function reprovarAg(id){
-  api('/admin/agendamentos/'+id+'/status',{method:'PUT',body:JSON.stringify({status:'cancelado'})}).then(d=>{
-    if(d.sucesso){toast('Agendamento cancelado.','i');loadAgs();loadStats();carregarBadgePendentes();}
-    else toast(d.erro||'Erro.','e');
-  }).catch(()=>toast('Erro ao reprovar.','e'));
-}
-
-function abrirStatusMenu(btn,id){
+function abrirStatusMenu(btn, id) {
   fecharTodosStatusMenus();
-  const menu=document.getElementById('statusMenu_'+id);
-  if(menu){
+  const menu = document.getElementById('statusMenu_'+id);
+  if (menu) {
     menu.classList.add('on');
-    const rect=btn.getBoundingClientRect();
-    menu.style.top=(rect.bottom+4)+'px';
-    menu.style.left=rect.left+'px';
-    document.addEventListener('click',fecharStatusPorFora=(e)=>{
-      if(!e.target.closest('.status-menu-wrap'))fecharStatusMenu(id);
-    },{once:true});
+    const rect = btn.getBoundingClientRect();
+    menu.style.top  = (rect.bottom+4)+'px';
+    menu.style.left = rect.left+'px';
+    document.addEventListener('click', fecharStatusPorFora = (e) => {
+      if (!e.target.closest('.status-menu-wrap')) fecharStatusMenu(id);
+    }, { once:true });
   }
 }
-function fecharStatusMenu(id){
-  const menu=document.getElementById('statusMenu_'+id);
-  if(menu)menu.classList.remove('on');
-}
-function fecharTodosStatusMenus(){
-  document.querySelectorAll('.status-menu.on').forEach(m=>m.classList.remove('on'));
-}
-
-function delAg(id){
-  if(!confirm('Remover agendamento?'))return;
-  api('/admin/agendamentos/'+id,{method:'DELETE'}).then(d=>{
-    if(d.sucesso){toast('Removido.','i');loadAgs();loadStats();carregarBadgePendentes();}
+function fecharStatusMenu(id) { const m = document.getElementById('statusMenu_'+id); if (m) m.classList.remove('on'); }
+function fecharTodosStatusMenus() { document.querySelectorAll('.status-menu.on').forEach(m => m.classList.remove('on')); }
+function delAg(id) {
+  if (!confirm('Remover agendamento?')) return;
+  api('/admin/agendamentos/'+id, { method:'DELETE' }).then(d => {
+    if (d.sucesso) { toast('Removido.','i'); loadAgs(); loadStats(); carregarBadgePendentes(); }
   });
 }
 
 /* ── conteúdo ── */
-let conteudo={};
-function loadConteudo(){
-  api('/admin/conteudo').then(d=>{
-    conteudo=d;
-    const set=(id,val)=>{const el=document.getElementById(id);if(el&&val!==undefined)el.value=val;};
+function loadConteudo() {
+  api('/admin/conteudo').then(d => {
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
     set('c_hero_titulo',d.hero_titulo); set('c_hero_sub',d.hero_sub); set('c_hero_btn',d.hero_btn);
     set('c_sobre_titulo',d.sobre_titulo); set('c_sobre_texto',d.sobre_texto);
     set('c_q1_nome',d.q1_nome); set('c_q1_desc',d.q1_desc);
@@ -512,27 +526,23 @@ function loadConteudo(){
     renderFaqEditor(d.faq||[]);
   }).catch(()=>{});
 }
-const g=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
-
-function salvarSecao(sec, nome){
-  let payload={_secao: nome};
-  if(sec==='hero')        payload={...payload,hero_titulo:g('c_hero_titulo'),hero_sub:g('c_hero_sub'),hero_btn:g('c_hero_btn')};
-  else if(sec==='sobre')  payload={...payload,sobre_titulo:g('c_sobre_titulo'),sobre_texto:g('c_sobre_texto')};
-  else if(sec==='quadras')payload={...payload,q1_nome:g('c_q1_nome'),q1_desc:g('c_q1_desc'),q2_nome:g('c_q2_nome'),q2_desc:g('c_q2_desc'),q3_nome:g('c_q3_nome'),q3_desc:g('c_q3_desc')};
-  else if(sec==='contato')payload={...payload,contato_end:g('c_end'),contato_tel:g('c_tel'),contato_email:g('c_email'),contato_horario:g('c_horario')};
-  else if(sec==='stats')  payload={...payload,stat_quadras:g('c_stat_quadras'),stat_alunos:g('c_stat_alunos'),stat_anos:g('c_stat_anos'),stat_torneios:g('c_stat_torneios')};
-  else if(sec==='social') payload={...payload,social_ig:g('c_social_ig'),social_wa:g('c_social_wa'),social_fb:g('c_social_fb'),social_email:g('c_social_email')};
-  else if(sec==='faq')    payload={...payload,faq:lerFaqEditor()};
-  api('/admin/conteudo',{method:'PUT',body:JSON.stringify(payload)}).then(d=>{
-    if(d.sucesso) toast('Conteúdo salvo! Já está ao vivo ✅','s');
+const g = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+function salvarSecao(sec, nome) {
+  let payload = { _secao: nome };
+  if (sec==='hero')        payload = {...payload, hero_titulo:g('c_hero_titulo'), hero_sub:g('c_hero_sub'), hero_btn:g('c_hero_btn')};
+  else if (sec==='sobre')  payload = {...payload, sobre_titulo:g('c_sobre_titulo'), sobre_texto:g('c_sobre_texto')};
+  else if (sec==='quadras')payload = {...payload, q1_nome:g('c_q1_nome'), q1_desc:g('c_q1_desc'), q2_nome:g('c_q2_nome'), q2_desc:g('c_q2_desc'), q3_nome:g('c_q3_nome'), q3_desc:g('c_q3_desc')};
+  else if (sec==='contato')payload = {...payload, contato_end:g('c_end'), contato_tel:g('c_tel'), contato_email:g('c_email'), contato_horario:g('c_horario')};
+  else if (sec==='stats')  payload = {...payload, stat_quadras:g('c_stat_quadras'), stat_alunos:g('c_stat_alunos'), stat_anos:g('c_stat_anos'), stat_torneios:g('c_stat_torneios')};
+  else if (sec==='social') payload = {...payload, social_ig:g('c_social_ig'), social_wa:g('c_social_wa'), social_fb:g('c_social_fb'), social_email:g('c_social_email')};
+  else if (sec==='faq')    payload = {...payload, faq:lerFaqEditor()};
+  api('/admin/conteudo', { method:'PUT', body:JSON.stringify(payload) }).then(d => {
+    if (d.sucesso) toast('Conteúdo salvo! Já está ao vivo ✅','s');
     else toast(d.erro||'Erro.','e');
   });
 }
-
-/* ── faq editor ── */
-function renderFaqEditor(lista){
-  const el=document.getElementById('faqEditor');
-  el.innerHTML=(lista||[]).map((item,i)=>`
+function renderFaqEditor(lista) {
+  document.getElementById('faqEditor').innerHTML = (lista||[]).map((item,i) => `
     <div style="background:#f7fafc;border-radius:10px;padding:12px;margin-bottom:10px;border:1px solid var(--border)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <span style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)">Pergunta ${i+1}</span>
@@ -542,128 +552,97 @@ function renderFaqEditor(lista){
       <input type="text" placeholder="Resposta" value="${(item.r||'').replace(/"/g,'&quot;')}" id="fq_r_${i}" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:DM Sans,sans-serif;font-size:.88rem;outline:none">
     </div>`).join('');
 }
-function lerFaqEditor(){
-  const out=[];let i=0;
-  while(document.getElementById('fq_p_'+i)){
-    out.push({p:document.getElementById('fq_p_'+i).value,r:document.getElementById('fq_r_'+i).value});i++;
+function lerFaqEditor() {
+  const out = []; let i = 0;
+  while (document.getElementById('fq_p_'+i)) {
+    out.push({ p:document.getElementById('fq_p_'+i).value, r:document.getElementById('fq_r_'+i).value }); i++;
   }
   return out;
 }
-function adicionarFaq(){ const atual=lerFaqEditor(); atual.push({p:'',r:''}); renderFaqEditor(atual); }
-function remFaq(i){ const atual=lerFaqEditor(); atual.splice(i,1); renderFaqEditor(atual); }
+function adicionarFaq() { const atual = lerFaqEditor(); atual.push({p:'',r:''}); renderFaqEditor(atual); }
+function remFaq(i) { const atual = lerFaqEditor(); atual.splice(i,1); renderFaqEditor(atual); }
 
 /* ── histórico ── */
-function loadHistorico(){
-  api('/admin/conteudo/historico').then(list=>{
-    const el=document.getElementById('listaHistorico');
-    if(!list.length){
-      el.innerHTML='<div class="dash-empty"><i class="fa-solid fa-clock-rotate-left"></i><p>Nenhuma alteração registrada ainda.</p></div>';
-      return;
-    }
-    const secaoIcon={
-      'Hero':'fa-house','Sobre':'fa-circle-info','Quadras':'fa-table-tennis-paddle-ball',
-      'Contato':'fa-phone','Números':'fa-trophy','FAQ':'fa-circle-question',
-      'Rollback automático':'fa-rotate-left','Restauração para padrão':'fa-rotate-left','Geral':'fa-pen-to-square'
-    };
-    el.innerHTML=list.map((h,idx)=>{
-      const icon=secaoIcon[h.secao]||'fa-pen-to-square';
-      const dt=new Date(h.timestamp).toLocaleString('pt-BR');
-      const isFirst=idx===0;
+function loadHistorico() {
+  api('/admin/conteudo/historico').then(list => {
+    const el = document.getElementById('listaHistorico');
+    if (!list.length) { el.innerHTML = '<div class="dash-empty"><i class="fa-solid fa-clock-rotate-left"></i><p>Nenhuma alteração registrada ainda.</p></div>'; return; }
+    const secaoIcon = { 'Hero':'fa-house','Sobre':'fa-circle-info','Quadras':'fa-table-tennis-paddle-ball','Contato':'fa-phone','Números':'fa-trophy','FAQ':'fa-circle-question','Rollback automático':'fa-rotate-left','Restauração para padrão':'fa-rotate-left','Geral':'fa-pen-to-square' };
+    el.innerHTML = list.map((h,idx) => {
+      const icon = secaoIcon[h.secao] || 'fa-pen-to-square';
+      const dt   = new Date(h.timestamp).toLocaleString('pt-BR');
       return `<div class="hist-item">
         <div class="hist-header">
-          <div class="hist-secao">
-            <i class="fa-solid ${icon}" style="color:var(--ocean)"></i>
-            ${h.secao}
-            ${isFirst?'<span class="dtag dtag-ok" style="font-size:.65rem">Mais recente</span>':''}
-          </div>
+          <div class="hist-secao"><i class="fa-solid ${icon}" style="color:var(--ocean)"></i>${h.secao}${idx===0?'<span class="dtag dtag-ok" style="font-size:.65rem">Mais recente</span>':''}</div>
           <span class="hist-time"><i class="fa-regular fa-clock"></i> ${dt}</span>
         </div>
         <div class="hist-preview">${h.preview}</div>
         <div class="hist-actions">
-          <button class="btn-t btn-edit" onclick="verHistorico('${h.id}','${h.secao}','${dt}')">
-            <i class="fa-solid fa-eye"></i> Ver conteúdo
-          </button>
-          <button class="btn-t btn-rollback" onclick="confirmarRollback('${h.id}','${h.secao}','${dt}')">
-            <i class="fa-solid fa-rotate-left"></i> Reverter para esta versão
-          </button>
+          <button class="btn-t btn-edit" onclick="verHistorico('${h.id}','${h.secao}','${dt}')"><i class="fa-solid fa-eye"></i> Ver conteúdo</button>
+          <button class="btn-t btn-rollback" onclick="confirmarRollback('${h.id}','${h.secao}','${dt}')"><i class="fa-solid fa-rotate-left"></i> Reverter</button>
         </div>
       </div>`;
     }).join('');
   });
 }
-
-function verHistorico(id,secao,dt){
-  // Busca snapshot completo
-  fetch(API+'/admin/conteudo/historico',{headers:{'x-admin-token':TK}})
-    .then(r=>r.json())
-    .then(list=>{
-      // O preview não tem o snapshot; precisamos buscar via rollback endpoint não-destrutivo
-      // Por ora mostramos o preview resumido
-      const entry=list.find(h=>String(h.id)===String(id));
-      if(!entry)return;
-      document.getElementById('histModalInfo').textContent=`Seção: ${secao} — ${dt}`;
-      document.getElementById('histModalPre').textContent=entry.preview;
-      document.getElementById('histRollbackBtn').onclick=()=>{fechar('mHist');rollback(id);};
-      abrir('mHist');
-    });
-}
-
-function confirmarRollback(id,secao,dt){
-  if(!confirm(`Reverter o site para a versão de "${dt}" (${secao})?\n\nO estado atual será salvo no histórico antes de reverter.`)) return;
-  rollback(id);
-}
-
-function rollback(id){
-  api('/admin/conteudo/rollback/'+id,{method:'POST'}).then(d=>{
-    if(d.sucesso){
-      toast('Versão restaurada com sucesso! ✅','s');
-      loadConteudo();
-      loadHistorico();
-    } else toast(d.erro||'Erro ao restaurar.','e');
+function verHistorico(id, secao, dt) {
+  fetch(API+'/admin/conteudo/historico', { headers:{'x-admin-token':TK} }).then(r=>r.json()).then(list => {
+    const entry = list.find(h => String(h.id) === String(id));
+    if (!entry) return;
+    document.getElementById('histModalInfo').textContent = `Seção: ${secao} — ${dt}`;
+    document.getElementById('histModalPre').textContent  = entry.preview;
+    document.getElementById('histRollbackBtn').onclick   = () => { fechar('mHist'); rollback(id); };
+    abrir('mHist');
   });
 }
-
-function restaurarPadrao(){
-  if(!confirm('Restaurar o conteúdo padrão original do site?\n\nO estado atual será salvo no histórico antes de restaurar.')) return;
-  api('/admin/conteudo/restaurar-padrao',{method:'POST'}).then(d=>{
-    if(d.sucesso){
-      toast('Conteúdo padrão restaurado! ✅','s');
-      loadConteudo();
-      loadHistorico();
-    } else toast(d.erro||'Erro: '+d.erro,'e');
+function confirmarRollback(id, secao, dt) {
+  if (!confirm(`Reverter o site para a versão de "${dt}" (${secao})?`)) return;
+  rollback(id);
+}
+function rollback(id) {
+  api('/admin/conteudo/rollback/'+id, { method:'POST' }).then(d => {
+    if (d.sucesso) { toast('Versão restaurada! ✅','s'); loadConteudo(); loadHistorico(); }
+    else toast(d.erro||'Erro ao restaurar.','e');
+  });
+}
+function restaurarPadrao() {
+  if (!confirm('Restaurar o conteúdo padrão original?')) return;
+  api('/admin/conteudo/restaurar-padrao', { method:'POST' }).then(d => {
+    if (d.sucesso) { toast('Padrão restaurado! ✅','s'); loadConteudo(); loadHistorico(); }
+    else toast(d.erro||'Erro: '+d.erro,'e');
   });
 }
 
 /* ── logout ── */
-function sair(){
-  if(!confirm('Sair do painel?'))return;
-  fetch(API+'/admin/logout',{method:'POST',headers:{'x-admin-token':TK}})
-    .finally(()=>{
-      localStorage.removeItem('adminToken');localStorage.removeItem('adminNome');
-      window.location.href='admin_login.html';
+function sair() {
+  if (!confirm('Sair do painel?')) return;
+  fetch(API+'/admin/logout', { method:'POST', headers:{'x-admin-token':TK} })
+    .finally(() => {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminNome');
+      window.location.href = 'perfil.html';
     });
 }
 
-/* ── modal helpers ── */
-function abrir(id){document.getElementById(id).classList.add('on');}
-function fechar(id){document.getElementById(id).classList.remove('on');}
-['mEdit','mPw','mHist'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',e=>{if(e.target===e.currentTarget)fechar(id);});
+/* ── modais ── */
+function abrir(id) { document.getElementById(id).classList.add('on'); }
+function fechar(id) { document.getElementById(id).classList.remove('on'); }
+['mEdit','mPw','mHist'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => { if (e.target === e.currentTarget) fechar(id); });
 });
 
 /* ── toast ── */
-function toast(msg,tipo='i'){
-  const t=document.getElementById('toast');
-  const icons={s:'fa-circle-check',e:'fa-circle-xmark',i:'fa-circle-info'};
-  t.innerHTML=`<i class="fa-solid ${icons[tipo]}"></i>${msg}`;
-  t.className='admin-toast '+tipo;
+function toast(msg, tipo='i') {
+  const t = document.getElementById('toast');
+  const icons = { s:'fa-circle-check', e:'fa-circle-xmark', i:'fa-circle-info' };
+  t.innerHTML = `<i class="fa-solid ${icons[tipo]}"></i>${msg}`;
+  t.className = 'admin-toast ' + tipo;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3500);
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-/* ── helpers ── */
-function fmtDt(s){if(!s)return'—';return new Date(s).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}
-function fmtD(s){if(!s)return'—';const[y,m,d]=s.split('T')[0].split('-');return`${d}/${m}/${y}`;}
+function fmtDt(s) { if (!s) return '—'; return new Date(s).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function fmtD(s)  { if (!s) return '—'; const [y,m,d] = s.split('T')[0].split('-'); return `${d}/${m}/${y}`; }
 </script>
 </body>
 </html>

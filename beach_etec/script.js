@@ -91,7 +91,8 @@ document.addEventListener("DOMContentLoaded", function(){
     const lista = document.getElementById("lista-agendamentos");
 
     if(lista){
-        fetch("http://localhost:3000/agendamentos")
+        const token = localStorage.getItem("user-token");
+        fetch("/agendamentos", { headers: token ? { "x-user-token": token } : {} })
         .then(res => res.json())
         .then(dados => {
 
@@ -151,19 +152,13 @@ function fecharImagem(){
 }
 
 function abrirModal(){
-    let modal = document.getElementById("modalSucesso");
-
-    if(modal){
-        modal.style.display = "flex";
-    }
+    const modal = document.getElementById("modalSucesso");
+    if(modal) modal.classList.add("open");
 }
 
 function fecharModal(){
-    let modal = document.getElementById("modalSucesso");
-
-    if(modal){
-        modal.style.display = "none";
-    }
+    const modal = document.getElementById("modalSucesso");
+    if(modal) modal.classList.remove("open");
 }
 
 // ── CARREGAR DADOS DO USUÁRIO NO PERFIL ──
@@ -197,7 +192,7 @@ if(usuario){
 
 // ── CARREGAR REDES SOCIAIS NO RODAPÉ ──
 (function(){
-  fetch("http://localhost:3000/conteudo")
+  fetch("/conteudo")
     .then(r=>r.json())
     .then(d=>{
       const map=[

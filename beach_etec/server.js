@@ -10,7 +10,6 @@ app.use(cors({ origin: true }));
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// ── Conexão Supabase via variáveis de ambiente ──────────
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
@@ -51,7 +50,11 @@ app.post("/login", async (req, res) => {
     const u = r.rows[0];
     const adm = await db.query("SELECT id FROM admins WHERE email=$1", [email]);
     const isAdmin = adm.rows.length > 0;
-    res.json({ sucesso: true, isAdmin, usuario: {
+
+    const token = crypto.randomBytes(32).toString("hex");
+    await db.query("INSERT INTO usuario_sessoes(token,usuario_id) VALUES($1,$2)", [token, u.id]);
+
+    res.json({ sucesso: true, isAdmin, token, usuario: {
       id: u.id, nome: u.nome+(u.sobrenome?" "+u.sobrenome:""),
       email: u.email, foto: null,
       telefone: u.telefone||"", nascimento: u.nascimento||""
@@ -71,70 +74,100 @@ app.post("/login-google", async (req, res) => {
   } catch(e) { res.status(500).json({ erro: "Erro." }); }
 });
 
+app.post("/logout", async (req, res) => {
+  const token = req.headers["x-user-token"];
+  if (token) await db.query("DELETE FROM usuario_sessoes WHERE token=$1", [token]).catch(()=>{});
+  res.json({ sucesso: true });
+});
+
+/* ── Middleware usuário ── */
+async function userAuth(req, res, next) {
+  const token = req.headers["x-user-token"];
+  if (!token) return res.status(401).json({ erro: "Não autenticado. Faça login." });
+  try {
+    const r = await db.query("SELECT usuario_id FROM usuario_sessoes WHERE token=$1", [token]);
+    if (!r.rows.length) return res.status(401).json({ erro: "Sessão inválida. Faça login novamente." });
+    req.usuarioId = r.rows[0].usuario_id;
+    next();
+  } catch(e) { res.status(401).json({ erro: "Erro de autenticação." }); }
+}
+
 /* ═══ AGENDAMENTOS ═══ */
 app.get("/horarios-disponiveis", async (req, res) => {
   const { data, quadra } = req.query;
   if (!data || !quadra) return res.status(400).json({ erro: "Data e quadra obrigatórios." });
   try {
-    const r = await db.query(
-      "SELECT horario FROM agendamentos WHERE data=$1 AND quadra=$2",
-      [data, quadra]
-    );
+    const r = await db.query("SELECT horario FROM agendamentos WHERE data=$1 AND quadra=$2", [data, quadra]);
     const ocupados = r.rows.map(row => String(row.horario).substring(0, 5));
     res.json({ ocupados });
   } catch(e) { res.status(500).json({ erro: "Erro ao consultar." }); }
 });
 
-app.post("/agendar", async (req, res) => {
+app.post("/agendar", userAuth, async (req, res) => {
   const { nome, quadra, data, horario, modalidade, nivel } = req.body;
   try {
     const conflito = await db.query(
       "SELECT id FROM agendamentos WHERE quadra=$1 AND data=$2 AND horario=$3 AND status!='cancelado'",
       [quadra, data, horario]
     );
-    if (conflito.rows.length) {
-      return res.status(409).json({ erro: "Este horário já está ocupado para esta quadra." });
-    }
+    if (conflito.rows.length) return res.status(409).json({ erro: "Este horário já está ocupado para esta quadra." });
     await db.query(
-      "INSERT INTO agendamentos(nome,quadra,data,horario,modalidade,nivel,status) VALUES($1,$2,$3,$4,$5,$6,'pendente')",
-      [nome, quadra, data, horario, modalidade, nivel]
+      "INSERT INTO agendamentos(nome,quadra,data,horario,modalidade,nivel,status,usuario_id) VALUES($1,$2,$3,$4,$5,$6,'pendente',$7)",
+      [nome, quadra, data, horario, modalidade, nivel, req.usuarioId]
     );
     res.json({ sucesso: true, mensagem: "Agendado! ✅" });
   } catch(e) { res.status(500).json({ erro: "Erro ao salvar." }); }
 });
 
-app.get("/agendamentos", async (req, res) => {
+app.get("/agendamentos", userAuth, async (req, res) => {
   try {
-    let query = "SELECT * FROM agendamentos";
-    let params = [];
-    if (req.query.nome) {
-      query += " WHERE nome=$1";
-      params.push(req.query.nome);
-    }
-    query += " ORDER BY data DESC";
-    const r = await db.query(query, params);
+    const r = await db.query("SELECT * FROM agendamentos WHERE usuario_id=$1 ORDER BY data DESC", [req.usuarioId]);
     res.json(r.rows);
   } catch(e) { res.status(500).json({ erro: "Erro." }); }
 });
 
-app.delete("/agendamentos/:id", async (req, res) => {
+app.delete("/agendamentos/:id", userAuth, async (req, res) => {
   try {
-    const r = await db.query("DELETE FROM agendamentos WHERE id=$1 RETURNING id", [req.params.id]);
-    if (!r.rows.length) return res.status(404).json({ erro: "Agendamento não encontrado." });
+    const r = await db.query(
+      "DELETE FROM agendamentos WHERE id=$1 AND usuario_id=$2 RETURNING id",
+      [req.params.id, req.usuarioId]
+    );
+    if (!r.rows.length) return res.status(404).json({ erro: "Agendamento não encontrado ou sem permissão." });
     res.json({ sucesso: true, mensagem: "Reserva cancelada." });
   } catch(e) { res.status(500).json({ erro: "Erro ao cancelar." }); }
 });
 
 /* ═══ ADMIN AUTH ═══ */
+
+// Rota nova: troca user-token por adminToken (sem senha extra)
+app.post("/admin/auth-user", async (req, res) => {
+  const userToken = req.headers["x-user-token"];
+  if (!userToken) return res.status(401).json({ erro: "Não autenticado." });
+  try {
+    // Verifica sessão do usuário
+    const sess = await db.query(
+      "SELECT u.id, u.nome, u.email FROM usuario_sessoes s JOIN usuarios u ON u.id=s.usuario_id WHERE s.token=$1",
+      [userToken]
+    );
+    if (!sess.rows.length) return res.status(401).json({ erro: "Sessão inválida." });
+    const u = sess.rows[0];
+    // Verifica se é admin pelo email
+    const adm = await db.query("SELECT id FROM admins WHERE email=$1", [u.email]);
+    if (!adm.rows.length) return res.status(403).json({ erro: "Acesso negado. Conta sem permissão de admin." });
+    // Gera adminToken
+    const adminToken = crypto.randomBytes(32).toString("hex");
+    await db.query("INSERT INTO admin_sessoes(token,admin_id) VALUES($1,$2)", [adminToken, adm.rows[0].id]);
+    res.json({ sucesso: true, token: adminToken, admin: u.nome });
+  } catch(e) { res.status(500).json({ erro: "Erro interno." }); }
+});
+
+// Rota original mantida (para quem quiser usar admin_login.html)
 app.post("/admin/auth", async (req, res) => {
   const { usuario, senha } = req.body;
   try {
-    const r = await db.query(
-      "SELECT id,usuario FROM admins WHERE usuario=$1 AND senha=$2",
-      [usuario, hash(senha)]
-    );
+    const r = await db.query("SELECT id,usuario FROM admins WHERE usuario=$1 AND senha=$2", [usuario, hash(senha)]);
     if (!r.rows.length) return res.status(401).json({ erro: "Usuário ou senha incorretos." });
-    const token = hash(r.rows[0].id + Date.now() + "beach_etec_2025");
+    const token = crypto.randomBytes(32).toString("hex");
     await db.query("INSERT INTO admin_sessoes(token,admin_id) VALUES($1,$2)", [token, r.rows[0].id]);
     res.json({ sucesso: true, token, admin: r.rows[0].usuario });
   } catch(e) { res.status(500).json({ erro: "Erro interno." }); }
@@ -180,8 +213,7 @@ app.get("/admin/usuarios", adminAuth, async (req, res) => {
     const r = await db.query(`
       SELECT u.id,u.nome,u.sobrenome,u.email,u.telefone,u.nascimento,u.criado_em,
         CASE WHEN a.id IS NOT NULL THEN true ELSE false END as is_admin
-      FROM usuarios u
-      LEFT JOIN admins a ON u.email = a.email
+      FROM usuarios u LEFT JOIN admins a ON u.email = a.email
       ORDER BY u.criado_em DESC
     `);
     res.json(r.rows);
@@ -210,8 +242,7 @@ app.put("/admin/usuarios/:id", adminAuth, async (req, res) => {
 
 app.put("/admin/usuarios/:id/senha", adminAuth, async (req, res) => {
   const { nova_senha } = req.body;
-  if (!nova_senha || nova_senha.length < 6)
-    return res.status(400).json({ erro: "Mínimo 6 caracteres." });
+  if (!nova_senha || nova_senha.length < 6) return res.status(400).json({ erro: "Mínimo 6 caracteres." });
   try {
     await db.query("UPDATE usuarios SET senha=$1 WHERE id=$2", [hash(nova_senha), req.params.id]);
     res.json({ sucesso: true, mensagem: "Senha redefinida!" });
@@ -231,10 +262,7 @@ app.get("/admin/agendamentos", adminAuth, async (req, res) => {
     const { status } = req.query;
     let query = "SELECT * FROM agendamentos";
     let params = [];
-    if (status) {
-      query += " WHERE status=$1";
-      params.push(status);
-    }
+    if (status) { query += " WHERE status=$1"; params.push(status); }
     query += " ORDER BY data DESC, horario ASC";
     const r = await db.query(query, params);
     res.json(r.rows);
@@ -243,8 +271,7 @@ app.get("/admin/agendamentos", adminAuth, async (req, res) => {
 
 app.put("/admin/agendamentos/:id/status", adminAuth, async (req, res) => {
   const { status } = req.body;
-  if (!['pendente','confirmado','cancelado'].includes(status))
-    return res.status(400).json({ erro: "Status inválido." });
+  if (!['pendente','confirmado','cancelado'].includes(status)) return res.status(400).json({ erro: "Status inválido." });
   try {
     const r = await db.query("UPDATE agendamentos SET status=$1 WHERE id=$2 RETURNING id", [status, req.params.id]);
     if (!r.rows.length) return res.status(404).json({ erro: "Agendamento não encontrado." });
@@ -268,9 +295,7 @@ function lerJSON(file) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); }
   catch { return file === HISTORY_FILE ? [] : {}; }
 }
-function salvarJSON(file, data) {
-  fs.writeFileSync(file, JSON.stringify(data, null, 2), "utf8");
-}
+function salvarJSON(file, data) { fs.writeFileSync(file, JSON.stringify(data, null, 2), "utf8"); }
 if (!fs.existsSync(DEFAULT_FILE)) salvarJSON(DEFAULT_FILE, lerJSON(CONTENT_FILE));
 
 app.get("/admin/conteudo", adminAuth, (req, res) => res.json(lerJSON(CONTENT_FILE)));
@@ -290,10 +315,7 @@ app.put("/admin/conteudo", adminAuth, (req, res) => {
 
 app.get("/admin/conteudo/historico", adminAuth, (req, res) => {
   const hist = lerJSON(HISTORY_FILE);
-  res.json(hist.map(h => ({
-    id: h.id, timestamp: h.timestamp, secao: h.secao,
-    preview: JSON.stringify(h.snapshot).substring(0, 120) + "..."
-  })));
+  res.json(hist.map(h => ({ id: h.id, timestamp: h.timestamp, secao: h.secao, preview: JSON.stringify(h.snapshot).substring(0, 120) + "..." })));
 });
 
 app.post("/admin/conteudo/rollback/:id", adminAuth, (req, res) => {
@@ -324,6 +346,5 @@ app.post("/admin/conteudo/restaurar-padrao", adminAuth, (req, res) => {
 
 app.get("/conteudo", (req, res) => res.json(lerJSON(CONTENT_FILE)));
 
-/* ═══ INICIAR ═══ */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🏖️  Servidor rodando na porta ${PORT}`));

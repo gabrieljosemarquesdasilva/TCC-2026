@@ -1287,8 +1287,11 @@ footer strong { color: var(--coral); }
 @media (max-width: 760px) {
   .quadra-slideshow { width: 100%; height: 220px; }
   .footer-links { gap: 12px; }
+  .modal-content { width: 90%; padding: 24px; }
+}
 
-.modal{
+/* ── MODAL DE SUCESSO (agendamento) ── */
+.modal {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
@@ -1299,9 +1302,12 @@ footer strong { color: var(--coral); }
   backdrop-filter: blur(4px);
 }
 
-.modal-content{
+.modal.open { display: flex; }
+
+.modal-content {
   background: white;
-  width: 400px;
+  width: 420px;
+  max-width: 94vw;
   padding: 35px;
   border-radius: 20px;
   text-align: center;
@@ -1309,7 +1315,7 @@ footer strong { color: var(--coral); }
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.check{
+.check {
   width: 80px;
   height: 80px;
   background: linear-gradient(135deg,var(--coral),#FF8C5A);
@@ -1323,7 +1329,7 @@ footer strong { color: var(--coral); }
   box-shadow: 0 4px 15px rgba(255,107,53,0.3);
 }
 
-.modal-content h2{
+.modal-content h2 {
   color: #1e293b;
   margin-bottom: 10px;
   font-family:'Barlow Condensed',sans-serif;
@@ -1333,12 +1339,12 @@ footer strong { color: var(--coral); }
   letter-spacing:.02em;
 }
 
-.modal-content p{
+.modal-content p {
   color: #64748b;
   margin-bottom: 20px;
 }
 
-.info{
+.info {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1349,19 +1355,19 @@ footer strong { color: var(--coral); }
   border-radius:12px;
   border:1px solid #e8eff5;
 }
-.info span{
+.info span {
   font-size:.92rem;
   font-weight:500;
 }
 
-.modal-actions{
+.modal-actions {
   display:flex;
   flex-direction:column;
   gap:10px;
-  margin-top:10px
+  margin-top:10px;
 }
 .modal-actions .btn-primary,
-.modal-actions .btn-outline{
+.modal-actions .btn-outline {
   padding:12px 20px;
   border-radius:10px;
   font-weight:700;
@@ -1371,36 +1377,27 @@ footer strong { color: var(--coral); }
   align-items:center;
   justify-content:center;
   gap:8px;
-  transition:all .2s
+  transition:all .2s;
 }
-.modal-actions .btn-primary{
+.modal-actions .btn-primary {
   background:var(--coral);
   color:white;
-  border:none
+  border:none;
 }
-.modal-actions .btn-primary:hover{
-  background:#e55a20
-}
-.modal-actions .btn-outline{
+.modal-actions .btn-primary:hover { background:#e55a20; }
+.modal-actions .btn-outline {
   background:transparent;
   color:var(--navy);
-  border:2px solid var(--border)
+  border:2px solid var(--border);
 }
-.modal-actions .btn-outline:hover{
+.modal-actions .btn-outline:hover {
   border-color:var(--coral);
-  color:var(--coral)
+  color:var(--coral);
 }
 
-@keyframes aparecer{
-  from{
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to{
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
 /* =================================================================
@@ -1829,4 +1826,34 @@ body.dark-mode .faq-answer{color:#7a9bb8}
   .sc-num{font-size:1.8rem}
   .page-title{font-size:1.1rem}
   .clock{font-size:.7rem}
+}
+/* ── FIX MODAIS ADMIN DASHBOARD ── */
+.admin-dash-body .overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+.admin-dash-body .overlay.on {
+  display: flex;
+}
+.admin-dash-body .overlay .modal {
+  display: block !important;
+  position: relative !important;
+  inset: auto !important;
+  background: white;
+  border-radius: 22px;
+  padding: 34px 30px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 28px 70px rgba(0,0,0,.22);
+  animation: mIn .28s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: auto;
+  backdrop-filter: none;
 }

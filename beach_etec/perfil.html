@@ -113,19 +113,17 @@
       <button onclick="carregarAgendamentos()" class="btn-refresh"><i class="fa-solid fa-rotate"></i> Atualizar</button>
     </div>
     <div id="lista-agendamentos">
-      <!-- Skeleton loading -->
       <div class="skeleton-card"></div>
       <div class="skeleton-card"></div>
       <div class="skeleton-card"></div>
     </div>
   </div>
 </section>
-<!-- fim telaLogado -->
 
 <div class="toast" id="toast"></div>
 
-<!-- Botão admin — só aparece para contas admin -->
-<a href="admin_login.html" id="btnAdminFloat" style="display:none;position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,#0077B6,#FF6B35);color:white;text-decoration:none;padding:12px 20px;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 8px 24px rgba(0,119,182,.4);display:none;align-items:center;gap:9px;z-index:999;transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(0,119,182,.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(0,119,182,.4)'">
+<!-- Botão admin — display:none via CSS, mostrado pelo JS -->
+<a href="admin_login.html" id="btnAdminFloat" style="display:none;position:fixed;bottom:28px;right:28px;background:linear-gradient(135deg,#0077B6,#FF6B35);color:white;text-decoration:none;padding:12px 20px;border-radius:14px;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 8px 24px rgba(0,119,182,.4);align-items:center;gap:9px;z-index:999;transition:transform .2s,box-shadow .2s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(0,119,182,.5)'" onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(0,119,182,.4)'">
   <i class="fa-solid fa-shield-halved"></i> Painel Admin
 </a>
 
@@ -150,24 +148,27 @@ function showToast(msg, type) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// Logout
 function fazerLogout() {
   if (confirm('Tem certeza que deseja sair?')) {
+    const token = localStorage.getItem('user-token');
+    if (token) {
+      fetch('/logout', { method: 'POST', headers: { 'x-user-token': token } }).catch(()=>{});
+    }
     localStorage.removeItem('usuario');
     localStorage.removeItem('usuario-verificacao');
     localStorage.removeItem('nivelJogador');
+    localStorage.removeItem('user-token');
+    localStorage.removeItem('isAdmin');
     showToast('Até logo! 👋', 'info');
     setTimeout(() => window.location.href = 'login_usuario.html', 1000);
   }
 }
 
-// Nível do jogador
 function setNivel(btn) {
   document.querySelectorAll('.nivel-btn').forEach(b => b.classList.remove('ativo'));
   btn.classList.add('ativo');
   const nivel = btn.dataset.nivel;
   localStorage.setItem('nivelJogador', nivel);
-  // Atualiza o objeto usuário no localStorage
   const usuarioStr = localStorage.getItem('usuario');
   if (usuarioStr) {
     const u = JSON.parse(usuarioStr);
@@ -177,7 +178,6 @@ function setNivel(btn) {
   showToast('Nível atualizado: ' + nivel + ' ✅', 'success');
 }
 
-// Upload foto de perfil
 document.getElementById('foto-input').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -190,7 +190,6 @@ document.getElementById('foto-input').addEventListener('change', function(e) {
   reader.readAsDataURL(file);
 });
 
-// Carregar dados do usuário
 document.addEventListener("DOMContentLoaded", function() {
   const usuarioStr = localStorage.getItem("usuario");
   const telaDeslogado = document.getElementById('telaDeslogado');
@@ -211,7 +210,6 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("telefone-perfil").innerText = usuario.telefone || '-';
 
   if (usuario.nascimento) {
-    // Supabase retorna date como "YYYY-MM-DD" ou com T
     const raw = String(usuario.nascimento).split('T')[0];
     const [y, m, d] = raw.split('-');
     document.getElementById("nascimento-perfil").innerText = `${d}/${m}/${y}`;
@@ -219,16 +217,16 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("nascimento-perfil").innerText = '-';
   }
 
-  // Foto salva
   const fotoSalva = localStorage.getItem('fotoPerfil');
   if (fotoSalva) document.getElementById('fotoPerfil').src = fotoSalva;
   else if (usuario.foto) document.getElementById('fotoPerfil').src = usuario.foto;
 
-  // Botão admin flutuante
+  // Botão admin — corrigido: usa display:flex para mostrar
   const btnAdmin = document.getElementById('btnAdminFloat');
   if (btnAdmin && localStorage.getItem('isAdmin') === 'true') {
     btnAdmin.style.display = 'flex';
   }
+
   const nivelSalvo = localStorage.getItem('nivelJogador') || usuario.nivel || '';
   if (nivelSalvo) {
     document.querySelectorAll('.nivel-btn').forEach(btn => {
@@ -236,73 +234,80 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Carregar agendamentos
   carregarAgendamentos();
 });
 
-function carregarAgendamentos(){
+function carregarAgendamentos() {
   const lista = document.getElementById("lista-agendamentos");
   lista.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</div>';
-  const API = 'http://localhost:3000';
-  const usuarioStr = localStorage.getItem("usuario");
-  const usuario = usuarioStr ? JSON.parse(usuarioStr) : null;
-  const nomeFiltro = usuario ? usuario.nome : '';
-  const url = nomeFiltro ? API+'/agendamentos?nome='+encodeURIComponent(nomeFiltro) : API+'/agendamentos';
-  fetch(url)
-    .then(res => res.json())
-    .then(dados => {
-      lista.innerHTML = '';
-      if (!dados.length) {
-        lista.innerHTML = `
-          <div style="text-align:center;padding:40px;color:#9BB;">
-            <div style="font-size:2.5rem;margin-bottom:12px;">📅</div>
-            <p style="font-weight:600;">Nenhum agendamento ainda.</p>
-            <a href="agendamento.html" style="color:var(--coral);font-weight:700;text-decoration:none;">Fazer minha primeira reserva →</a>
-          </div>`;
-        return;
-      }
-      const statusBadge = {
-          pendente: '<span class="ag-badge pendente">⏳ Pendente</span>',
-          confirmado: '<span class="ag-badge confirmado">✅ Confirmado</span>',
-          cancelado: '<span class="ag-badge cancelado">❌ Cancelado</span>'
-        };
-      dados.forEach(ag => {
-        const div = document.createElement('div');
-        div.className = 'card-agendamento';
-        div.innerHTML = `
-          <div class="ag-header">
-            <div class="ag-quadra">📍 ${ag.quadra}</div>
-            ${statusBadge[ag.status]||'<span class="ag-badge">—</span>'}
-          </div>
-          <div class="ag-info-grid">
-            <div class="ag-info-item"><strong>Data:</strong> ${ag.data}</div>
-            <div class="ag-info-item"><strong>Horário:</strong> ${ag.horario}</div>
-            <div class="ag-info-item"><strong>Modalidade:</strong> ${ag.modalidade}</div>
-            <div class="ag-info-item"><strong>Nível:</strong> ${ag.nivel}</div>
-          </div>
-          <div class="ag-actions">
-            ${ag.status==='pendente'?'<button class="ag-btn-cancel" data-id="'+ag.id+'"><i class="fa-solid fa-xmark"></i> Cancelar reserva</button>':''}
-          </div>
-        `;
-        const btn = div.querySelector('.ag-btn-cancel');
-        if (btn) btn.addEventListener('click', function() {
-          if (confirm('Deseja cancelar esta reserva?')) {
-            fetch(API+'/agendamentos/'+ag.id, {method:'DELETE'})
-              .then(r => r.json())
-              .then(d => {
-                if (d.sucesso) showToast('Reserva cancelada.', 'info');
-                else showToast(d.erro||'Erro.', 'error');
-                carregarAgendamentos();
-              })
-              .catch(() => showToast('Erro ao cancelar.', 'error'));
-          }
-        });
-        lista.appendChild(div);
+
+  // Envia o token de autenticação
+  const token = localStorage.getItem('user-token');
+  if (!token) {
+    lista.innerHTML = '<div class="card-agendamento" style="text-align:center;color:#9BB;"><p>Faça login para ver seus agendamentos.</p></div>';
+    return;
+  }
+
+  fetch('/agendamentos', {
+    headers: { 'x-user-token': token }
+  })
+  .then(res => res.json())
+  .then(dados => {
+    lista.innerHTML = '';
+    if (!dados.length) {
+      lista.innerHTML = `
+        <div style="text-align:center;padding:40px;color:#9BB;">
+          <div style="font-size:2.5rem;margin-bottom:12px;">📅</div>
+          <p style="font-weight:600;">Nenhum agendamento ainda.</p>
+          <a href="agendamento.html" style="color:var(--coral);font-weight:700;text-decoration:none;">Fazer minha primeira reserva →</a>
+        </div>`;
+      return;
+    }
+    const statusBadge = {
+      pendente:   '<span class="ag-badge pendente">⏳ Pendente</span>',
+      confirmado: '<span class="ag-badge confirmado">✅ Confirmado</span>',
+      cancelado:  '<span class="ag-badge cancelado">❌ Cancelado</span>'
+    };
+    dados.forEach(ag => {
+      const div = document.createElement('div');
+      div.className = 'card-agendamento';
+      div.innerHTML = `
+        <div class="ag-header">
+          <div class="ag-quadra">📍 ${ag.quadra}</div>
+          ${statusBadge[ag.status]||'<span class="ag-badge">—</span>'}
+        </div>
+        <div class="ag-info-grid">
+          <div class="ag-info-item"><strong>Data:</strong> ${ag.data}</div>
+          <div class="ag-info-item"><strong>Horário:</strong> ${ag.horario}</div>
+          <div class="ag-info-item"><strong>Modalidade:</strong> ${ag.modalidade}</div>
+          <div class="ag-info-item"><strong>Nível:</strong> ${ag.nivel}</div>
+        </div>
+        <div class="ag-actions">
+          ${ag.status==='pendente'?'<button class="ag-btn-cancel" data-id="'+ag.id+'"><i class="fa-solid fa-xmark"></i> Cancelar reserva</button>':''}
+        </div>
+      `;
+      const btn = div.querySelector('.ag-btn-cancel');
+      if (btn) btn.addEventListener('click', function() {
+        if (confirm('Deseja cancelar esta reserva?')) {
+          fetch('/agendamentos/'+ag.id, {
+            method: 'DELETE',
+            headers: { 'x-user-token': token }
+          })
+          .then(r => r.json())
+          .then(d => {
+            if (d.sucesso) showToast('Reserva cancelada.', 'info');
+            else showToast(d.erro||'Erro.', 'error');
+            carregarAgendamentos();
+          })
+          .catch(() => showToast('Erro ao cancelar.', 'error'));
+        }
       });
-    })
-    .catch(() => {
-      lista.innerHTML = '<div class="card-agendamento" style="text-align:center;color:#9BB;"><p>Servidor offline — não foi possível carregar agendamentos. <button onclick="carregarAgendamentos()" style="background:var(--coral);color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600;margin-top:8px">Tentar novamente</button></p></div>';
+      lista.appendChild(div);
     });
+  })
+  .catch(() => {
+    lista.innerHTML = '<div class="card-agendamento" style="text-align:center;color:#9BB;"><p>Servidor offline — não foi possível carregar agendamentos. <button onclick="carregarAgendamentos()" style="background:var(--coral);color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600;margin-top:8px">Tentar novamente</button></p></div>';
+  });
 }
 
 // Hamburger
@@ -316,28 +321,22 @@ function carregarAgendamentos(){
 </script>
 
 <script>
-  // Verifica se existe usuário logado
 const usuarioLogado = localStorage.getItem("usuario-verificacao");
-
 const btnLogin = document.getElementById("btn-login");
 const btnCadastro = document.getElementById("btn-cadastro");
 const btnPerfil = document.getElementById("btn-perfil");
-
 if (usuarioLogado) {
-    // Usuário logado
-    btnLogin.style.display = "none";
-    btnCadastro.style.display = "none";
-    btnPerfil.style.display = "block";
+  btnLogin.style.display = "none";
+  btnCadastro.style.display = "none";
+  btnPerfil.style.display = "block";
 } else {
-    // Usuário não logado
-    btnLogin.style.display = "block";
-    btnCadastro.style.display = "block";
-    btnPerfil.style.display = "none";
+  btnLogin.style.display = "block";
+  btnCadastro.style.display = "block";
+  btnPerfil.style.display = "none";
 }
-
 </script>
+
 <script>
-// Modo Escuro
 (function() {
   const toggle = document.getElementById('darkToggle');
   const icon = toggle.querySelector('i');

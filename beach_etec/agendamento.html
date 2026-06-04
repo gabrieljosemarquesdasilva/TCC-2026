@@ -220,7 +220,7 @@ function carregarHorarios() {
   sem.style.display = 'none';
   grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</div>';
 
-  fetch('http://localhost:3000/horarios-disponiveis?data=' + encodeURIComponent(data) + '&quadra=' + encodeURIComponent(quadra))
+  fetch('/horarios-disponiveis?data=' + encodeURIComponent(data) + '&quadra=' + encodeURIComponent(quadra))
     .then(r => r.json())
     .then(res => {
       const ocupados = res.ocupados || [];
@@ -301,9 +301,10 @@ function showToast(msg, type) {
       nivel: form.querySelector('select[name="nivel"]').value
     };
 
-    fetch("http://localhost:3000/agendar", {
+    const userToken = localStorage.getItem("user-token");
+   fetch("/agendar", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...(userToken ? { "x-user-token": userToken } : {}) },
       body: JSON.stringify(dados)
     })
     .then(res => res.text())

@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function() {
       nascimento: document.getElementById("nascimento").value
     };
 
-    fetch("http://localhost:3000/cadastrar", {
+    fetch("/cadastrar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dados)
