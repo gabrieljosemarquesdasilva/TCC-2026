@@ -23,6 +23,7 @@
     <div class="sb-item" onclick="go('usuarios',this)"><i class="fa-solid fa-users"></i> Usuários</div>
     <div class="sb-item" onclick="go('agendamentos',this)"><i class="fa-solid fa-calendar-check"></i> Agendamentos</div>
     <div class="sb-section">Site</div>
+    <div class="sb-item" onclick="go('quadras',this)"><i class="fa-solid fa-table-tennis-paddle-ball"></i> Quadras</div>
     <div class="sb-item" onclick="go('conteudo',this)"><i class="fa-solid fa-pen-to-square"></i> Editar Conteúdo</div>
     <div class="sb-item" onclick="go('historico',this)"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</div>
   </nav>
@@ -91,7 +92,24 @@
       </div>
     </div>
 
-    <!-- CONTEÚDO DO SITE -->
+    <!-- QUADRAS -->
+    <div class="dash-view" id="v-quadras">
+      <div class="box" style="margin-bottom:20px">
+        <div class="box-head">
+          <h3><i class="fa-solid fa-table-tennis-paddle-ball" style="color:var(--ocean)"></i>Gerenciar Quadras</h3>
+          <button class="btn-t btn-edit" onclick="abrirNovaQuadra()" style="padding:9px 16px;font-size:.85rem">
+            <i class="fa-solid fa-plus"></i> Nova Quadra
+          </button>
+        </div>
+        <p style="font-size:.85rem;color:var(--muted)">Adicione, edite ou remova quadras. As mudanças aparecem imediatamente no site.</p>
+      </div>
+      <div id="quadrasAdmin">
+        <div class="dash-skel" style="height:120px;margin-bottom:16px"></div>
+        <div class="dash-skel" style="height:120px;margin-bottom:16px"></div>
+      </div>
+    </div>
+
+        <!-- CONTEÚDO DO SITE -->
     <div class="dash-view" id="v-conteudo">
       <div class="box" style="margin-bottom:20px">
         <div class="box-head">
@@ -230,6 +248,26 @@
     <div class="m-acts">
       <button class="btn-cancel" onclick="fechar('mHist')">Fechar</button>
       <button class="btn-save purple" id="histRollbackBtn"><i class="fa-solid fa-rotate-left"></i> Reverter para esta versão</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL QUADRA -->
+<div class="overlay" id="mQuadra">
+  <div class="modal">
+    <button class="m-close" onclick="fechar('mQuadra')"><i class="fa-solid fa-xmark"></i></button>
+    <h3>Nova Quadra</h3>
+    <input type="hidden" id="qId">
+    <div class="fg"><label>Nome da Quadra</label><input id="qNome" type="text" placeholder="Ex: Arena dos Pássaros"></div>
+    <div class="fg"><label>Descrição</label><textarea id="qDesc" rows="3" placeholder="Descreva a quadra..."></textarea></div>
+    <div class="fg">
+      <label>Badges / Tags <span style="font-weight:400;text-transform:none;font-size:.75rem">(separados por vírgula)</span></label>
+      <input id="qBadges" type="text" placeholder="Ex: 💡 Iluminação noturna, 🏟️ Areia profissional">
+    </div>
+    <div class="m-acts">
+      <button class="btn-cancel" onclick="fechar('mQuadra')">Cancelar</button>
+      <button class="btn-save" onclick="salvarQuadra()"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
     </div>
   </div>
 </div>

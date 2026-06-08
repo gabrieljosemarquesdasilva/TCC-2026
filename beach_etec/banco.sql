@@ -66,3 +66,20 @@ ON CONFLICT (usuario) DO NOTHING;
 
 -- Para adicionar o e-mail ao admin (substitua pelo e-mail real):
 -- UPDATE admins SET email='seuemail@exemplo.com' WHERE usuario='admin';
+
+-- ═══ TABELA DE QUADRAS DINÂMICAS ═══
+CREATE TABLE IF NOT EXISTS quadras (
+  id        SERIAL PRIMARY KEY,
+  nome      VARCHAR(100) NOT NULL,
+  descricao TEXT DEFAULT '',
+  badges    JSONB DEFAULT '[]',
+  fotos     JSONB DEFAULT '[]',
+  ordem     INT DEFAULT 0,
+  criado_em TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Dados iniciais (rode apenas se quiser migrar as quadras fixas para o banco)
+-- INSERT INTO quadras (nome, descricao, badges, ordem) VALUES
+--   ('Arena dos Pássaros', 'Quadra de areia profissional com iluminação noturna de alta potência.', '["💡 Iluminação noturna","🏟️ Areia profissional"]', 1),
+--   ('Arena dos Amigos', 'Espaço amplo e confortável, ideal para partidas recreativas.', '["🎉 Eventos","👥 Recreativo"]', 2),
+--   ('Arena Premium', 'Quadra moderna com estrutura premium e areia selecionada.', '["⭐ Premium","🏆 Competição"]', 3);

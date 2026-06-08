@@ -63,9 +63,7 @@
       <div class="form-group">
         <label>Quadra</label>
         <select id="quadra" name="quadra">
-          <option>Quadra 1</option>
-          <option>Quadra 2</option>
-          <option>Quadra 3</option>
+          <option value="" disabled selected>Carregando quadras...</option>
         </select>
       </div>
 
@@ -90,13 +88,11 @@
         </div>
       </div>
 
-      <!-- Data -->
       <div class="form-group">
         <label>Data</label>
         <input type="date" name="data" id="inputData" required class="date-input" min="">
       </div>
 
-      <!-- Horários -->
       <div class="form-group">
         <div class="horarios-visual">
           <h4><i class="fa-solid fa-clock" style="color:var(--coral);margin-right:6px;"></i> Horário Disponível</h4>
@@ -134,7 +130,6 @@
   </div>
 </section>
 
-<!-- MODAL DE SUCESSO -->
 <div id="modalSucesso" class="modal">
   <div class="modal-content">
     <div class="check">✓</div>
@@ -157,7 +152,6 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <footer>
@@ -175,15 +169,35 @@
 
 <script src="script.js"></script>
 <script>
-// Hamburger
-(function() {
-  var btn = document.getElementById('hamburgerBtn'), overlay = document.getElementById('menuOverlay'), menu = document.getElementById('menuMobile');
-  function abrirMenu() { btn.classList.add('aberto'); overlay.classList.add('aberto'); menu.classList.add('aberto'); document.body.style.overflow = 'hidden'; }
-  function fecharMenu() { btn.classList.remove('aberto'); overlay.classList.remove('aberto'); menu.classList.remove('aberto'); document.body.style.overflow = ''; }
-  if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });
-  if (overlay) overlay.addEventListener('click', fecharMenu);
-})();
+// ── CARREGAR QUADRAS NO SELECT ──
+document.addEventListener('DOMContentLoaded', () => {
+  const sel = document.getElementById('quadra');
+  fetch('/quadras')
+    .then(r => r.json())
+    .then(quadras => {
+      sel.innerHTML = '';
+      if (!quadras.length) {
+        sel.innerHTML = '<option value="" disabled selected>Nenhuma quadra disponível</option>';
+        return;
+      }
+      quadras.forEach(q => {
+        const opt = document.createElement('option');
+        opt.value = q.nome;
+        opt.textContent = q.nome;
+        sel.appendChild(opt);
+      });
+      // Restaura seleção salva
+      const salva = localStorage.getItem('quadra');
+      if (salva && [...sel.options].some(o => o.value === salva)) sel.value = salva;
+      carregarHorarios();
+    })
+    .catch(() => {
+      sel.innerHTML = '<option value="Quadra 1">Quadra 1</option><option value="Quadra 2">Quadra 2</option><option value="Quadra 3">Quadra 3</option>';
+      carregarHorarios();
+    });
+});
 </script>
+
 <script>
 // ── DATA ──
 (function() {
@@ -199,16 +213,17 @@
   });
 })();
 </script>
+
 <script>
 // ── HORÁRIOS DINÂMICOS ──
 const TODOS_HORARIOS = ['07:00','08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
 
 function carregarHorarios() {
-  const data = document.getElementById('inputData').value;
+  const data   = document.getElementById('inputData').value;
   const quadra = document.getElementById('quadra').value;
-  const grid = document.getElementById('horariosGrid');
-  const sem = document.getElementById('semHorarios');
-  const input = document.getElementById('horario');
+  const grid   = document.getElementById('horariosGrid');
+  const sem    = document.getElementById('semHorarios');
+  const input  = document.getElementById('horario');
 
   if (!data || !quadra) {
     grid.innerHTML = '';
@@ -240,10 +255,7 @@ function carregarHorarios() {
           btn.textContent = 'Ocupado';
         } else {
           temDisponivel = true;
-          if (horaSalva === h) {
-            btn.classList.add('selecionado');
-            input.value = h;
-          }
+          if (horaSalva === h) { btn.classList.add('selecionado'); input.value = h; }
           btn.addEventListener('click', function() {
             grid.querySelectorAll('.horario-btn:not(.ocupado)').forEach(b => b.classList.remove('selecionado'));
             this.classList.add('selecionado');
@@ -254,101 +266,98 @@ function carregarHorarios() {
         grid.appendChild(btn);
       });
 
-      if (!temDisponivel) {
-        sem.style.display = 'block';
-        sem.textContent = 'Nenhum horário disponível nesta data.';
-      }
+      if (!temDisponivel) { sem.style.display = 'block'; sem.textContent = 'Nenhum horário disponível nesta data.'; }
     })
-    .catch(() => {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;color:var(--red)">Erro ao carregar horários.</div>';
-    });
+    .catch(() => { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;color:var(--red)">Erro ao carregar horários.</div>'; });
 }
 
-document.getElementById('quadra').addEventListener('change', carregarHorarios);
-carregarHorarios();
+document.getElementById('quadra').addEventListener('change', function() {
+  localStorage.setItem('quadra', this.value);
+  carregarHorarios();
+});
 </script>
+
 <script>
-// ── TOAST ──
 function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + type + ' show';
-  setTimeout(() => { t.classList.remove('show'); }, 3500);
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 </script>
+
 <script>
-// ── SUBMIT COM LOADING ──
 (function() {
   const form = document.getElementById('form-agendamento');
-  const btn = document.getElementById('btnSubmit');
+  const btn  = document.getElementById('btnSubmit');
   if (!form) return;
   form.addEventListener('submit', function(e) {
     e.preventDefault();
-    const data = document.getElementById('inputData').value;
+    const data    = document.getElementById('inputData').value;
     const horario = document.getElementById('horario').value;
-    if (!data) { showToast('Por favor, selecione uma data no calendário.', 'error'); return; }
+    if (!data)    { showToast('Por favor, selecione uma data.', 'error'); return; }
     if (!horario) { showToast('Por favor, selecione um horário.', 'error'); return; }
 
-    btn.classList.add('btn-loading');
-    btn.disabled = true;
+    btn.classList.add('btn-loading'); btn.disabled = true;
 
     const dados = {
-      nome: form.querySelector('input[name="nome"]').value,
-      quadra: form.querySelector('select[name="quadra"]').value,
-      data: data,
-      horario: horario,
+      nome:       form.querySelector('input[name="nome"]').value,
+      quadra:     form.querySelector('select[name="quadra"]').value,
+      data,
+      horario,
       modalidade: form.querySelector('select[name="modalidade"]').value,
-      nivel: form.querySelector('select[name="nivel"]').value
+      nivel:      form.querySelector('select[name="nivel"]').value
     };
 
     const userToken = localStorage.getItem("user-token");
-   fetch("/agendar", {
+    fetch("/agendar", {
       method: "POST",
       headers: { "Content-Type": "application/json", ...(userToken ? { "x-user-token": userToken } : {}) },
       body: JSON.stringify(dados)
     })
-    .then(res => res.text())
-    .then(msg => {
+    .then(res => res.json())
+    .then(d => {
       btn.classList.remove('btn-loading'); btn.disabled = false;
-      document.getElementById("infoQuadra").innerText = "📍 " + dados.quadra;
-      document.getElementById("infoModalidade").innerText = dados.modalidade;
-      document.getElementById("infoData").innerText = "📅 " + dados.data;
-      document.getElementById("infoHorario").innerText = "⏰ " + dados.horario;
-      abrirModal();
-      form.reset();
+      if (d.sucesso) {
+        document.getElementById("infoQuadra").innerText     = "📍 " + dados.quadra;
+        document.getElementById("infoModalidade").innerText = dados.modalidade;
+        document.getElementById("infoData").innerText       = "📅 " + dados.data;
+        document.getElementById("infoHorario").innerText    = "⏰ " + dados.horario;
+        abrirModal(); form.reset();
+      } else {
+        showToast(d.erro || 'Erro ao agendar.', 'error');
+      }
     })
-    .catch(err => {
+    .catch(() => {
       btn.classList.remove('btn-loading'); btn.disabled = false;
-      showToast('Erro ao conectar com o servidor. Tente novamente.', 'error');
+      showToast('Erro ao conectar com o servidor.', 'error');
     });
   });
 })();
 </script>
 
 <script>
-  // Verifica se existe usuário logado
-const usuarioLogado = localStorage.getItem("usuario-verificacao");
-
-const btnLogin = document.getElementById("btn-login");
-const btnCadastro = document.getElementById("btn-cadastro");
-const btnPerfil = document.getElementById("btn-perfil");
-
-if (usuarioLogado) {
-    // Usuário logado
-    btnLogin.style.display = "none";
-    btnCadastro.style.display = "none";
-    btnPerfil.style.display = "block";
-} else {
-    // Usuário não logado
-    btnLogin.style.display = "block";
-    btnCadastro.style.display = "block";
-    btnPerfil.style.display = "none";
-}
-
+(function() {
+  var btn = document.getElementById('hamburgerBtn'), overlay = document.getElementById('menuOverlay'), menu = document.getElementById('menuMobile');
+  function abrirMenu() { btn.classList.add('aberto'); overlay.classList.add('aberto'); menu.classList.add('aberto'); document.body.style.overflow = 'hidden'; }
+  function fecharMenu() { btn.classList.remove('aberto'); overlay.classList.remove('aberto'); menu.classList.remove('aberto'); document.body.style.overflow = ''; }
+  if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });
+  if (overlay) overlay.addEventListener('click', fecharMenu);
+})();
 </script>
 
 <script>
-// Modo Escuro
+const usuarioLogado = localStorage.getItem("usuario-verificacao");
+const btnLogin = document.getElementById("btn-login");
+const btnCadastro = document.getElementById("btn-cadastro");
+const btnPerfil = document.getElementById("btn-perfil");
+if (usuarioLogado) {
+  btnLogin.style.display = "none"; btnCadastro.style.display = "none"; btnPerfil.style.display = "block";
+} else {
+  btnLogin.style.display = "block"; btnCadastro.style.display = "block"; btnPerfil.style.display = "none";
+}
+</script>
+
+<script>
 (function() {
   const toggle = document.getElementById('darkToggle');
   const icon = toggle.querySelector('i');

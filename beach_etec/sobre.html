@@ -26,7 +26,7 @@
       <li id="btn-login"><a href="login_usuario.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
       <li id="btn-perfil"><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
     </ul>
-      <button class="dark-toggle" id="darkToggle" title="Alternar modo escuro" aria-label="Modo escuro">
+    <button class="dark-toggle" id="darkToggle" title="Alternar modo escuro" aria-label="Modo escuro">
       <i class="fa-solid fa-moon"></i>
     </button>
     <button class="hamburger" id="hamburgerBtn" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -65,79 +65,29 @@
     </p>
   </div>
 
-  <!-- QUADRAS -->
+  <!-- QUADRAS DINÂMICAS -->
   <div class="section-header reveal" style="margin-top:72px;">
     <span class="section-tag">🎾 Estrutura</span>
     <h2>Nossas <span class="accent">Quadras</span></h2>
-    <p>Três ambientes pensados para todos os níveis — do iniciante ao profissional.</p>
+    <p id="subtituloQuadras">Carregando quadras...</p>
   </div>
 
-  <!-- QUADRA 1 -->
-  <div class="quadra-card reveal">
-    <div class="quadra-slideshow" id="slide-quadra1">
-      <div class="quadra-slides-wrapper"></div>
-      <button class="slide-btn slide-prev" onclick="mudarSlide('quadra1', -1)"><i class="fa-solid fa-chevron-left"></i></button>
-      <button class="slide-btn slide-next" onclick="mudarSlide('quadra1', 1)"><i class="fa-solid fa-chevron-right"></i></button>
-      <div class="slide-dots" id="dots-quadra1"></div>
-    </div>
-    <div class="quadra-card-info">
-      <span class="quadra-badge">Quadra 1</span>
-      <h3>Arena dos Pássaros</h3>
-      <p>Quadra de areia profissional com iluminação noturna de alta potência. Perfeita para jogos noturnos e treinos intensivos. Estrutura completa com vestiários e área de apoio.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
-        <span style="background:#edf8f1;color:#27ae60;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">💡 Iluminação noturna</span>
-        <span style="background:#edf6ff;color:#2980b9;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">🏟️ Areia profissional</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- QUADRA 2 -->
-  <div class="quadra-card reveal">
-    <div class="quadra-slideshow" id="slide-quadra2">
-      <div class="quadra-slides-wrapper"></div>
-      <button class="slide-btn slide-prev" onclick="mudarSlide('quadra2', -1)"><i class="fa-solid fa-chevron-left"></i></button>
-      <button class="slide-btn slide-next" onclick="mudarSlide('quadra2', 1)"><i class="fa-solid fa-chevron-right"></i></button>
-      <div class="slide-dots" id="dots-quadra2"></div>
-    </div>
-    <div class="quadra-card-info">
-      <span class="quadra-badge">Quadra 2</span>
-      <h3>Arena dos Amigos</h3>
-      <p>Espaço amplo e confortável, ideal para partidas recreativas e eventos esportivos. Ambiente descontraído para quem quer curtir o jogo com os amigos.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
-        <span style="background:#fff5f2;color:var(--coral);padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">🎉 Eventos</span>
-        <span style="background:#edf8f1;color:#27ae60;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">👥 Recreativo</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- QUADRA 3 -->
-  <div class="quadra-card reveal">
-    <div class="quadra-slideshow" id="slide-quadra3">
-      <div class="quadra-slides-wrapper"></div>
-      <button class="slide-btn slide-prev" onclick="mudarSlide('quadra3', -1)"><i class="fa-solid fa-chevron-left"></i></button>
-      <button class="slide-btn slide-next" onclick="mudarSlide('quadra3', 1)"><i class="fa-solid fa-chevron-right"></i></button>
-      <div class="slide-dots" id="dots-quadra3"></div>
-    </div>
-    <div class="quadra-card-info">
-      <span class="quadra-badge">Quadra 3</span>
-      <h3>Arena Premium</h3>
-      <p>Quadra moderna com estrutura premium e areia selecionada. Perfeita para competições e jogos de alto nível. Equipamentos de linha profissional inclusos.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
-        <span style="background:#fef9e7;color:#d4ac0d;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">⭐ Premium</span>
-        <span style="background:#edf6ff;color:#2980b9;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">🏆 Competição</span>
-      </div>
-    </div>
+  <div id="quadrasContainer">
+    <!-- Skeletons enquanto carrega -->
+    <div class="quadra-card" style="min-height:220px;background:#e8eff5;border-radius:20px;margin-bottom:48px;animation:shimmer 1.4s infinite;"></div>
+    <div class="quadra-card" style="min-height:220px;background:#e8eff5;border-radius:20px;margin-bottom:48px;animation:shimmer 1.4s infinite;"></div>
   </div>
 </section>
 
-<!-- FAQ -->
+<!-- FAQ DINÂMICO -->
 <section class="faq-section">
   <div class="section-header reveal">
     <span class="section-tag">❓ Dúvidas</span>
     <h2>Perguntas <span class="accent">Frequentes</span></h2>
     <p>Tudo que você precisa saber sobre as quadras e o projeto.</p>
   </div>
-  <div class="faq-list reveal">
+  <div class="faq-list reveal" id="faqLista">
+    <!-- Carregado dinamicamente -->
     <div class="faq-item">
       <button class="faq-question">Qual é o horário de funcionamento? <i class="fa-solid fa-chevron-down"></i></button>
       <div class="faq-answer">As quadras funcionam de segunda a sábado, das 7h às 21h. Aos domingos, das 8h às 18h. Todas possuem iluminação noturna.</div>
@@ -148,7 +98,7 @@
     </div>
     <div class="faq-item">
       <button class="faq-question">Preciso levar equipamento? <i class="fa-solid fa-chevron-down"></i></button>
-      <div class="faq-answer">A Quadra 3 (Premium) já inclui equipamentos profissionais. Para as demais, recomendamos trazer seus próprios equipamentos.</div>
+      <div class="faq-answer">A Quadra Premium já inclui equipamentos profissionais. Para as demais, recomendamos trazer seus próprios equipamentos.</div>
     </div>
     <div class="faq-item">
       <button class="faq-question">É possível reservar para grupos ou eventos? <i class="fa-solid fa-chevron-down"></i></button>
@@ -193,28 +143,31 @@
   els.forEach(el => obs.observe(el));
 })();
 </script>
+
 <script>
-// ── SLIDESHOWS DAS QUADRAS ──
-let modalState = { quadraId: null, index: 0 };
-const quadrasConfig = {
-  quadra1: ['img/quadra1/foto1.jpg','img/quadra1/foto2.jpg','img/quadra1/foto3.jpg','img/quadra1/foto4.jpg'],
-  quadra2: ['img/quadra2/foto1.jpg','img/quadra2/foto2.jpg','img/quadra2/foto3.jpg','img/quadra2/foto4.jpg'],
-  quadra3: ['img/quadra3/foto1.jpg','img/quadra3/foto2.jpg','img/quadra3/foto3.jpg','img/quadra3/foto4.jpg']
-};
+// ── QUADRAS DINÂMICAS ──
+let modalState = { quadraId: null, index: 0, fotos: [] };
 const slideshowState = {};
 
-function iniciarSlideshow(quadraId) {
-  const config = quadrasConfig[quadraId];
+function iniciarSlideshow(quadraId, fotos) {
+  if (!fotos || !fotos.length) return;
   const wrapper = document.querySelector(`#slide-${quadraId} .quadra-slides-wrapper`);
   const dotsContainer = document.getElementById(`dots-${quadraId}`);
-  if (!wrapper || !config) return;
-  slideshowState[quadraId] = { current: 0, total: config.length, timer: null };
-  config.forEach((src, i) => {
+  if (!wrapper) return;
+
+  slideshowState[quadraId] = { current: 0, total: fotos.length, fotos, timer: null };
+
+  fotos.forEach((foto, i) => {
     const img = document.createElement('img');
-    img.src = src; img.alt = `${quadraId} foto ${i+1}`;
+    img.src = foto.url;
+    img.alt = `${quadraId} foto ${i+1}`;
     img.className = 'quadra-slide-img' + (i === 0 ? ' active' : '');
-    img.onclick = () => { modalState = { quadraId, index: slideshowState[quadraId].current }; abrirImagem(quadrasConfig[quadraId][modalState.index]); };
+    img.onclick = () => {
+      modalState = { quadraId, index: slideshowState[quadraId].current, fotos };
+      abrirImagem(fotos[modalState.index].url);
+    };
     wrapper.appendChild(img);
+
     const dot = document.createElement('span');
     dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
     dot.onclick = () => { irParaSlide(quadraId, i); resetTimer(quadraId); };
@@ -227,7 +180,8 @@ function irParaSlide(quadraId, index) {
   const state = slideshowState[quadraId];
   if (!state) return;
   const slides = document.querySelectorAll(`#slide-${quadraId} .quadra-slide-img`);
-  const dots = document.querySelectorAll(`#dots-${quadraId} .slide-dot`);
+  const dots   = document.querySelectorAll(`#dots-${quadraId} .slide-dot`);
+  if (!slides[state.current] || !dots[state.current]) return;
   slides[state.current].classList.remove('active');
   dots[state.current].classList.remove('active');
   state.current = (index + state.total) % state.total;
@@ -235,19 +189,139 @@ function irParaSlide(quadraId, index) {
   dots[state.current].classList.add('active');
 }
 
-function mudarSlide(quadraId, dir) { irParaSlide(quadraId, slideshowState[quadraId].current + dir); resetTimer(quadraId); }
-function iniciarTimer(quadraId) { slideshowState[quadraId].timer = setInterval(() => irParaSlide(quadraId, slideshowState[quadraId].current + 1), 4000); }
-function resetTimer(quadraId) { clearInterval(slideshowState[quadraId].timer); iniciarTimer(quadraId); }
+function mudarSlide(quadraId, dir) {
+  const state = slideshowState[quadraId];
+  if (!state) return;
+  irParaSlide(quadraId, state.current + dir);
+  resetTimer(quadraId);
+}
+
+function iniciarTimer(quadraId) {
+  const state = slideshowState[quadraId];
+  if (!state) return;
+  state.timer = setInterval(() => irParaSlide(quadraId, state.current + 1), 4000);
+}
+function resetTimer(quadraId) {
+  const state = slideshowState[quadraId];
+  if (!state) return;
+  clearInterval(state.timer);
+  iniciarTimer(quadraId);
+}
 
 function navegarModal(dir) {
-  const { quadraId } = modalState;
-  if (!quadraId) return;
-  const total = quadrasConfig[quadraId].length;
-  modalState.index = (modalState.index + dir + total) % total;
+  const { quadraId, fotos } = modalState;
+  if (!quadraId || !fotos.length) return;
+  modalState.index = (modalState.index + dir + fotos.length) % fotos.length;
   irParaSlide(quadraId, modalState.index);
   resetTimer(quadraId);
-  document.getElementById('img-grande').src = quadrasConfig[quadraId][modalState.index];
+  document.getElementById('img-grande').src = fotos[modalState.index].url;
 }
+
+function renderQuadras(quadras) {
+  const container = document.getElementById('quadrasContainer');
+  const subtitulo = document.getElementById('subtituloQuadras');
+
+  if (!quadras.length) {
+    container.innerHTML = '<p style="text-align:center;color:var(--muted);padding:40px">Nenhuma quadra cadastrada ainda.</p>';
+    subtitulo.textContent = '';
+    return;
+  }
+
+  subtitulo.textContent = quadras.length + ' ambiente' + (quadras.length > 1 ? 's' : '') + ' pensado' + (quadras.length > 1 ? 's' : '') + ' para todos os níveis — do iniciante ao profissional.';
+
+  container.innerHTML = '';
+  quadras.forEach((q, idx) => {
+    const qId = 'quadra_' + q.id;
+    const fotos = q.fotos || [];
+    const badges = q.badges || [];
+    const par = idx % 2 !== 0;
+
+    const div = document.createElement('div');
+    div.className = 'quadra-card reveal';
+    div.innerHTML = `
+      <div class="quadra-slideshow" id="slide-${qId}">
+        <div class="quadra-slides-wrapper">
+          ${!fotos.length ? `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1a2e42;color:rgba(255,255,255,.3);font-size:3rem;"><i class="fa-solid fa-image"></i></div>` : ''}
+        </div>
+        ${fotos.length > 1 ? `
+          <button class="slide-btn slide-prev" onclick="mudarSlide('${qId}',-1)"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="slide-btn slide-next" onclick="mudarSlide('${qId}',1)"><i class="fa-solid fa-chevron-right"></i></button>
+          <div class="slide-dots" id="dots-${qId}"></div>
+        ` : `<div class="slide-dots" id="dots-${qId}"></div>`}
+      </div>
+      <div class="quadra-card-info">
+        <span class="quadra-badge">Quadra ${idx + 1}</span>
+        <h3>${q.nome}</h3>
+        <p>${q.descricao || ''}</p>
+        ${badges.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">${badges.map(b => `<span style="background:#edf8f1;color:#27ae60;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">${b}</span>`).join('')}</div>` : ''}
+      </div>
+    `;
+
+    if (par) div.style.flexDirection = 'row-reverse';
+    container.appendChild(div);
+
+    if (fotos.length) iniciarSlideshow(qId, fotos);
+
+    // Ativa scroll reveal
+    setTimeout(() => {
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+      }, { threshold: 0.12 });
+      obs.observe(div);
+    }, 100);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('/quadras')
+    .then(r => r.json())
+    .then(renderQuadras)
+    .catch(() => {
+      document.getElementById('quadrasContainer').innerHTML =
+        '<p style="text-align:center;color:var(--muted);padding:40px">Erro ao carregar quadras.</p>';
+    });
+});
+</script>
+
+<script>
+// ── FAQ DINÂMICO ──
+document.addEventListener('DOMContentLoaded', () => {
+  fetch('/conteudo')
+    .then(r => r.json())
+    .then(d => {
+      if (!d.faq || !d.faq.length) return; // mantém o FAQ estático padrão
+      const lista = document.getElementById('faqLista');
+      lista.innerHTML = d.faq.map(item => `
+        <div class="faq-item">
+          <button class="faq-question">${item.p} <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="faq-answer">${item.r}</div>
+        </div>
+      `).join('');
+      // Reaplica o acordeão
+      lista.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const item = this.closest('.faq-item');
+          const isOpen = item.classList.contains('open');
+          lista.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+          if (!isOpen) item.classList.add('open');
+        });
+      });
+    })
+    .catch(() => {}); // falha silenciosa — mantém FAQ estático
+});
+
+// FAQ acordeão para os itens estáticos padrão
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const item = this.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  });
+});
+</script>
+
+<script>
 // ── HAMBURGER ──
 (function() {
   var btn = document.getElementById('hamburgerBtn'), overlay = document.getElementById('menuOverlay'), menu = document.getElementById('menuMobile');
@@ -256,35 +330,21 @@ function navegarModal(dir) {
   if (btn) btn.addEventListener('click', function() { btn.classList.contains('aberto') ? fecharMenu() : abrirMenu(); });
   if (overlay) overlay.addEventListener('click', fecharMenu);
 })();
-
-document.addEventListener('DOMContentLoaded', () => {
-  Object.keys(quadrasConfig).forEach(id => iniciarSlideshow(id));
-});
 </script>
 
 <script>
-  // Verifica se existe usuário logado
 const usuarioLogado = localStorage.getItem("usuario-verificacao");
-
 const btnLogin = document.getElementById("btn-login");
 const btnCadastro = document.getElementById("btn-cadastro");
 const btnPerfil = document.getElementById("btn-perfil");
-
 if (usuarioLogado) {
-    // Usuário logado
-    btnLogin.style.display = "none";
-    btnCadastro.style.display = "none";
-    btnPerfil.style.display = "block";
+  btnLogin.style.display = "none"; btnCadastro.style.display = "none"; btnPerfil.style.display = "block";
 } else {
-    // Usuário não logado
-    btnLogin.style.display = "block";
-    btnCadastro.style.display = "block";
-    btnPerfil.style.display = "none";
+  btnLogin.style.display = "block"; btnCadastro.style.display = "block"; btnPerfil.style.display = "none";
 }
-
 </script>
+
 <script>
-// Modo Escuro
 (function() {
   const toggle = document.getElementById('darkToggle');
   const icon = toggle.querySelector('i');

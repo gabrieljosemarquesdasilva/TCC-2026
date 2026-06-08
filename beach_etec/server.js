@@ -1,23 +1,42 @@
 require('dotenv').config();
-const express = require("express");
+const express  = require("express");
 const { Pool } = require("pg");
-const cors    = require("cors");
-const crypto  = require("crypto");
-const fs      = require("fs");
+const cors     = require("cors");
+const crypto   = require("crypto");
+const fs       = require("fs");
+const multer   = require("multer");
+const { createClient } = require("@supabase/supabase-js");
 
 const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
 app.use(express.static(__dirname));
 
+// ── Banco de dados ──
 const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
-
 db.connect(err => {
   if (err) console.error("Erro ao conectar:", err.message);
   else     console.log("✅ Conectado ao Supabase!");
+});
+
+// ── Supabase Storage ──
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
+const BUCKET = "quadras";
+
+// Multer — armazena em memória para repassar ao Supabase
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024 }, // 8MB
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith("image/")) cb(null, true);
+    else cb(new Error("Apenas imagens são permitidas."));
+  }
 });
 
 const hash = str => crypto.createHash("sha256").update(str).digest("hex");
@@ -50,10 +69,8 @@ app.post("/login", async (req, res) => {
     const u = r.rows[0];
     const adm = await db.query("SELECT id FROM admins WHERE email=$1", [email]);
     const isAdmin = adm.rows.length > 0;
-
     const token = crypto.randomBytes(32).toString("hex");
     await db.query("INSERT INTO usuario_sessoes(token,usuario_id) VALUES($1,$2)", [token, u.id]);
-
     res.json({ sucesso: true, isAdmin, token, usuario: {
       id: u.id, nome: u.nome+(u.sobrenome?" "+u.sobrenome:""),
       email: u.email, foto: null,
@@ -80,7 +97,6 @@ app.post("/logout", async (req, res) => {
   res.json({ sucesso: true });
 });
 
-/* ── Middleware usuário ── */
 async function userAuth(req, res, next) {
   const token = req.headers["x-user-token"];
   if (!token) return res.status(401).json({ erro: "Não autenticado. Faça login." });
@@ -98,8 +114,7 @@ app.get("/horarios-disponiveis", async (req, res) => {
   if (!data || !quadra) return res.status(400).json({ erro: "Data e quadra obrigatórios." });
   try {
     const r = await db.query("SELECT horario FROM agendamentos WHERE data=$1 AND quadra=$2", [data, quadra]);
-    const ocupados = r.rows.map(row => String(row.horario).substring(0, 5));
-    res.json({ ocupados });
+    res.json({ ocupados: r.rows.map(row => String(row.horario).substring(0, 5)) });
   } catch(e) { res.status(500).json({ erro: "Erro ao consultar." }); }
 });
 
@@ -137,31 +152,35 @@ app.delete("/agendamentos/:id", userAuth, async (req, res) => {
   } catch(e) { res.status(500).json({ erro: "Erro ao cancelar." }); }
 });
 
-/* ═══ ADMIN AUTH ═══ */
+/* ═══ QUADRAS — rotas públicas ═══ */
 
-// Rota nova: troca user-token por adminToken (sem senha extra)
+// Lista todas as quadras com fotos
+app.get("/quadras", async (req, res) => {
+  try {
+    const r = await db.query("SELECT * FROM quadras ORDER BY ordem ASC");
+    res.json(r.rows);
+  } catch(e) { res.status(500).json({ erro: "Erro ao buscar quadras." }); }
+});
+
+/* ═══ ADMIN AUTH ═══ */
 app.post("/admin/auth-user", async (req, res) => {
   const userToken = req.headers["x-user-token"];
   if (!userToken) return res.status(401).json({ erro: "Não autenticado." });
   try {
-    // Verifica sessão do usuário
     const sess = await db.query(
       "SELECT u.id, u.nome, u.email FROM usuario_sessoes s JOIN usuarios u ON u.id=s.usuario_id WHERE s.token=$1",
       [userToken]
     );
     if (!sess.rows.length) return res.status(401).json({ erro: "Sessão inválida." });
     const u = sess.rows[0];
-    // Verifica se é admin pelo email
     const adm = await db.query("SELECT id FROM admins WHERE email=$1", [u.email]);
-    if (!adm.rows.length) return res.status(403).json({ erro: "Acesso negado. Conta sem permissão de admin." });
-    // Gera adminToken
+    if (!adm.rows.length) return res.status(403).json({ erro: "Acesso negado." });
     const adminToken = crypto.randomBytes(32).toString("hex");
     await db.query("INSERT INTO admin_sessoes(token,admin_id) VALUES($1,$2)", [adminToken, adm.rows[0].id]);
     res.json({ sucesso: true, token: adminToken, admin: u.nome });
   } catch(e) { res.status(500).json({ erro: "Erro interno." }); }
 });
 
-// Rota original mantida (para quem quiser usar admin_login.html)
 app.post("/admin/auth", async (req, res) => {
   const { usuario, senha } = req.body;
   try {
@@ -284,6 +303,109 @@ app.delete("/admin/agendamentos/:id", adminAuth, async (req, res) => {
     await db.query("DELETE FROM agendamentos WHERE id=$1", [req.params.id]);
     res.json({ sucesso: true });
   } catch(e) { res.status(500).json({ erro: "Erro." }); }
+});
+
+/* ═══ ADMIN — QUADRAS ═══ */
+
+// Listar quadras (admin)
+app.get("/admin/quadras", adminAuth, async (req, res) => {
+  try {
+    const r = await db.query("SELECT * FROM quadras ORDER BY ordem ASC");
+    res.json(r.rows);
+  } catch(e) { res.status(500).json({ erro: "Erro." }); }
+});
+
+// Criar nova quadra
+app.post("/admin/quadras", adminAuth, async (req, res) => {
+  const { nome, descricao, badges } = req.body;
+  if (!nome) return res.status(400).json({ erro: "Nome obrigatório." });
+  try {
+    const maxOrdem = await db.query("SELECT COALESCE(MAX(ordem),0) v FROM quadras");
+    const ordem = parseInt(maxOrdem.rows[0].v) + 1;
+    const r = await db.query(
+      "INSERT INTO quadras(nome,descricao,badges,ordem,fotos) VALUES($1,$2,$3,$4,'[]') RETURNING *",
+      [nome, descricao||"", JSON.stringify(badges||[]), ordem]
+    );
+    res.json({ sucesso: true, quadra: r.rows[0] });
+  } catch(e) { res.status(500).json({ erro: "Erro ao criar quadra." }); }
+});
+
+// Atualizar nome/descrição/badges
+app.put("/admin/quadras/:id", adminAuth, async (req, res) => {
+  const { nome, descricao, badges } = req.body;
+  try {
+    const r = await db.query(
+      "UPDATE quadras SET nome=$1, descricao=$2, badges=$3 WHERE id=$4 RETURNING *",
+      [nome, descricao||"", JSON.stringify(badges||[]), req.params.id]
+    );
+    if (!r.rows.length) return res.status(404).json({ erro: "Quadra não encontrada." });
+    res.json({ sucesso: true, quadra: r.rows[0] });
+  } catch(e) { res.status(500).json({ erro: "Erro ao atualizar." }); }
+});
+
+// Deletar quadra (e todas as fotos do Supabase Storage)
+app.delete("/admin/quadras/:id", adminAuth, async (req, res) => {
+  try {
+    const r = await db.query("SELECT fotos FROM quadras WHERE id=$1", [req.params.id]);
+    if (!r.rows.length) return res.status(404).json({ erro: "Quadra não encontrada." });
+    const fotos = r.rows[0].fotos || [];
+    // Deletar fotos do Storage
+    if (fotos.length) {
+      const paths = fotos.map(f => f.path);
+      await supabase.storage.from(BUCKET).remove(paths);
+    }
+    await db.query("DELETE FROM quadras WHERE id=$1", [req.params.id]);
+    res.json({ sucesso: true });
+  } catch(e) { res.status(500).json({ erro: "Erro ao deletar quadra." }); }
+});
+
+// Upload de foto para uma quadra
+app.post("/admin/quadras/:id/fotos", adminAuth, upload.single("foto"), async (req, res) => {
+  try {
+    const r = await db.query("SELECT fotos FROM quadras WHERE id=$1", [req.params.id]);
+    if (!r.rows.length) return res.status(404).json({ erro: "Quadra não encontrada." });
+
+    const ext      = req.file.mimetype.split("/")[1].replace("jpeg","jpg");
+    const filename = `quadra_${req.params.id}_${Date.now()}.${ext}`;
+    const path     = `quadra${req.params.id}/${filename}`;
+
+    // Upload para Supabase Storage
+    const { error } = await supabase.storage.from(BUCKET).upload(path, req.file.buffer, {
+      contentType: req.file.mimetype,
+      upsert: false
+    });
+    if (error) return res.status(500).json({ erro: "Erro no upload: " + error.message });
+
+    // URL pública
+    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path);
+    const url = urlData.publicUrl;
+
+    // Salvar no banco
+    const fotos = r.rows[0].fotos || [];
+    fotos.push({ path, url });
+    await db.query("UPDATE quadras SET fotos=$1 WHERE id=$2", [JSON.stringify(fotos), req.params.id]);
+
+    res.json({ sucesso: true, foto: { path, url } });
+  } catch(e) { res.status(500).json({ erro: "Erro ao fazer upload." }); }
+});
+
+// Deletar foto de uma quadra
+app.delete("/admin/quadras/:id/fotos", adminAuth, async (req, res) => {
+  const { path } = req.body;
+  if (!path) return res.status(400).json({ erro: "Path obrigatório." });
+  try {
+    const r = await db.query("SELECT fotos FROM quadras WHERE id=$1", [req.params.id]);
+    if (!r.rows.length) return res.status(404).json({ erro: "Quadra não encontrada." });
+
+    // Remover do Storage
+    await supabase.storage.from(BUCKET).remove([path]);
+
+    // Atualizar banco
+    const fotos = (r.rows[0].fotos || []).filter(f => f.path !== path);
+    await db.query("UPDATE quadras SET fotos=$1 WHERE id=$2", [JSON.stringify(fotos), req.params.id]);
+
+    res.json({ sucesso: true });
+  } catch(e) { res.status(500).json({ erro: "Erro ao deletar foto." }); }
 });
 
 /* ═══ ADMIN — CONTEÚDO + HISTÓRICO ═══ */
