@@ -8,17 +8,34 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .botao-google:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(255,107,53,0.55);
+}
+  </style>
 </head>
 <body>
 <div class="site-wrapper">
 
 <script type="module">
   import { jwtDecode } from "https://cdn.jsdelivr.net/npm/jwt-decode@4.0.0/+esm";
+
+  const CLIENT_ID = '314377682610-qnrudcuk611ou7kse4v4m9a86v980pth.apps.googleusercontent.com';
+  let tokenClient;
+
   function handleCredentialResponse(response) {
     const idToken = jwtDecode(response.credential);
-    const dadosUsuario = { google_id: idToken.sub, nome: idToken.name, email: idToken.email, foto: idToken.picture };
+    const dadosUsuario = {
+      google_id: idToken.sub,
+      nome: idToken.name,
+      email: idToken.email,
+      foto: idToken.picture
+    };
+
     fetch("/login-google", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dadosUsuario)
     })
     .then(res => res.json())
@@ -30,10 +47,41 @@
     })
     .catch(err => showToast('Erro ao autenticar com Google.', 'error'));
   }
-  // arrumar
+
+  // Opção 3 — fallback: popup OAuth completo quando One Tap não está disponível
+  function iniciarPopupOAuth() {
+    if (!tokenClient) {
+      tokenClient = google.accounts.oauth2.initCodeClient({
+        client_id: CLIENT_ID,
+        scope: 'openid email profile',
+        ux_mode: 'popup',
+        callback: handleCredentialResponse
+      });
+    }
+    tokenClient.requestCode();
+  }
+
+  // Opção 2 — One Tap com fallback automático para Opção 3
+  window.loginComGoogle = function () {
+    google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        // One Tap bloqueado/descartado → abre popup OAuth completo
+        iniciarPopupOAuth();
+      }
+    });
+  };
+
   window.onload = function () {
-    google.accounts.id.initialize({ client_id: '314377682610-qnrudcuk611ou7kse4v4m9a86v980pth.apps.googleusercontent.com', callback: handleCredentialResponse });
-    google.accounts.id.renderButton(document.getElementById("loginDiv"), { theme: "filled_blue", size: "large", shape: "pill" });
+    google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback: handleCredentialResponse
+    });
+
+    // Botão original mantido como fallback visual (pode esconder com CSS se quiser)
+    google.accounts.id.renderButton(
+      document.getElementById("loginDiv"),
+      { theme: "filled_blue", size: "large", shape: "pill" }
+    );
   };
 </script>
 
@@ -74,7 +122,9 @@
       <p class="sub">Bem-vindo de volta à quadra!</p>
     </div>
 
-    <div id="loginDiv" style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;"></div>
+    <button class="botao-google" onclick="loginComGoogle()" style="display: inline-flex;align-items: center;gap: 10px;padding: 16px 40px;background: linear-gradient(135deg, var(--coral), #FF8C5A);color: white;border-radius: 12px;font-family: 'Barlow Condensed', sans-serif;font-size: 1.15rem;font-weight: 700;letter-spacing: 0.1em;text-transform: uppercase;text-decoration: none;border: none;cursor: pointer;box-shadow: 0 8px 28px rgba(255,107,53,0.4);transition: transform 0.2s, box-shadow 0.2s;
+    ">Entrar com Google</button>
+
 
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
       <div style="flex:1;height:1px;background:#E8EFF5;"></div>
