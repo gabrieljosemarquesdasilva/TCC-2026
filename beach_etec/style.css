@@ -1857,3 +1857,18 @@ body.dark-mode .faq-answer{color:#7a9bb8}
   z-index: auto;
   backdrop-filter: none;
 }
+
+.depo-avatar {
+  width: 50px;          /* Defina a largura desejada */
+  height: 50px;         /* Mantenha igual à largura para ser um quadrado perfeito */
+  border-radius: 50%;   /* Deixa a imagem completamente redonda */
+  object-fit: cover;    /* Garante que a foto não fique esticada ou distorcida */
+  display: block;
+}
+
+/* Caso o seu container precise alinhar a foto ao lado do texto */
+.depo-autor {
+  display: flex;
+  align-items: center;
+  gap: 12px;            /* Espaçamento entre a foto e o nome */
+}
