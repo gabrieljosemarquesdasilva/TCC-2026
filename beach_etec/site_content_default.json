@@ -1,1 +1,26 @@
-{}
+{
+  "hero_titulo": "Beach Tennis",
+  "hero_sub": "Agende sua quadra, venha jogar e faça parte da comunidade que mais cresce na escola!",
+  "hero_btn": "Reservar Agora",
+  "sobre_titulo": "Nossa História",
+  "sobre_texto": "A Beach Tennis ETEC nasceu em 2024 dentro das salas de aula do curso técnico de Informática da ETEC, com uma missão simples: unir tecnologia e esporte em um projeto real. O que começou como um trabalho de conclusão de curso rapidamente ganhou forma e propósito — criar uma plataforma funcional para facilitar o agendamento de quadras de beach tennis na comunidade.",
+  "contato_end": "",
+  "contato_tel": "",
+  "contato_email": "",
+  "contato_horario": "Segunda a sábado: 7h às 21h | Domingo: 8h às 18h",
+  "social_ig": "",
+  "social_wa": "",
+  "social_fb": "",
+  "social_email": "",
+  "stat_quadras": "3",
+  "stat_alunos": "",
+  "stat_anos": "",
+  "stat_torneios": "",
+  "faq": [
+    { "p": "Qual é o horário de funcionamento?", "r": "As quadras funcionam de segunda a sábado, das 7h às 21h. Aos domingos, das 8h às 18h. Todas possuem iluminação noturna." },
+    { "p": "Quais modalidades são aceitas?", "r": "Beach Tennis, Vôlei de Areia e FutVôlei. A modalidade pode ser selecionada no momento do agendamento." },
+    { "p": "Preciso levar equipamento?", "r": "A Quadra Premium já inclui equipamentos profissionais. Para as demais, recomendamos trazer seus próprios equipamentos." },
+    { "p": "É possível reservar para grupos ou eventos?", "r": "Sim! Para grupos maiores ou eventos, entre em contato pelo WhatsApp ou pelo formulário da página de Contato." },
+    { "p": "O projeto é apenas para alunos da ETEC?", "r": "Não! O sistema é aberto para toda a comunidade. Qualquer pessoa pode criar uma conta e agendar uma quadra." }
+  ]
+}
