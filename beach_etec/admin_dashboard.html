@@ -338,7 +338,7 @@ function relogio() {
   atualizar(); setInterval(atualizar, 1000);
 }
 
-const titulos = { overview:'Visão Geral', usuarios:'Usuários', agendamentos:'Agendamentos', conteudo:'Editar Conteúdo', historico:'Histórico de Alterações' };
+const titulos = { overview:'Visão Geral', usuarios:'Usuários', agendamentos:'Agendamentos', quadras:'Quadras', conteudo:'Editar Conteúdo', historico:'Histórico de Alterações' };
 function toggleMenu() {
   document.querySelector('.sb').classList.toggle('open');
   document.querySelector('.sb-overlay').classList.toggle('on');
@@ -352,6 +352,7 @@ function go(name, el) {
   document.getElementById('ptitle').textContent = titulos[name];
   document.getElementById('srch').value = '';
   if (name === 'historico') loadHistorico();
+  if (name === 'quadras')   carregarQuadrasAdmin();
   if (window.innerWidth <= 900) { document.querySelector('.sb').classList.remove('open'); document.querySelector('.sb-overlay').classList.remove('on'); }
 }
 
@@ -651,6 +652,157 @@ function restaurarPadrao() {
   });
 }
 
+/* ── quadras ── */
+let quadraEditId = null;
+
+async function carregarQuadrasAdmin() {
+  const container = document.getElementById('quadrasAdmin');
+  container.innerHTML = '<div class="dash-skel" style="height:120px;margin-bottom:16px"></div><div class="dash-skel" style="height:120px;margin-bottom:16px"></div>';
+  try {
+    const lista = await api('/admin/quadras');
+    renderQuadrasAdmin(lista);
+  } catch(e) {
+    container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:32px">Erro ao carregar quadras.</p>';
+  }
+}
+
+function renderQuadrasAdmin(lista) {
+  const container = document.getElementById('quadrasAdmin');
+  if (!lista || !lista.length) {
+    container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:32px">Nenhuma quadra cadastrada ainda. Clique em <b>Nova Quadra</b> para começar.</p>';
+    return;
+  }
+  container.innerHTML = lista.map(q => {
+    const badges = (Array.isArray(q.badges) ? q.badges : JSON.parse(q.badges||'[]')).join(', ');
+    const fotos  = Array.isArray(q.fotos)   ? q.fotos   : JSON.parse(q.fotos||'[]');
+    return `
+    <div class="box" style="margin-bottom:16px">
+      <div class="box-head">
+        <h3 style="font-size:1rem">${q.nome}</h3>
+        <div style="display:flex;gap:8px">
+          <button class="btn-t btn-edit" onclick="abrirEditarQuadra(${q.id},'${encodeURIComponent(q.nome)}','${encodeURIComponent(q.descricao||'')}','${encodeURIComponent(badges)}')">
+            <i class="fa-solid fa-pen"></i> Editar
+          </button>
+          <button class="btn-t btn-del" onclick="excluirQuadra(${q.id},'${encodeURIComponent(q.nome)}')">
+            <i class="fa-solid fa-trash"></i> Excluir
+          </button>
+        </div>
+      </div>
+      <p style="font-size:.85rem;color:var(--muted);margin:4px 0 10px">${q.descricao||'Sem descrição.'}</p>
+      ${badges ? `<p style="font-size:.8rem;margin-bottom:10px">${badges}</p>` : ''}
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        ${fotos.map((f) => {
+          const url  = typeof f === 'string' ? f : f.url;
+          const path = typeof f === 'string' ? f : f.path;
+          return `
+          <div style="position:relative;display:inline-block">
+            <img src="${url}" style="width:80px;height:60px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+            <button onclick="excluirFotoQuadra(${q.id},'${encodeURIComponent(path)}')" title="Remover foto"
+              style="position:absolute;top:-6px;right:-6px;background:#e53e3e;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>`;
+        }).join('')}
+      </div>
+      <label class="btn-t btn-edit" style="cursor:pointer;font-size:.8rem">
+        <i class="fa-solid fa-upload"></i> Adicionar Foto
+        <input type="file" accept="image/*" multiple style="display:none" onchange="uploadFotoQuadra(${q.id}, this)">
+      </label>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:8px">
+        <i class="fa-solid fa-circle-info"></i> Para melhor resultado, use imagens na proporção <b>16:9</b> (ex: 1280×720 ou 1920×1080). Tamanho máximo: 8MB.
+      </p>
+    </div>`;
+  }).join('');
+}
+
+function abrirNovaQuadra() {
+  quadraEditId = null;
+  document.getElementById('qId').value   = '';
+  document.getElementById('qNome').value  = '';
+  document.getElementById('qDesc').value  = '';
+  document.getElementById('qBadges').value = '';
+  document.querySelector('#mQuadra h3').textContent = 'Nova Quadra';
+  abrir('mQuadra');
+}
+
+function abrirEditarQuadra(id, nome, desc, badges) {
+  quadraEditId = id;
+  document.getElementById('qId').value    = id;
+  document.getElementById('qNome').value  = decodeURIComponent(nome);
+  document.getElementById('qDesc').value  = decodeURIComponent(desc);
+  document.getElementById('qBadges').value = decodeURIComponent(badges);
+  document.querySelector('#mQuadra h3').textContent = 'Editar Quadra';
+  abrir('mQuadra');
+}
+
+async function salvarQuadra() {
+  const nome   = document.getElementById('qNome').value.trim();
+  const desc   = document.getElementById('qDesc').value.trim();
+  const badges = document.getElementById('qBadges').value.split(',').map(b=>b.trim()).filter(Boolean);
+  if (!nome) { toast('Informe o nome da quadra.', 'e'); return; }
+
+  try {
+    if (quadraEditId) {
+      await api('/admin/quadras/'+quadraEditId, { method:'PUT', body: JSON.stringify({ nome, descricao: desc, badges }) });
+      toast('Quadra atualizada!', 's');
+    } else {
+      await api('/admin/quadras', { method:'POST', body: JSON.stringify({ nome, descricao: desc, badges }) });
+      toast('Quadra criada!', 's');
+    }
+    fechar('mQuadra');
+    carregarQuadrasAdmin();
+  } catch(e) {
+    toast('Erro ao salvar quadra.', 'e');
+  }
+}
+
+async function excluirQuadra(id, nome) {
+  if (!confirm('Excluir a quadra "'+decodeURIComponent(nome)+'"? Esta ação não pode ser desfeita.')) return;
+  try {
+    await api('/admin/quadras/'+id, { method:'DELETE' });
+    toast('Quadra excluída.', 's');
+    carregarQuadrasAdmin();
+  } catch(e) {
+    toast('Erro ao excluir quadra.', 'e');
+  }
+}
+
+async function uploadFotoQuadra(id, input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+  toast(`Enviando ${files.length} foto(s)...`, 'i');
+  let erros = 0;
+  for (const file of files) {
+    const form = new FormData();
+    form.append('foto', file);
+    try {
+      const r = await fetch(API+'/admin/quadras/'+id+'/fotos', {
+        method: 'POST',
+        headers: { 'x-admin-token': TK },
+        body: form
+      });
+      const d = await r.json();
+      if (!r.ok) erros++;
+    } catch(e) { erros++; }
+  }
+  input.value = '';
+  if (erros === 0) toast(`${files.length} foto(s) adicionada(s)!`, 's');
+  else toast(`${files.length - erros} foto(s) enviada(s), ${erros} com erro.`, erros === files.length ? 'e' : 'i');
+  carregarQuadrasAdmin();
+}
+
+async function excluirFotoQuadra(id, pathEnc) {
+  const path = decodeURIComponent(pathEnc);
+  if (!confirm('Remover esta foto?')) return;
+  try {
+    await api('/admin/quadras/'+id+'/fotos', { method:'DELETE', body: JSON.stringify({ path }) });
+    toast('Foto removida.', 's');
+    carregarQuadrasAdmin();
+  } catch(e) {
+    toast('Erro ao remover foto.', 'e');
+  }
+}
+
 /* ── logout ── */
 function sair() {
   if (!confirm('Sair do painel?')) return;
@@ -665,7 +817,7 @@ function sair() {
 /* ── modais ── */
 function abrir(id) { document.getElementById(id).classList.add('on'); }
 function fechar(id) { document.getElementById(id).classList.remove('on'); }
-['mEdit','mPw','mHist'].forEach(id => {
+['mEdit','mPw','mHist','mQuadra'].forEach(id => {
   document.getElementById(id).addEventListener('click', e => { if (e.target === e.currentTarget) fechar(id); });
 });
 
