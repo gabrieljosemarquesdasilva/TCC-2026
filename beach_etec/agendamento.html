@@ -43,7 +43,24 @@
   <a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a>
 </nav>
 
-<section class="form-section">
+
+<!-- TELA: NÃO LOGADO -->
+<section class="nao-logado-section" id="telaDeslogado">
+  <div class="nao-logado-icon">🔒</div>
+  <h2>Você não está logado</h2>
+  <p>Para acessar seu perfil e gerenciar seus agendamentos, faça login ou crie uma conta gratuita.</p>
+  <div class="nao-logado-btns">
+    <a href="login_usuario.html" class="btn-entrar">
+      <i class="fa-solid fa-right-to-bracket"></i> Fazer Login
+    </a>
+    <a href="cadastro_usuario.html" class="btn-cadastrar">
+      <i class="fa-solid fa-user-plus"></i> Criar Conta Grátis
+    </a>
+  </div>
+</section>
+
+
+<section class="form-section" id="telaLogado">
   <div class="section-header" style="margin-bottom:40px;">
     <span class="section-tag">📅 Reserve</span>
     <h2>Agendamento de <span class="accent">Quadra</span></h2>
@@ -166,6 +183,21 @@
     <p class="footer-copy">Beach Tennis ETEC &mdash; <strong>Projeto TCC 2026</strong></p>
   </div>
 </footer>
+
+
+<!--verificação de login-->
+<div class="modal-logar" id="modalLogar">
+  <div class="modal-content" style="width: 30%; height: 40%; padding: 4%">
+    <div class="modal-actions">
+      <h3 style="margin-bottom: 5%; font-size: 150%;">Você precisa fazer login para acessar o agendamento.</h3>
+      <button class="btn-primary" onclick="irLogin()" >Fazer Login</button>
+      <button class="btn-primary" onclick="irCadastro()" >Fazer Cadastro</button>
+      <button class="btn-outline" onclick="voltar()" >Voltar</button>
+    </div>
+  </div>
+</div>
+
+
 
 <script src="script.js"></script>
 <script>
@@ -346,18 +378,6 @@ function showToast(msg, type) {
 </script>
 
 <script>
-const usuarioLogado = localStorage.getItem("usuario-verificacao");
-const btnLogin = document.getElementById("btn-login");
-const btnCadastro = document.getElementById("btn-cadastro");
-const btnPerfil = document.getElementById("btn-perfil");
-if (usuarioLogado) {
-  btnLogin.style.display = "none"; btnCadastro.style.display = "none"; btnPerfil.style.display = "block";
-} else {
-  btnLogin.style.display = "block"; btnCadastro.style.display = "block"; btnPerfil.style.display = "none";
-}
-</script>
-
-<script>
 (function() {
   const toggle = document.getElementById('darkToggle');
   const icon = toggle.querySelector('i');
@@ -371,6 +391,65 @@ if (usuarioLogado) {
   });
 })();
 </script>
+
+
+<script>
+const logado = localStorage.getItem("usuario-verificacao");
+
+if (logado === "true") {
+    // Esconde o popup
+    document.getElementById("modalLogar").style.display = "none";
+
+    // Libera o scroll da página
+    document.body.style.overflow = "auto";
+} else {
+    // Mostra o popup
+    document.getElementById("modalLogar").style.display = "flex";
+
+    // Bloqueia o scroll da página
+    document.body.style.overflow = "hidden";
+}
+
+function irLogin() {
+    window.location.href = "login_usuario.html";
+}
+
+function irCadastro() {
+    window.location.href = "cadastro_usuario.html";
+}
+
+function voltar() {
+    window.location.href = "index.html";
+}
+</script>
+
+<script>
+  // Verifica se existe usuário logado
+const usuarioLogado = localStorage.getItem("usuario-verificacao");
+
+const btnLogin = document.getElementById("btn-login");
+const btnCadastro = document.getElementById("btn-cadastro");
+const btnPerfil = document.getElementById("btn-perfil");
+
+if (usuarioLogado) {
+    // Usuário logado
+    btnLogin.style.display = "none";
+    btnCadastro.style.display = "none";
+    btnPerfil.style.display = "block";
+} else {
+    // Usuário não logado
+    btnLogin.style.display = "block";
+    btnCadastro.style.display = "block";
+    btnPerfil.style.display = "none";
+}
+
+
+</script>
+
+
 </div>
+
+
+
 </body>
 </html>
