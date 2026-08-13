@@ -203,31 +203,79 @@
 <script>
 // ── CARREGAR QUADRAS NO SELECT ──
 document.addEventListener('DOMContentLoaded', () => {
-  const sel = document.getElementById('quadra');
+  const selQuadra = document.getElementById('quadra');
+
+  // Quando trocar a quadra:
+  selQuadra.addEventListener('change', () => {
+    localStorage.setItem('quadra', selQuadra.value);
+
+    carregarHorarios();
+  });
+
+  // Carrega as quadras
   fetch('/quadras')
-    .then(r => r.json())
+    .then(r => {
+      if (!r.ok) throw new Error('Erro ao carregar quadras');
+      return r.json();
+    })
     .then(quadras => {
-      sel.innerHTML = '';
+      selQuadra.innerHTML = '';
+
       if (!quadras.length) {
-        sel.innerHTML = '<option value="" disabled selected>Nenhuma quadra disponível</option>';
+        selQuadra.innerHTML =
+          '<option value="" disabled selected>Nenhuma quadra disponível</option>';
         return;
       }
+
+      // Adiciona as quadras
       quadras.forEach(q => {
         const opt = document.createElement('option');
+
         opt.value = q.nome;
         opt.textContent = q.nome;
-        sel.appendChild(opt);
+
+        selQuadra.appendChild(opt);
       });
-      // Restaura seleção salva
+
+      // Recupera quadra salva
       const salva = localStorage.getItem('quadra');
-      if (salva && [...sel.options].some(o => o.value === salva)) sel.value = salva;
+
+      if (salva) {
+        const opcao = [...selQuadra.options].find(
+          option => option.value === salva
+        );
+
+        if (opcao) {
+          selQuadra.value = salva;
+        }
+      }
+
+      // Carrega horários da quadra selecionada
       carregarHorarios();
     })
-    .catch(() => {
-      sel.innerHTML = '<option value="Quadra 1">Quadra 1</option><option value="Quadra 2">Quadra 2</option><option value="Quadra 3">Quadra 3</option>';
+    .catch(error => {
+      console.error('Erro ao carregar quadras:', error);
+
+      selQuadra.innerHTML = `
+        <option value="Quadra 1">Quadra 1</option>
+        <option value="Quadra 2">Quadra 2</option>
+        <option value="Quadra 3">Quadra 3</option>
+      `;
+
+      // Tenta restaurar quadra salva
+      const salva = localStorage.getItem('quadra');
+
+      if (
+        salva &&
+        [...selQuadra.options].some(option => option.value === salva)
+      ) {
+        selQuadra.value = salva;
+      }
+
       carregarHorarios();
     });
 });
+
 </script>
 
 <script>

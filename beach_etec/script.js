@@ -210,3 +210,72 @@ if(usuario){
     })
     .catch(()=>{});
 })();
+
+
+async function carregarHorarios() {
+  const selQuadra = document.getElementById('quadra');
+
+  if (!selQuadra) return;
+
+  const quadra = selQuadra.value;
+
+  if (!quadra) {
+    console.log('Nenhuma quadra selecionada');
+    return;
+  }
+
+  console.log('Carregando horários da:', quadra);
+
+  try {
+    const resposta = await fetch(
+      `/horarios?quadra=${encodeURIComponent(quadra)}`
+    );
+
+    if (!resposta.ok) {
+      throw new Error('Erro ao carregar horários');
+    }
+
+    const horarios = await resposta.json();
+
+    console.log('Horários recebidos:', horarios);
+
+    // Aqui você precisa ter algum elemento para mostrar os horários.
+    // Exemplo:
+    const container = document.getElementById('horarios');
+
+    if (!container) {
+      console.warn('Elemento #horarios não encontrado');
+      return;
+    }
+
+    container.innerHTML = '';
+
+    if (!horarios.length) {
+      container.innerHTML = `
+        <p>Nenhum horário disponível para esta quadra.</p>
+      `;
+      return;
+    }
+
+    horarios.forEach(horario => {
+      const button = document.createElement('button');
+
+      button.type = 'button';
+      button.className = 'horario';
+      button.textContent = horario;
+
+      container.appendChild(button);
+    });
+
+  } catch (erro) {
+    console.error('Erro ao carregar horários:', erro);
+
+    const container = document.getElementById('horarios');
+
+    if (container) {
+      container.innerHTML = `
+        <p>Não foi possível carregar os horários.</p>
+      `;
+    }
+  }
+}
