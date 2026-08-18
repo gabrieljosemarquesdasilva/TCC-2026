@@ -1885,3 +1885,201 @@ body.dark-mode .faq-answer{color:#7a9bb8}
   justify-content: center;
   align-items: center;
 }
+
+/* =====================================================================
+   ACESSIBILIDADE (acessibilidade.js)
+===================================================================== */
+.acc-widget { font-family: 'DM Sans', sans-serif; }
+
+.acc-btn-flutuante {
+  position: fixed;
+  left: 22px;
+  bottom: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ocean, #0077B6);
+  color: #fff;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  z-index: 99998;
+  transition: transform .2s, background .2s;
+}
+.acc-btn-flutuante:hover { background: var(--coral, #FF6B35); transform: scale(1.08); }
+.acc-btn-flutuante:focus-visible { outline: 3px solid var(--sun, #FFD166); outline-offset: 3px; }
+
+.acc-painel {
+  position: fixed;
+  left: 22px;
+  bottom: 90px;
+  width: 300px;
+  max-width: calc(100vw - 44px);
+  max-height: 70vh;
+  overflow-y: auto;
+  background: #fff;
+  color: #1C2B3A;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  z-index: 99998;
+  border: 1px solid rgba(0,0,0,.08);
+}
+
+.acc-painel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: var(--dark, #0A1628);
+  color: #fff;
+  border-radius: 18px 18px 0 0;
+  font-weight: 700;
+}
+.acc-painel-header span { display: flex; align-items: center; gap: 8px; }
+
+.acc-fechar {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.acc-fechar:hover, .acc-fechar:focus-visible { background: rgba(255,255,255,.15); }
+
+.acc-painel-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+
+.acc-linha { display: flex; flex-direction: column; gap: 6px; padding: 6px 10px; }
+.acc-label { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: .92rem; }
+
+.acc-fonte-botoes { display: flex; align-items: center; gap: 10px; }
+.acc-fonte-botoes button {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,.15);
+  background: #F5E6C8;
+  font-weight: 700;
+  cursor: pointer;
+}
+.acc-fonte-botoes button:hover { background: var(--sun, #FFD166); }
+.acc-fonte-botoes span { min-width: 44px; text-align: center; font-weight: 600; }
+
+.acc-opcao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.1);
+  background: #fafafa;
+  cursor: pointer;
+  font-size: .92rem;
+  font-weight: 500;
+  color: #1C2B3A;
+  transition: background .15s, border-color .15s;
+}
+.acc-opcao:hover { background: #F5E6C8; }
+.acc-opcao.acc-ativo { background: var(--ocean, #0077B6); border-color: var(--ocean, #0077B6); color: #fff; }
+.acc-opcao i { width: 18px; text-align: center; }
+.acc-opcao.acc-resetar { border-color: var(--coral, #FF6B35); color: var(--coral, #FF6B35); background: #fff; margin-top: 4px; }
+.acc-opcao.acc-resetar:hover { background: var(--coral, #FF6B35); color: #fff; }
+
+.acc-leitor-controle { flex-direction: row; gap: 8px; padding: 0; }
+.acc-leitor-controle .acc-opcao { width: auto; }
+.acc-leitor-controle #acc-toggle-leitor-voz { flex: 1; }
+.acc-leitor-pausar { flex: 0 0 auto; white-space: nowrap; }
+
+/* Modo "toque no texto para ouvir": destaca o que fica sob o cursor */
+html.acc-modo-toque body :is(p, span, li, a, button, h1, h2, h3, h4, h5, h6, label, td, th, figcaption, strong, em, small, blockquote):hover {
+  outline: 2px dashed var(--ocean, #0077B6);
+  outline-offset: 2px;
+  cursor: pointer;
+  background: rgba(0, 119, 182, 0.08);
+}
+html.acc-modo-toque .acc-widget :hover,
+html.acc-modo-toque [vw] :hover { outline: none !important; background: none !important; }
+
+.acc-painel-footer {
+  padding: 10px 16px 14px;
+  font-size: .78rem;
+  color: #6B7C8E;
+  text-align: center;
+}
+
+.acc-btn-flutuante, .acc-opcao, .acc-fonte-botoes button, .acc-fechar { outline-offset: 2px; }
+
+/* ---- Estados aplicados ao <html> ---- */
+html.acc-links a { text-decoration: underline !important; text-underline-offset: 3px; }
+
+html.acc-leitura, html.acc-leitura * {
+  font-family: Arial, Verdana, "Comic Sans MS", sans-serif !important;
+  letter-spacing: .02em !important;
+  line-height: 1.6 !important;
+}
+
+html.acc-sem-animacao *, html.acc-sem-animacao *::before, html.acc-sem-animacao *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+html.acc-cinza .site-wrapper, html.acc-cinza header, html.acc-cinza footer {
+  filter: grayscale(100%);
+}
+
+html.acc-cursor-grande, html.acc-cursor-grande * { cursor: pointer; }
+html.acc-cursor-grande body { cursor: default; }
+
+html.acc-contraste .site-wrapper {
+  background: #000 !important;
+  color: #FFF200 !important;
+}
+html.acc-contraste body { background: #000 !important; }
+html.acc-contraste header,
+html.acc-contraste footer,
+html.acc-contraste .como-card,
+html.acc-contraste .quadra,
+html.acc-contraste .faq-item,
+html.acc-contraste section {
+  background: #000 !important;
+  color: #FFF200 !important;
+  border-color: #FFF200 !important;
+}
+html.acc-contraste p,
+html.acc-contraste span,
+html.acc-contraste li,
+html.acc-contraste label,
+html.acc-contraste h1,
+html.acc-contraste h2,
+html.acc-contraste h3,
+html.acc-contraste h4 {
+  color: #FFF200 !important;
+}
+html.acc-contraste a { color: #4DD2FF !important; }
+html.acc-contraste img,
+html.acc-contraste .hero-slide,
+html.acc-contraste .hero-slide-overlay { opacity: 0.85 !important; }
+html.acc-contraste .btn-primary,
+html.acc-contraste .btn-outline,
+html.acc-contraste button:not(.acc-btn-flutuante):not(.acc-fechar):not(.acc-opcao):not(.acc-fonte-botoes button) {
+  background: #FFF200 !important;
+  color: #000 !important;
+  border: 2px solid #FFF200 !important;
+}
+
+/* Painel de acessibilidade nunca fica no alto contraste, para continuar legível */
+html.acc-contraste .acc-painel,
+html.acc-contraste .acc-painel * { filter: none; }
+
+@media (max-width: 480px) {
+  .acc-btn-flutuante { left: 14px; bottom: 14px; width: 50px; height: 50px; font-size: 1.3rem; }
+  .acc-painel { left: 14px; bottom: 74px; width: calc(100vw - 28px); }
+}
