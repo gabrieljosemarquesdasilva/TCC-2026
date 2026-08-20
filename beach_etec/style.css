@@ -19,18 +19,17 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: #1a1a1a;
+  background: var(--sand);
   color: var(--text);
   overflow-x: hidden;
 }
 
-/* ── WRAPPER CENTRAL 1080px (estilo UOL) ── */
+/* ── WRAPPER FULL WIDTH ── */
 .site-wrapper {
-  max-width: 1080px;
+  max-width: none;
   margin: 0 auto;
   background: var(--sand);
   min-height: 100vh;
-  box-shadow: 0 0 60px rgba(0,0,0,0.4);
   position: relative;
 }
 
@@ -240,7 +239,7 @@ nav {
 .hero-content {
   position: relative;
   z-index: 1;
-  max-width: 1080px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 60px;
   width: 100%;
@@ -372,7 +371,7 @@ nav {
 }
 
 .carrossel {
-  max-width: 1000px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 0 40px;
 }
@@ -1442,14 +1441,14 @@ body.dark-mode .faq-answer{color:#7a9bb8}
 
 /* ── STATS ── */
 .stats-section{background:linear-gradient(135deg,var(--navy) 0%,#0f2540 100%);padding:64px 24px}
-.stats-grid{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;max-width:900px;margin:0 auto}
+.stats-grid{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;max-width:1100px;margin:0 auto}
 .stat-item{text-align:center;color:white}
 .stat-number{font-family:'Barlow Condensed',sans-serif;font-size:3.5rem;font-weight:800;color:var(--coral);line-height:1}
 .stat-label{font-size:.9rem;color:rgba(255,255,255,.65);margin-top:6px;text-transform:uppercase;letter-spacing:.08em}
 
 /* ── COMO FUNCIONA ── */
 .como-section{padding:80px 24px;background:#f7fafc}
-.como-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;max-width:900px;margin:48px auto 0}
+.como-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;max-width:1100px;margin:48px auto 0}
 .como-card{background:white;border-radius:16px;padding:32px 24px;text-align:center;box-shadow:0 2px 12px rgba(27,58,92,.08);border:1.5px solid #e8eff5;transition:transform .25s,box-shadow .25s}
 .como-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(27,58,92,.13)}
 .como-icon{font-size:2.4rem;margin-bottom:16px;display:block}
@@ -1459,7 +1458,7 @@ body.dark-mode .faq-answer{color:#7a9bb8}
 
 /* ── FAQ ── */
 .faq-section{padding:80px 24px;background:white}
-.faq-list{max-width:720px;margin:48px auto 0}
+.faq-list{max-width:820px;margin:48px auto 0}
 .faq-item{border-bottom:1.5px solid #e8eff5}
 .faq-question{width:100%;background:none;border:none;text-align:left;padding:20px 0;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color .2s}
 .faq-question:hover{color:var(--coral)}
@@ -1496,7 +1495,7 @@ body.dark-mode .faq-answer{color:#7a9bb8}
 
 /* ── EQUIPE ── */
 .equipe-section{padding:80px 24px;background:white}
-.equipe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px;max-width:840px;margin:48px auto 0}
+.equipe-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px;max-width:1100px;margin:48px auto 0}
 .equipe-card{text-align:center;background:#f7fafc;border-radius:20px;padding:32px 20px;border:1.5px solid #e8eff5;transition:transform .25s,box-shadow .25s}
 .equipe-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(27,58,92,.1)}
 .equipe-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--coral),#f97316);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;color:white;margin:0 auto 16px}
@@ -1510,7 +1509,7 @@ body.dark-mode .faq-answer{color:#7a9bb8}
 .cta-section p{color:rgba(255,255,255,.65);font-size:1rem;margin-bottom:32px}
 
 /* ── CONTATO GRID ── */
-.contato-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:900px;margin:0 auto;align-items:start}
+.contato-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:1100px;margin:0 auto;align-items:start}
 @media(max-width:700px){.contato-grid{grid-template-columns:1fr}}
 .contato-form-card{background:white;border-radius:20px;padding:36px 32px;box-shadow:0 4px 20px rgba(27,58,92,.08);border:1.5px solid #e8eff5}
 .contato-form-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:6px}
