@@ -256,6 +256,12 @@
       <label>Badges / Tags <span style="font-weight:400;text-transform:none;font-size:.75rem">(separados por vírgula)</span></label>
       <input id="qBadges" type="text" placeholder="Ex: 💡 Iluminação noturna, 🏟️ Areia profissional">
     </div>
+    <div class="fg"><label>Endereço</label><input id="qEndereco" type="text" placeholder="Ex: Av. da ETEC, 123 - Quadra A"></div>
+    <div style="display:flex;gap:12px;">
+      <div class="fg" style="flex:1"><label>Capacidade (pessoas)</label><input id="qCapacidade" type="number" min="1" placeholder="Ex: 8"></div>
+      <div class="fg" style="flex:1"><label>Tipo de piso</label><input id="qPiso" type="text" placeholder="Ex: Areia profissional"></div>
+    </div>
+    <div class="fg"><label>Funcionamento</label><input id="qFuncionamento" type="text" placeholder="Ex: Seg-Sáb, 7h às 21h"></div>
     <div class="m-acts">
       <button class="btn-cancel" onclick="fechar('mQuadra')">Cancelar</button>
       <button class="btn-save" onclick="salvarQuadra()"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
@@ -671,7 +677,7 @@ function renderQuadrasAdmin(lista) {
       <div class="box-head">
         <h3 style="font-size:1rem">${q.nome}</h3>
         <div style="display:flex;gap:8px">
-          <button class="btn-t btn-edit" onclick="abrirEditarQuadra(${q.id},'${encodeURIComponent(q.nome)}','${encodeURIComponent(q.descricao||'')}','${encodeURIComponent(badges)}')">
+          <button class="btn-t btn-edit" onclick="abrirEditarQuadra(${q.id},'${encodeURIComponent(q.nome)}','${encodeURIComponent(q.descricao||'')}','${encodeURIComponent(badges)}','${encodeURIComponent(q.endereco||'')}','${q.capacidade||''}','${encodeURIComponent(q.funcionamento||'')}','${encodeURIComponent(q.piso||'')}')">
             <i class="fa-solid fa-pen"></i> Editar
           </button>
           <button class="btn-t btn-del" onclick="excluirQuadra(${q.id},'${encodeURIComponent(q.nome)}')">
@@ -712,16 +718,24 @@ function abrirNovaQuadra() {
   document.getElementById('qNome').value  = '';
   document.getElementById('qDesc').value  = '';
   document.getElementById('qBadges').value = '';
+  document.getElementById('qEndereco').value = '';
+  document.getElementById('qCapacidade').value = '';
+  document.getElementById('qFuncionamento').value = '';
+  document.getElementById('qPiso').value = '';
   document.querySelector('#mQuadra h3').textContent = 'Nova Quadra';
   abrir('mQuadra');
 }
 
-function abrirEditarQuadra(id, nome, desc, badges) {
+function abrirEditarQuadra(id, nome, desc, badges, endereco, capacidade, funcionamento, piso) {
   quadraEditId = id;
   document.getElementById('qId').value    = id;
   document.getElementById('qNome').value  = decodeURIComponent(nome);
   document.getElementById('qDesc').value  = decodeURIComponent(desc);
   document.getElementById('qBadges').value = decodeURIComponent(badges);
+  document.getElementById('qEndereco').value = decodeURIComponent(endereco||'');
+  document.getElementById('qCapacidade').value = capacidade||'';
+  document.getElementById('qFuncionamento').value = decodeURIComponent(funcionamento||'');
+  document.getElementById('qPiso').value = decodeURIComponent(piso||'');
   document.querySelector('#mQuadra h3').textContent = 'Editar Quadra';
   abrir('mQuadra');
 }
@@ -730,14 +744,19 @@ async function salvarQuadra() {
   const nome   = document.getElementById('qNome').value.trim();
   const desc   = document.getElementById('qDesc').value.trim();
   const badges = document.getElementById('qBadges').value.split(',').map(b=>b.trim()).filter(Boolean);
+  const endereco = document.getElementById('qEndereco').value.trim();
+  const capacidade = document.getElementById('qCapacidade').value.trim();
+  const funcionamento = document.getElementById('qFuncionamento').value.trim();
+  const piso = document.getElementById('qPiso').value.trim();
   if (!nome) { toast('Informe o nome da quadra.', 'e'); return; }
 
+  const payload = { nome, descricao: desc, badges, endereco, capacidade: capacidade?parseInt(capacidade,10):null, funcionamento, piso };
   try {
     if (quadraEditId) {
-      await api('/admin/quadras/'+quadraEditId, { method:'PUT', body: JSON.stringify({ nome, descricao: desc, badges }) });
+      await api('/admin/quadras/'+quadraEditId, { method:'PUT', body: JSON.stringify(payload) });
       toast('Quadra atualizada!', 's');
     } else {
-      await api('/admin/quadras', { method:'POST', body: JSON.stringify({ nome, descricao: desc, badges }) });
+      await api('/admin/quadras', { method:'POST', body: JSON.stringify(payload) });
       toast('Quadra criada!', 's');
     }
     fechar('mQuadra');

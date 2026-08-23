@@ -28,6 +28,33 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 const BUCKET = "quadras";
+const BUCKET_AVATARS = "avatars";
+
+// XP necessário para cada nível: 100xp por nível (nível mínimo = 1)
+function calcularNivel(xp) {
+  const nivel = Math.floor((xp || 0) / 100) + 1;
+  const xpNoNivel = (xp || 0) % 100;
+  return { nivel, xpNoNivel, xpProxNivel: 100 };
+}
+
+// Concede XP para reservas confirmadas cujo horário já passou e ainda não deram XP.
+// 30 XP por hora de quadra jogada. Roda "sob demanda" quando o usuário consulta perfil/agendamentos.
+async function concederXpPendente(usuarioId) {
+  try {
+    const r = await db.query(
+      `SELECT id, duracao FROM agendamentos
+       WHERE usuario_id=$1 AND status='confirmado' AND xp_concedido=false
+         AND (data + horario + (duracao || ' hours')::interval) < NOW()`,
+      [usuarioId]
+    );
+    if (!r.rows.length) return;
+    let xpGanho = 0;
+    for (const row of r.rows) xpGanho += (row.duracao || 1) * 30;
+    const ids = r.rows.map(row => row.id);
+    await db.query("UPDATE agendamentos SET xp_concedido=true WHERE id = ANY($1::int[])", [ids]);
+    await db.query("UPDATE usuarios SET xp = COALESCE(xp,0) + $1 WHERE id=$2", [xpGanho, usuarioId]);
+  } catch (e) { console.error("Erro ao conceder XP:", e.message); }
+}
 
 // Multer — armazena em memória para repassar ao Supabase
 const upload = multer({
@@ -62,19 +89,23 @@ app.post("/login", async (req, res) => {
   if (!email || !senha) return res.status(400).json({ erro: "Preencha e-mail e senha." });
   try {
     const r = await db.query(
-      "SELECT id,nome,sobrenome,email,telefone,nascimento FROM usuarios WHERE email=$1 AND senha=$2",
+      "SELECT id,nome,sobrenome,email,telefone,nascimento,foto_url,xp,nivel_jogo FROM usuarios WHERE email=$1 AND senha=$2",
       [email, hash(senha)]
     );
     if (!r.rows.length) return res.status(401).json({ erro: "E-mail ou senha incorretos." });
     const u = r.rows[0];
+    await concederXpPendente(u.id);
+    const xpAtual = await db.query("SELECT xp FROM usuarios WHERE id=$1", [u.id]);
+    const { nivel, xpNoNivel, xpProxNivel } = calcularNivel(xpAtual.rows[0].xp);
     const adm = await db.query("SELECT id FROM admins WHERE email=$1", [email]);
     const isAdmin = adm.rows.length > 0;
     const token = crypto.randomBytes(32).toString("hex");
     await db.query("INSERT INTO usuario_sessoes(token,usuario_id) VALUES($1,$2)", [token, u.id]);
     res.json({ sucesso: true, isAdmin, token, usuario: {
       id: u.id, nome: u.nome+(u.sobrenome?" "+u.sobrenome:""),
-      email: u.email, foto: null,
-      telefone: u.telefone||"", nascimento: u.nascimento||""
+      email: u.email, foto: u.foto_url || null,
+      telefone: u.telefone||"", nascimento: u.nascimento||"",
+      nivel_jogo: u.nivel_jogo||"", xp: xpAtual.rows[0].xp||0, nivel, xpNoNivel, xpProxNivel
     }});
   } catch(e) { res.status(500).json({ erro: "Erro interno." }); }
 });
@@ -108,6 +139,58 @@ async function userAuth(req, res, next) {
   } catch(e) { res.status(401).json({ erro: "Erro de autenticação." }); }
 }
 
+/* ═══ PERFIL ═══ */
+
+// Dados atualizados do usuário logado (foto, XP, nível)
+app.get("/perfil", userAuth, async (req, res) => {
+  try {
+    await concederXpPendente(req.usuarioId);
+    const r = await db.query(
+      "SELECT id,nome,sobrenome,email,telefone,nascimento,foto_url,xp,nivel_jogo FROM usuarios WHERE id=$1",
+      [req.usuarioId]
+    );
+    if (!r.rows.length) return res.status(404).json({ erro: "Usuário não encontrado." });
+    const u = r.rows[0];
+    const { nivel, xpNoNivel, xpProxNivel } = calcularNivel(u.xp);
+    res.json({
+      id: u.id, nome: u.nome+(u.sobrenome?" "+u.sobrenome:""), email: u.email,
+      telefone: u.telefone||"", nascimento: u.nascimento||"", foto: u.foto_url||null,
+      nivel_jogo: u.nivel_jogo||"", xp: u.xp||0, nivel, xpNoNivel, xpProxNivel
+    });
+  } catch(e) { res.status(500).json({ erro: "Erro ao buscar perfil." }); }
+});
+
+// Salvar nível de jogo (auto-avaliado pelo jogador)
+app.put("/perfil/nivel-jogo", userAuth, async (req, res) => {
+  const { nivel_jogo } = req.body;
+  try {
+    await db.query("UPDATE usuarios SET nivel_jogo=$1 WHERE id=$2", [nivel_jogo||"", req.usuarioId]);
+    res.json({ sucesso: true });
+  } catch(e) { res.status(500).json({ erro: "Erro ao salvar nível." }); }
+});
+
+// Upload de foto de perfil — salva no Supabase Storage e grava a URL no banco
+app.post("/perfil/foto", userAuth, upload.single("foto"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ erro: "Nenhuma imagem enviada." });
+    const ext      = req.file.mimetype.split("/")[1].replace("jpeg","jpg");
+    const filename = `usuario_${req.usuarioId}_${Date.now()}.${ext}`;
+    const path     = `perfil/${filename}`;
+
+    const { error } = await supabase.storage.from(BUCKET_AVATARS).upload(path, req.file.buffer, {
+      contentType: req.file.mimetype,
+      upsert: false
+    });
+    if (error) return res.status(500).json({ erro: "Erro no upload: " + error.message });
+
+    const { data: urlData } = supabase.storage.from(BUCKET_AVATARS).getPublicUrl(path);
+    const url = urlData.publicUrl;
+
+    await db.query("UPDATE usuarios SET foto_url=$1 WHERE id=$2", [url, req.usuarioId]);
+    res.json({ sucesso: true, foto: url });
+  } catch(e) { res.status(500).json({ erro: "Erro ao salvar foto." }); }
+});
+
 /* ═══ AGENDAMENTOS ═══ */
 app.get("/horarios-disponiveis", async (req, res) => {
   const { data, quadra } = req.query;
@@ -118,35 +201,85 @@ app.get("/horarios-disponiveis", async (req, res) => {
   } catch(e) { res.status(500).json({ erro: "Erro ao consultar." }); }
 });
 
+const HORARIO_ABERTURA = 7, HORARIO_FECHAMENTO = 22; // quadras funcionam das 07h às 21h (última entrada)
+
+function horasDaReserva(horarioInicio, duracaoHoras) {
+  const horaBase = parseInt(String(horarioInicio).split(":")[0], 10);
+  const horas = [];
+  for (let i = 0; i < duracaoHoras; i++) horas.push(String(horaBase + i).padStart(2, "0") + ":00");
+  return horas;
+}
+
 app.post("/agendar", userAuth, async (req, res) => {
   const { nome, quadra, data, horario, modalidade, nivel } = req.body;
+  const duracao = Math.max(1, Math.min(4, parseInt(req.body.duracao, 10) || 1));
   try {
+    const horas = horasDaReserva(horario, duracao);
+    const ultimaHora = parseInt(horas[horas.length - 1].split(":")[0], 10);
+    if (ultimaHora >= HORARIO_FECHAMENTO) {
+      return res.status(400).json({ erro: "A duração escolhida ultrapassa o horário de funcionamento da quadra." });
+    }
+
+    // Verifica se algum dos horários necessários já está ocupado (reservas de 1h ocupam 1 linha cada)
     const conflito = await db.query(
-      "SELECT id FROM agendamentos WHERE quadra=$1 AND data=$2 AND horario=$3 AND status!='cancelado'",
-      [quadra, data, horario]
+      "SELECT horario FROM agendamentos WHERE quadra=$1 AND data=$2 AND horario = ANY($3::time[]) AND status!='cancelado'",
+      [quadra, data, horas]
     );
-    if (conflito.rows.length) return res.status(409).json({ erro: "Este horário já está ocupado para esta quadra." });
-    await db.query(
-      "INSERT INTO agendamentos(nome,quadra,data,horario,modalidade,nivel,status,usuario_id) VALUES($1,$2,$3,$4,$5,$6,'pendente',$7)",
-      [nome, quadra, data, horario, modalidade, nivel, req.usuarioId]
-    );
+    if (conflito.rows.length) {
+      return res.status(409).json({ erro: "Um ou mais horários necessários para essa duração já estão ocupados." });
+    }
+
+    const grupoId = crypto.randomBytes(8).toString("hex");
+    for (const h of horas) {
+      await db.query(
+        "INSERT INTO agendamentos(nome,quadra,data,horario,modalidade,nivel,status,usuario_id,duracao,grupo_id) VALUES($1,$2,$3,$4,$5,$6,'pendente',$7,$8,$9)",
+        [nome, quadra, data, h, modalidade, nivel, req.usuarioId, duracao, grupoId]
+      );
+    }
     res.json({ sucesso: true, mensagem: "Agendado! ✅" });
   } catch(e) { res.status(500).json({ erro: "Erro ao salvar." }); }
 });
 
 app.get("/agendamentos", userAuth, async (req, res) => {
   try {
-    const r = await db.query("SELECT * FROM agendamentos WHERE usuario_id=$1 ORDER BY data DESC", [req.usuarioId]);
-    res.json(r.rows);
+    await concederXpPendente(req.usuarioId);
+    const r = await db.query("SELECT * FROM agendamentos WHERE usuario_id=$1 ORDER BY data DESC, horario ASC", [req.usuarioId]);
+    // Agrupa as linhas de hora-em-hora de uma mesma reserva (grupo_id) em um único item
+    const grupos = new Map();
+    for (const row of r.rows) {
+      const chave = row.grupo_id || ("solo_" + row.id);
+      if (!grupos.has(chave)) {
+        grupos.set(chave, {
+          id: row.id, grupo_id: row.grupo_id, nome: row.nome, quadra: row.quadra,
+          data: row.data, horario_inicio: String(row.horario).substring(0,5),
+          horario_fim: null, modalidade: row.modalidade, nivel: row.nivel,
+          status: row.status, duracao: row.duracao||1, ids: [row.id]
+        });
+      } else {
+        grupos.get(chave).ids.push(row.id);
+      }
+    }
+    const resultado = Array.from(grupos.values()).map(g => {
+      const horaFim = parseInt(g.horario_inicio.split(":")[0],10) + g.duracao;
+      g.horario_fim = String(horaFim).padStart(2,"0") + ":00";
+      return g;
+    });
+    res.json(resultado);
   } catch(e) { res.status(500).json({ erro: "Erro." }); }
 });
 
 app.delete("/agendamentos/:id", userAuth, async (req, res) => {
   try {
-    const r = await db.query(
-      "DELETE FROM agendamentos WHERE id=$1 AND usuario_id=$2 RETURNING id",
-      [req.params.id, req.usuarioId]
-    );
+    // Cancela todas as linhas do mesmo grupo (reserva de múltiplas horas), se houver
+    const alvo = await db.query("SELECT grupo_id FROM agendamentos WHERE id=$1 AND usuario_id=$2", [req.params.id, req.usuarioId]);
+    if (!alvo.rows.length) return res.status(404).json({ erro: "Agendamento não encontrado ou sem permissão." });
+    const grupoId = alvo.rows[0].grupo_id;
+    let r;
+    if (grupoId) {
+      r = await db.query("DELETE FROM agendamentos WHERE grupo_id=$1 AND usuario_id=$2 RETURNING id", [grupoId, req.usuarioId]);
+    } else {
+      r = await db.query("DELETE FROM agendamentos WHERE id=$1 AND usuario_id=$2 RETURNING id", [req.params.id, req.usuarioId]);
+    }
     if (!r.rows.length) return res.status(404).json({ erro: "Agendamento não encontrado ou sem permissão." });
     res.json({ sucesso: true, mensagem: "Reserva cancelada." });
   } catch(e) { res.status(500).json({ erro: "Erro ao cancelar." }); }
@@ -317,14 +450,14 @@ app.get("/admin/quadras", adminAuth, async (req, res) => {
 
 // Criar nova quadra
 app.post("/admin/quadras", adminAuth, async (req, res) => {
-  const { nome, descricao, badges } = req.body;
+  const { nome, descricao, badges, endereco, capacidade, funcionamento, piso } = req.body;
   if (!nome) return res.status(400).json({ erro: "Nome obrigatório." });
   try {
     const maxOrdem = await db.query("SELECT COALESCE(MAX(ordem),0) v FROM quadras");
     const ordem = parseInt(maxOrdem.rows[0].v) + 1;
     const r = await db.query(
-      "INSERT INTO quadras(nome,descricao,badges,ordem,fotos) VALUES($1,$2,$3,$4,'[]') RETURNING *",
-      [nome, descricao||"", JSON.stringify(badges||[]), ordem]
+      "INSERT INTO quadras(nome,descricao,badges,ordem,fotos,endereco,capacidade,funcionamento,piso) VALUES($1,$2,$3,$4,'[]',$5,$6,$7,$8) RETURNING *",
+      [nome, descricao||"", JSON.stringify(badges||[]), ordem, endereco||"", capacidade||null, funcionamento||"", piso||""]
     );
     res.json({ sucesso: true, quadra: r.rows[0] });
   } catch(e) { res.status(500).json({ erro: "Erro ao criar quadra." }); }
@@ -332,11 +465,11 @@ app.post("/admin/quadras", adminAuth, async (req, res) => {
 
 // Atualizar nome/descrição/badges
 app.put("/admin/quadras/:id", adminAuth, async (req, res) => {
-  const { nome, descricao, badges } = req.body;
+  const { nome, descricao, badges, endereco, capacidade, funcionamento, piso } = req.body;
   try {
     const r = await db.query(
-      "UPDATE quadras SET nome=$1, descricao=$2, badges=$3 WHERE id=$4 RETURNING *",
-      [nome, descricao||"", JSON.stringify(badges||[]), req.params.id]
+      "UPDATE quadras SET nome=$1, descricao=$2, badges=$3, endereco=$4, capacidade=$5, funcionamento=$6, piso=$7 WHERE id=$8 RETURNING *",
+      [nome, descricao||"", JSON.stringify(badges||[]), endereco||"", capacidade||null, funcionamento||"", piso||"", req.params.id]
     );
     if (!r.rows.length) return res.status(404).json({ erro: "Quadra não encontrada." });
     res.json({ sucesso: true, quadra: r.rows[0] });
@@ -467,6 +600,12 @@ app.post("/admin/conteudo/restaurar-padrao", adminAuth, (req, res) => {
 });
 
 app.get("/conteudo", (req, res) => res.json(lerJSON(CONTENT_FILE)));
+
+// ═══ 404 personalizada ═══
+app.use((req, res) => {
+  if (req.accepts("html")) return res.status(404).sendFile(__dirname + "/404.html");
+  res.status(404).json({ erro: "Rota não encontrada." });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🏖️  Servidor rodando na porta ${PORT}`));

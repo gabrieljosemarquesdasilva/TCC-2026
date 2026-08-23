@@ -121,9 +121,10 @@
 
       <div class="form-group">
         <label>Duração</label>
-        <select name="duracao">
-          <option>1 hora</option>
-          <option>2 horas</option>
+        <select name="duracao" id="duracaoSelect">
+          <option value="1">1 hora</option>
+          <option value="2">2 horas</option>
+          <option value="3">3 horas</option>
         </select>
       </div>
 
@@ -319,20 +320,27 @@ function carregarHorarios() {
     .then(r => r.json())
     .then(res => {
       const ocupados = res.ocupados || [];
+      const duracao = parseInt(document.getElementById('duracaoSelect').value, 10) || 1;
       grid.innerHTML = '';
       const horaSalva = localStorage.getItem('horario');
       let temDisponivel = false;
 
-      TODOS_HORARIOS.forEach(h => {
+      TODOS_HORARIOS.forEach((h, idx) => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'horario-btn';
         btn.dataset.hora = h;
         btn.textContent = h;
 
-        if (ocupados.includes(h)) {
+        // Verifica se há horas suficientes (consecutivas e livres) para a duração escolhida
+        const horasNecessarias = TODOS_HORARIOS.slice(idx, idx + duracao);
+        const cabeNoExpediente = horasNecessarias.length === duracao;
+        const algumaOcupada = horasNecessarias.some(hh => ocupados.includes(hh));
+
+        if (!cabeNoExpediente || algumaOcupada) {
           btn.classList.add('ocupado');
-          btn.textContent = 'Ocupado';
+          btn.textContent = ocupados.includes(h) ? 'Ocupado' : h;
+          if (!cabeNoExpediente) btn.title = 'Duração excede o horário de funcionamento';
         } else {
           temDisponivel = true;
           if (horaSalva === h) { btn.classList.add('selecionado'); input.value = h; }
@@ -346,10 +354,16 @@ function carregarHorarios() {
         grid.appendChild(btn);
       });
 
-      if (!temDisponivel) { sem.style.display = 'block'; sem.textContent = 'Nenhum horário disponível nesta data.'; }
+      if (!temDisponivel) { sem.style.display = 'block'; sem.textContent = 'Nenhum horário disponível nesta data para essa duração.'; }
     })
     .catch(() => { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:12px;color:var(--red)">Erro ao carregar horários.</div>'; });
 }
+
+document.getElementById('duracaoSelect').addEventListener('change', function() {
+  document.getElementById('horario').value = '';
+  localStorage.removeItem('horario');
+  carregarHorarios();
+});
 
 document.getElementById('quadra').addEventListener('change', function() {
   localStorage.setItem('quadra', this.value);
@@ -384,6 +398,7 @@ function showToast(msg, type) {
       quadra:     form.querySelector('select[name="quadra"]').value,
       data,
       horario,
+      duracao:    parseInt(document.getElementById('duracaoSelect').value, 10) || 1,
       modalidade: form.querySelector('select[name="modalidade"]').value,
       nivel:      form.querySelector('select[name="nivel"]').value
     };

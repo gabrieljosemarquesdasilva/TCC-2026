@@ -69,14 +69,33 @@ ON CONFLICT (usuario) DO NOTHING;
 
 -- ═══ TABELA DE QUADRAS DINÂMICAS ═══
 CREATE TABLE IF NOT EXISTS quadras (
-  id        SERIAL PRIMARY KEY,
-  nome      VARCHAR(100) NOT NULL,
-  descricao TEXT DEFAULT '',
-  badges    JSONB DEFAULT '[]',
-  fotos     JSONB DEFAULT '[]',
-  ordem     INT DEFAULT 0,
-  criado_em TIMESTAMPTZ DEFAULT NOW()
+  id           SERIAL PRIMARY KEY,
+  nome         VARCHAR(100) NOT NULL,
+  descricao    TEXT DEFAULT '',
+  badges       JSONB DEFAULT '[]',
+  fotos        JSONB DEFAULT '[]',
+  ordem        INT DEFAULT 0,
+  endereco     VARCHAR(255) DEFAULT '',
+  capacidade   INT DEFAULT NULL,
+  funcionamento VARCHAR(120) DEFAULT '',
+  piso         VARCHAR(60)  DEFAULT '',
+  criado_em    TIMESTAMPTZ DEFAULT NOW()
 );
+-- Se a tabela já existia, rode:
+-- ALTER TABLE quadras ADD COLUMN IF NOT EXISTS endereco VARCHAR(255) DEFAULT '';
+-- ALTER TABLE quadras ADD COLUMN IF NOT EXISTS capacidade INT;
+-- ALTER TABLE quadras ADD COLUMN IF NOT EXISTS funcionamento VARCHAR(120) DEFAULT '';
+-- ALTER TABLE quadras ADD COLUMN IF NOT EXISTS piso VARCHAR(60) DEFAULT '';
+
+-- ═══ FOTO DE PERFIL + XP/NÍVEL DO JOGADOR ═══
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS foto_url TEXT DEFAULT '';
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS xp INT DEFAULT 0;
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS nivel_jogo VARCHAR(50) DEFAULT '';
+
+-- ═══ RESERVAS COM DURAÇÃO EM HORAS + XP JÁ CONCEDIDO ═══
+ALTER TABLE agendamentos ADD COLUMN IF NOT EXISTS duracao INT DEFAULT 1;
+ALTER TABLE agendamentos ADD COLUMN IF NOT EXISTS grupo_id VARCHAR(40);
+ALTER TABLE agendamentos ADD COLUMN IF NOT EXISTS xp_concedido BOOLEAN DEFAULT false;
 
 -- Dados iniciais (rode apenas se quiser migrar as quadras fixas para o banco)
 -- INSERT INTO quadras (nome, descricao, badges, ordem) VALUES

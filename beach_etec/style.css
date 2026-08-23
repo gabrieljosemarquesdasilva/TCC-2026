@@ -46,8 +46,8 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
-  height: 70px;
+  padding: 0 48px;
+  height: 78px;
 }
 
 /* ── HAMBURGER MENU ── */
@@ -138,21 +138,21 @@ nav {
 .menu-mobile a i { width: 20px; text-align: center; }
 
 
-.logo img { height: 52px; }
+.logo img { height: 58px; }
 
 .menu {
   list-style: none;
   display: flex;
-  gap: 2px;
+  gap: 10px;
 }
 
 .menu a {
   color: rgba(255,255,255,0.75);
   text-decoration: none;
   display: block;
-  padding: 18px 16px;
+  padding: 20px 20px;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1024,13 +1024,16 @@ footer strong { color: var(--coral); }
 .perfil-section { padding: 80px 60px; }
 
 .card-perfil {
-  width: 380px;
+  width: 420px;
+  max-width: 92vw;
   margin: 0 auto;
   background: white;
   border-radius: 24px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.14);
   overflow: hidden;
+  transition: box-shadow .3s;
 }
+.card-perfil:hover { box-shadow: 0 20px 56px rgba(0,0,0,0.18); }
 
 .topo-perfil {
   background: linear-gradient(135deg, var(--ocean), var(--sky));
@@ -1097,10 +1100,10 @@ footer strong { color: var(--coral); }
   padding: 20px 24px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.08);
   border-left: 5px solid var(--sky);
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.card-agendamento:hover { transform: translateY(-4px); }
+.card-agendamento:hover { transform: translateY(-4px); box-shadow: 0 12px 34px rgba(0,0,0,0.12); }
 
 .card-agendamento .topo {
   display: flex;

@@ -253,6 +253,13 @@ function renderQuadras(quadras) {
         <span class="quadra-badge">Quadra ${idx + 1}</span>
         <h3>${q.nome}</h3>
         <p>${q.descricao || ''}</p>
+        ${(q.endereco || q.capacidade || q.funcionamento || q.piso) ? `
+        <div style="display:flex;flex-direction:column;gap:4px;margin-top:12px;font-size:.85rem;color:var(--muted);">
+          ${q.endereco ? `<span><i class="fa-solid fa-location-dot" style="color:var(--coral);width:16px"></i> ${q.endereco}</span>` : ''}
+          ${q.capacidade ? `<span><i class="fa-solid fa-users" style="color:var(--coral);width:16px"></i> Até ${q.capacidade} pessoas</span>` : ''}
+          ${q.piso ? `<span><i class="fa-solid fa-shoe-prints" style="color:var(--coral);width:16px"></i> ${q.piso}</span>` : ''}
+          ${q.funcionamento ? `<span><i class="fa-solid fa-clock" style="color:var(--coral);width:16px"></i> ${q.funcionamento}</span>` : ''}
+        </div>` : ''}
         ${badges.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">${badges.map(b => `<span style="background:#edf8f1;color:#27ae60;padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:700;">${b}</span>`).join('')}</div>` : ''}
       </div>
     `;

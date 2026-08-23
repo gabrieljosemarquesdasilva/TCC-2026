@@ -74,9 +74,23 @@
       </div>
       <h2 id="nome-perfil">Carregando...</h2>
 
-      <!-- Nível do jogador -->
+      <!-- Nível de experiência (XP automático) -->
+      <div class="xp-container" style="width:100%;max-width:320px;margin:6px auto 0;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1rem;color:var(--coral);text-transform:uppercase;letter-spacing:.05em;">
+            <i class="fa-solid fa-trophy"></i> Nível <span id="xpNivel">1</span>
+          </span>
+          <span style="font-size:.75rem;color:#9BB;" id="xpTexto">0 / 100 XP</span>
+        </div>
+        <div style="background:rgba(255,255,255,.08);border-radius:20px;height:10px;overflow:hidden;">
+          <div id="xpBarra" style="background:linear-gradient(90deg,var(--ocean),var(--coral));height:100%;width:0%;border-radius:20px;transition:width .5s;"></div>
+        </div>
+        <p style="font-size:.72rem;color:#9BB;margin-top:6px;text-align:center;">Ganhe XP jogando partidas confirmadas 🎾</p>
+      </div>
+
+      <!-- Nível de habilidade (auto-avaliado) -->
       <div class="nivel-container">
-        <span style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9BB;display:block;margin-bottom:10px;">Nível do Jogador</span>
+        <span style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9BB;display:block;margin-bottom:10px;">Nível de Habilidade</span>
         <div class="nivel-btns">
           <button class="nivel-btn" data-nivel="Iniciante"    onclick="setNivel(this)">🌱 Iniciante</button>
           <button class="nivel-btn" data-nivel="Intermediário" onclick="setNivel(this)">⚡ Intermediário</button>
@@ -175,19 +189,56 @@ function setNivel(btn) {
     u.nivel = nivel;
     localStorage.setItem('usuario', JSON.stringify(u));
   }
+  const token = localStorage.getItem('user-token');
+  if (token) {
+    fetch('/perfil/nivel-jogo', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-user-token': token },
+      body: JSON.stringify({ nivel_jogo: nivel })
+    }).catch(() => {});
+  }
   showToast('Nível atualizado: ' + nivel + ' ✅', 'success');
+}
+
+function atualizarBarraXp(dados) {
+  const nivel = dados.nivel || 1;
+  const xpNoNivel = dados.xpNoNivel || 0;
+  const xpProxNivel = dados.xpProxNivel || 100;
+  document.getElementById('xpNivel').textContent = nivel;
+  document.getElementById('xpTexto').textContent = xpNoNivel + ' / ' + xpProxNivel + ' XP';
+  document.getElementById('xpBarra').style.width = Math.round((xpNoNivel / xpProxNivel) * 100) + '%';
 }
 
 document.getElementById('foto-input').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
+  const token = localStorage.getItem('user-token');
+  if (!token) { showToast('Faça login novamente para atualizar a foto.', 'error'); return; }
+
+  // Preview instantâneo
   const reader = new FileReader();
-  reader.onload = function(ev) {
-    document.getElementById('fotoPerfil').src = ev.target.result;
-    localStorage.setItem('fotoPerfil', ev.target.result);
-    showToast('Foto atualizada! ✅', 'success');
-  };
+  reader.onload = ev => { document.getElementById('fotoPerfil').src = ev.target.result; };
   reader.readAsDataURL(file);
+
+  const formData = new FormData();
+  formData.append('foto', file);
+  fetch('/perfil/foto', { method: 'POST', headers: { 'x-user-token': token }, body: formData })
+    .then(r => r.json())
+    .then(d => {
+      if (d.sucesso) {
+        document.getElementById('fotoPerfil').src = d.foto;
+        const usuarioStr = localStorage.getItem('usuario');
+        if (usuarioStr) {
+          const u = JSON.parse(usuarioStr);
+          u.foto = d.foto;
+          localStorage.setItem('usuario', JSON.stringify(u));
+        }
+        showToast('Foto atualizada! ✅', 'success');
+      } else {
+        showToast(d.erro || 'Erro ao enviar foto.', 'error');
+      }
+    })
+    .catch(() => showToast('Erro ao enviar foto.', 'error'));
 });
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -217,9 +268,8 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("nascimento-perfil").innerText = '-';
   }
 
-  const fotoSalva = localStorage.getItem('fotoPerfil');
+  const fotoSalva = usuario.foto;
   if (fotoSalva) document.getElementById('fotoPerfil').src = fotoSalva;
-  else if (usuario.foto) document.getElementById('fotoPerfil').src = usuario.foto;
 
   // Botão admin — corrigido: usa display:flex para mostrar
   const btnAdmin = document.getElementById('btnAdminFloat');
@@ -234,8 +284,34 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
+  // Busca dados atualizados (foto salva no banco, XP e nível) direto da API
+  const token = localStorage.getItem('user-token');
+  if (token) {
+    fetch('/perfil', { headers: { 'x-user-token': token } })
+      .then(r => r.json())
+      .then(dadosPerfil => {
+        if (dadosPerfil.foto) document.getElementById('fotoPerfil').src = dadosPerfil.foto;
+        atualizarBarraXp(dadosPerfil);
+        if (dadosPerfil.nivel_jogo) {
+          document.querySelectorAll('.nivel-btn').forEach(btn => {
+            btn.classList.toggle('ativo', btn.dataset.nivel === dadosPerfil.nivel_jogo);
+          });
+        }
+      })
+      .catch(() => {});
+  }
+
+  carregarQuadrasInfo();
   carregarAgendamentos();
 });
+
+let QUADRAS_INFO = {};
+function carregarQuadrasInfo() {
+  fetch('/quadras').then(r => r.json()).then(lista => {
+    QUADRAS_INFO = {};
+    (lista || []).forEach(q => { QUADRAS_INFO[q.nome] = q; });
+  }).catch(() => {});
+}
 
 function carregarAgendamentos() {
   const lista = document.getElementById("lista-agendamentos");
@@ -269,6 +345,13 @@ function carregarAgendamentos() {
       cancelado:  '<span class="ag-badge cancelado">❌ Cancelado</span>'
     };
     dados.forEach(ag => {
+      const q = QUADRAS_INFO[ag.quadra] || {};
+      const infoQuadraExtra = [
+        q.endereco ? `<i class="fa-solid fa-location-dot"></i> ${q.endereco}` : '',
+        q.capacidade ? `<i class="fa-solid fa-users"></i> Até ${q.capacidade} pessoas` : '',
+        q.piso ? `<i class="fa-solid fa-shoe-prints"></i> ${q.piso}` : ''
+      ].filter(Boolean).join(' &nbsp;•&nbsp; ');
+
       const div = document.createElement('div');
       div.className = 'card-agendamento';
       div.innerHTML = `
@@ -276,9 +359,10 @@ function carregarAgendamentos() {
           <div class="ag-quadra">📍 ${ag.quadra}</div>
           ${statusBadge[ag.status]||'<span class="ag-badge">—</span>'}
         </div>
+        ${infoQuadraExtra ? `<div style="font-size:.78rem;color:var(--muted);margin:-6px 0 10px;">${infoQuadraExtra}</div>` : ''}
         <div class="ag-info-grid">
           <div class="ag-info-item"><strong>Data:</strong> ${ag.data}</div>
-          <div class="ag-info-item"><strong>Horário:</strong> ${ag.horario}</div>
+          <div class="ag-info-item"><strong>Horário:</strong> ${ag.horario_inicio} – ${ag.horario_fim} (${ag.duracao}h)</div>
           <div class="ag-info-item"><strong>Modalidade:</strong> ${ag.modalidade}</div>
           <div class="ag-info-item"><strong>Nível:</strong> ${ag.nivel}</div>
         </div>
