@@ -107,7 +107,7 @@
     <p>Tudo o que você precisa saber antes de reservar sua quadra.</p>
   </div>
 
-  <div class="faq-full-list">
+  <div class="faq-full-list" id="faqLista">
     <div class="faq-full-item">
       <button class="faq-full-question">Como reservo uma quadra?<i class="fa-solid fa-plus"></i></button>
       <div class="faq-full-answer"><p>Acesse a página de Agendamento, escolha a quadra, data e horário e confirme. O processo leva menos de 2 minutos.</p></div>
@@ -173,15 +173,34 @@ function showToast(msg, type) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// FAQ
-document.querySelectorAll('.faq-full-question').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const item = this.closest('.faq-full-item');
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-full-item').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
+// FAQ — acordeão (aplica no HTML estático já renderizado)
+function ativarAcordeaoFaq() {
+  document.querySelectorAll('.faq-full-question').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const item = this.closest('.faq-full-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-full-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
   });
-});
+}
+ativarAcordeaoFaq();
+
+// FAQ dinâmico — se o admin tiver cadastrado perguntas próprias, substitui a lista estática
+fetch('/conteudo')
+  .then(r => r.json())
+  .then(d => {
+    if (!d.faq || !d.faq.length) return; // mantém o FAQ estático padrão
+    const lista = document.getElementById('faqLista');
+    lista.innerHTML = d.faq.map(item => `
+      <div class="faq-full-item">
+        <button class="faq-full-question">${item.p}<i class="fa-solid fa-plus"></i></button>
+        <div class="faq-full-answer"><p>${item.r}</p></div>
+      </div>
+    `).join('');
+    ativarAcordeaoFaq();
+  })
+  .catch(() => {}); // falha silenciosa — mantém FAQ estático
 
 // Form contato
 document.getElementById('form-contato').addEventListener('submit', function(e) {
