@@ -2085,3 +2085,88 @@ html.acc-contraste .acc-painel * { filter: none; }
   .acc-btn-flutuante { left: 14px; bottom: 14px; width: 50px; height: 50px; font-size: 1.3rem; }
   .acc-painel { left: 14px; bottom: 74px; width: calc(100vw - 28px); }
 }
+
+/* ==========================================
+   POPUP DADOS COMPLEMENTARES
+========================================== */
+
+.popup-dados-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.popup-dados-overlay.aberto {
+    display: flex;
+}
+
+.popup-dados {
+    width: 100%;
+    max-width: 450px;
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: popupEntrada 0.25s ease;
+}
+
+.popup-dados-icon {
+    text-align: center;
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.popup-dados h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.popup-dados > p {
+    text-align: center;
+    color: #777;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.popup-dados .form-group {
+    margin-bottom: 18px;
+}
+
+.popup-dados label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+}
+
+.popup-dados input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+.popup-dados input:focus {
+    border-color: var(--coral);
+}
+
+@keyframes popupEntrada {
+
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}

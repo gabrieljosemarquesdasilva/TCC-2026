@@ -112,32 +112,135 @@ app.post("/login", async (req, res) => {
 
 app.post("/login-google", async (req, res) => {
   const { google_id, nome, email, foto } = req.body;
+
+  if (!google_id || !email) {
+    return res.status(400).json({
+      erro: "Google ID e e-mail são obrigatórios."
+    });
+  }
+
   try {
-    await db.query(
-      `INSERT INTO login(google_id,nome,email,foto) VALUES($1,$2,$3,$4)
-       ON CONFLICT (google_id) DO UPDATE SET nome=EXCLUDED.nome,email=EXCLUDED.email,foto=EXCLUDED.foto`,
-      [google_id, nome, email, foto]
+    // Verifica se já existe pelo e-mail
+    let r = await db.query(
+      `SELECT id, nome, sobrenome, email, telefone, nascimento,
+              foto_url, xp, nivel_jogo
+       FROM usuarios
+       WHERE email=$1`,
+      [email]
     );
-    res.json({ sucesso: true });
-  } catch(e) { res.status(500).json({ erro: "Erro." }); }
-});
 
-app.post("/logout", async (req, res) => {
-  const token = req.headers["x-user-token"];
-  if (token) await db.query("DELETE FROM usuario_sessoes WHERE token=$1", [token]).catch(()=>{});
-  res.json({ sucesso: true });
-});
+    let usuario;
 
-async function userAuth(req, res, next) {
-  const token = req.headers["x-user-token"];
-  if (!token) return res.status(401).json({ erro: "Não autenticado. Faça login." });
-  try {
-    const r = await db.query("SELECT usuario_id FROM usuario_sessoes WHERE token=$1", [token]);
-    if (!r.rows.length) return res.status(401).json({ erro: "Sessão inválida. Faça login novamente." });
-    req.usuarioId = r.rows[0].usuario_id;
-    next();
-  } catch(e) { res.status(401).json({ erro: "Erro de autenticação." }); }
-}
+    if (r.rows.length) {
+
+      // Usuário já existe
+      usuario = r.rows[0];
+
+      // Atualiza nome/foto caso tenham mudado no Google
+      await db.query(
+        `UPDATE usuarios
+         SET nome=$1,
+             foto_url=COALESCE($2, foto_url)
+         WHERE id=$3`,
+        [
+          nome || usuario.nome,
+          foto || usuario.foto_url,
+          usuario.id
+        ]
+      );
+
+    } else {
+
+      // Se não existe, cria novo usuário
+      r = await db.query(
+        `INSERT INTO usuarios
+         (nome, sobrenome, email, telefone, senha, nascimento, foto_url, xp)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+         RETURNING id, nome, sobrenome, email, telefone,
+                   nascimento, foto_url, xp, nivel_jogo`,
+        [
+          nome || "Usuário",
+          "",
+          email,
+          "",
+          null,
+          null,
+          foto || null,
+          0
+        ]
+      );
+
+      usuario = r.rows[0];
+    }
+
+    // Garante que o XP esteja atualizado
+    await concederXpPendente(usuario.id);
+
+    const xpAtual = await db.query(
+      "SELECT xp FROM usuarios WHERE id=$1",
+      [usuario.id]
+    );
+
+    const { nivel, xpNoNivel, xpProxNivel } =
+      calcularNivel(xpAtual.rows[0].xp);
+
+    // Verifica se é administrador
+    const adm = await db.query(
+      "SELECT id FROM admins WHERE email=$1",
+      [email]
+    );
+
+    const isAdmin = adm.rows.length > 0;
+
+    // Cria sessão
+    const token = crypto.randomBytes(32).toString("hex");
+
+    await db.query(
+      `INSERT INTO usuario_sessoes(token, usuario_id)
+       VALUES($1,$2)`,
+      [token, usuario.id]
+    );
+
+    res.json({
+      sucesso: true,
+      isAdmin,
+      token,
+
+      usuario: {
+        id: usuario.id,
+
+        nome: usuario.nome +
+          (usuario.sobrenome ? " " + usuario.sobrenome : ""),
+
+        email: usuario.email,
+
+        foto: usuario.foto_url || null,
+
+        telefone: usuario.telefone || "",
+
+        nascimento: usuario.nascimento || "",
+
+        nivel_jogo: usuario.nivel_jogo || "",
+
+        xp: xpAtual.rows[0].xp || 0,
+
+        nivel,
+
+        xpNoNivel,
+
+        xpProxNivel
+      }
+    });
+
+  } catch (e) {
+
+    console.error("Erro no login Google:", e);
+
+    res.status(500).json({
+      erro: "Erro ao realizar login com Google."
+    });
+  }
+});
 
 /* ═══ PERFIL ═══ */
 
@@ -609,3 +712,126 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🏖️  Servidor rodando na porta ${PORT}`));
+
+// ==========================================
+// VERIFICAR DADOS COMPLEMENTARES DO USUÁRIO
+// ==========================================
+app.get('/usuario/me', userAuth, async (req, res) => {
+  try {
+
+    const result = await db.query(
+      `SELECT
+        id,
+        email,
+        nome,
+        sobrenome,
+        foto_url,
+        telefone,
+        nascimento,
+        nivel_jogo,
+        xp
+       FROM usuarios
+       WHERE id = $1`,
+      [req.usuarioId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        sucesso: false,
+        erro: 'Usuário não encontrado.'
+      });
+    }
+
+    const usuario = result.rows[0];
+
+    res.json({
+      sucesso: true,
+
+      usuario: {
+        id: usuario.id,
+
+        nome: usuario.nome +
+          (usuario.sobrenome
+            ? " " + usuario.sobrenome
+            : ""),
+
+        email: usuario.email,
+
+        foto: usuario.foto_url || null,
+
+        telefone: usuario.telefone || "",
+
+        nascimento: usuario.nascimento || "",
+
+        nivel_jogo: usuario.nivel_jogo || "",
+
+        xp: usuario.xp || 0
+      },
+
+      dadosCompletos:
+        !!usuario.telefone &&
+        !!usuario.nascimento
+    });
+
+  } catch (error) {
+
+    console.error(
+      'Erro ao buscar usuário:',
+      error
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: 'Erro ao buscar dados do usuário.'
+    });
+  }
+});
+
+// ==========================================
+// ATUALIZAR TELEFONE E DATA DE NASCIMENTO
+// ==========================================
+app.put('/usuario/dados-complementares', userAuth, async (req, res) => {
+  try {
+
+    const {
+      telefone,
+      data_nascimento
+    } = req.body;
+
+    if (!telefone || !data_nascimento) {
+      return res.status(400).json({
+        sucesso: false,
+        erro: 'Telefone e data de nascimento são obrigatórios.'
+      });
+    }
+
+    await db.query(
+      `UPDATE usuarios
+       SET telefone = $1,
+           nascimento = $2
+       WHERE id = $3`,
+      [
+        telefone,
+        data_nascimento,
+        req.usuarioId
+      ]
+    );
+
+    res.json({
+      sucesso: true,
+      mensagem: 'Dados atualizados com sucesso.'
+    });
+
+  } catch (error) {
+
+    console.error(
+      'Erro ao atualizar dados:',
+      error
+    );
+
+    res.status(500).json({
+      sucesso: false,
+      erro: 'Erro ao atualizar seus dados.'
+    });
+  }
+});

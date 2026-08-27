@@ -22,68 +22,237 @@
   import { jwtDecode } from "https://cdn.jsdelivr.net/npm/jwt-decode@4.0.0/+esm";
 
   const CLIENT_ID = '314377682610-qnrudcuk611ou7kse4v4m9a86v980pth.apps.googleusercontent.com';
-  let tokenClient;
+
+  let googleInicializado = false;
+
+  // ================================
+  // LOGIN COM GOOGLE
+  // ================================
 
   function handleCredentialResponse(response) {
-    const idToken = jwtDecode(response.credential);
-    const dadosUsuario = {
-      google_id: idToken.sub,
-      nome: idToken.name,
-      email: idToken.email,
-      foto: idToken.picture
-    };
+    try {
+      console.log("Resposta recebida do Google");
 
-    fetch("/login-google", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dadosUsuario)
-    })
-    .then(res => res.json())
-    .then(data => {
-      localStorage.setItem("usuario", JSON.stringify({ nome: idToken.name, email: idToken.email, foto: idToken.picture }));
-      localStorage.setItem("usuario-verificacao", "true");
-      showToast('Login com Google realizado! ✅', 'success');
-      setTimeout(() => window.location.href = 'perfil.html', 1200);
-    })
-    .catch(err => showToast('Erro ao autenticar com Google.', 'error'));
-  }
+      // O Google retorna um ID Token JWT
+      const idToken = jwtDecode(response.credential);
 
-  // Opção 3 — fallback: popup OAuth completo quando One Tap não está disponível
-  function iniciarPopupOAuth() {
-    if (!tokenClient) {
-      tokenClient = google.accounts.oauth2.initCodeClient({
-        client_id: CLIENT_ID,
-        scope: 'openid email profile',
-        ux_mode: 'popup',
-        callback: handleCredentialResponse
+      console.log("Dados do Google:", idToken);
+
+      const dadosUsuario = {
+        google_id: idToken.sub,
+        nome: idToken.name,
+        email: idToken.email,
+        foto: idToken.picture
+      };
+
+      console.log("Enviando usuário para o backend:", dadosUsuario);
+
+      fetch("/login-google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dadosUsuario)
+      })
+      .then(async res => {
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.erro || "Erro no servidor");
+        }
+
+        return data;
+      })
+      .then(data => {
+        console.log("Resposta do backend:", data);
+
+        // Salva os dados do usuário
+        localStorage.setItem(
+          "usuario",
+          JSON.stringify({
+            nome: idToken.name,
+            email: idToken.email,
+            foto: idToken.picture
+          })
+        );
+
+        localStorage.setItem("usuario-verificacao", "true");
+
+        // Se o backend retornar um token de sessão
+        if (data.token) {
+          localStorage.setItem("user-token", data.token);
+        }
+
+        if (data.isAdmin) {
+          localStorage.setItem("isAdmin", "true");
+        } else {
+          localStorage.removeItem("isAdmin");
+        }
+
+        showToast("Login com Google realizado! ✅", "success");
+
+        setTimeout(() => {
+          window.location.href = "perfil.html";
+        }, 1200);
+      })
+      .catch(err => {
+        console.error("Erro no login Google:", err);
+        showToast(
+          err.message || "Erro ao autenticar com Google.",
+          "error"
+        );
       });
+
+    } catch (error) {
+      console.error("Erro ao processar resposta do Google:", error);
+      showToast("Não foi possível processar o login do Google.", "error");
     }
-    tokenClient.requestCode();
   }
 
-  // Opção 2 — One Tap com fallback automático para Opção 3
+  // ================================
+  // INICIALIZAÇÃO DO GOOGLE
+  // ================================
+
+  function inicializarGoogle() {
+    if (!window.google || !google.accounts || !google.accounts.id) {
+      console.error("Google Identity Services ainda não carregou.");
+      return;
+    }
+
+    if (googleInicializado) {
+      return;
+    }
+
+    google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback: handleCredentialResponse,
+      auto_select: false,
+      cancel_on_tap_outside: true
+    });
+
+    googleInicializado = true;
+
+    console.log("Google Identity Services inicializado.");
+  }
+
+  // ================================
+  // BOTÃO PERSONALIZADO
+  // ================================
+
   window.loginComGoogle = function () {
+
+    if (!window.google || !google.accounts || !google.accounts.id) {
+      showToast("Google ainda está carregando. Tente novamente.", "error");
+      console.error("Google Identity Services não carregado.");
+      return;
+    }
+
+    inicializarGoogle();
+
+    console.log("Abrindo login Google...");
+
     google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        // One Tap bloqueado/descartado → abre popup OAuth completo
-        iniciarPopupOAuth();
+
+      console.log("Status do Google:", notification);
+
+      if (notification.isNotDisplayed()) {
+        console.warn(
+          "O Google não exibiu o One Tap:",
+          notification.getNotDisplayedReason()
+        );
+
+        showToast(
+          "O login Google não pôde ser aberto. Verifique as configurações do Google.",
+          "error"
+        );
+      }
+
+      if (notification.isSkippedMoment()) {
+        console.warn(
+          "Usuário pulou o login Google."
+        );
+      }
+
+      if (notification.isDismissedMoment()) {
+        console.warn(
+          "Login Google fechado:",
+          notification.getDismissedReason()
+        );
       }
     });
   };
 
-  window.onload = function () {
-    google.accounts.id.initialize({
-      client_id: CLIENT_ID,
-      callback: handleCredentialResponse
-    });
+  // ================================
+  // QUANDO A PÁGINA CARREGAR
+  // ================================
 
-    // Botão original mantido como fallback visual (pode esconder com CSS se quiser)
-    google.accounts.id.renderButton(
-      document.getElementById("loginDiv"),
-      { theme: "filled_blue", size: "large", shape: "pill" }
-    );
-  };
+  window.addEventListener("load", () => {
+    inicializarGoogle();
+  });
 </script>
+
+<!-- ==========================================
+     POPUP DE DADOS COMPLEMENTARES
+========================================== -->
+
+<div id="popupDados" class="popup-dados-overlay">
+
+    <div class="popup-dados">
+
+        <div class="popup-dados-icon">
+            🎾
+        </div>
+
+        <h2>Complete seu cadastro</h2>
+
+        <p>
+            Para continuar utilizando o sistema,
+            precisamos de mais algumas informações.
+        </p>
+
+        <div class="form-group">
+            <label for="popupTelefone">
+                Telefone
+            </label>
+
+            <input
+                type="tel"
+                id="popupTelefone"
+                placeholder="(19) 99999-9999"
+                maxlength="15"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="popupNascimento">
+                Data de nascimento
+            </label>
+
+            <input
+                type="date"
+                id="popupNascimento"
+                required
+            >
+        </div>
+
+        <button
+            type="button"
+            id="btnSalvarDados"
+            class="botao-agendar"
+            style="width:100%;justify-content:center;"
+        >
+            Continuar
+        </button>
+
+        <p
+            id="erroPopupDados"
+            style="display:none;color:#e74c3c;text-align:center;margin-top:12px;"
+        ></p>
+
+    </div>
+
+</div>
 
 <header>
   <nav>
@@ -299,6 +468,213 @@ if (usuarioLogado) {
     localStorage.setItem('darkMode', isDark ? 'on' : 'off');
   });
 })();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+
+    const token = localStorage.getItem("user-token");
+
+    // Usuário não está logado
+    if (!token) {
+        return;
+    }
+
+    try {
+
+        const resposta = await fetch("/usuario/me", {
+            method: "GET",
+
+            headers: {
+                "x-user-token": token
+            }
+        });
+
+        const data = await resposta.json();
+
+        console.log("Dados do usuário:", data);
+
+        if (!data.sucesso) {
+            console.error(data.erro);
+            return;
+        }
+
+        // ==========================================
+        // VERIFICAR SE TELEFONE OU NASCIMENTO ESTÃO
+        // VAZIOS
+        // ==========================================
+
+        if (
+            !data.usuario.telefone ||
+            !data.usuario.data_nascimento
+        ) {
+
+            abrirPopupDados(data.usuario);
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao verificar dados complementares:",
+            error
+        );
+
+    }
+
+});
+
+
+// ==========================================
+// ABRIR POPUP
+// ==========================================
+
+function abrirPopupDados(usuario) {
+
+    const popup = document.getElementById("popupDados");
+
+    const telefone = document.getElementById("popupTelefone");
+
+    const nascimento = document.getElementById("popupNascimento");
+
+    // Se algum dado já existir, preenche
+    if (usuario.telefone) {
+        telefone.value = usuario.telefone;
+    }
+
+    if (usuario.data_nascimento) {
+
+        nascimento.value =
+            String(usuario.data_nascimento).substring(0, 10);
+
+    }
+
+    popup.classList.add("aberto");
+
+}
+
+
+// ==========================================
+// SALVAR DADOS
+// ==========================================
+
+document
+    .getElementById("btnSalvarDados")
+    .addEventListener("click", async function () {
+
+        const telefone =
+            document.getElementById("popupTelefone").value.trim();
+
+        const dataNascimento =
+            document.getElementById("popupNascimento").value;
+
+        const erro =
+            document.getElementById("erroPopupDados");
+
+        const btn =
+            document.getElementById("btnSalvarDados");
+
+        // ======================================
+        // VALIDAÇÃO
+        // ======================================
+
+        if (!telefone) {
+
+            erro.textContent =
+                "Digite seu telefone.";
+
+            erro.style.display = "block";
+
+            return;
+        }
+
+        if (!dataNascimento) {
+
+            erro.textContent =
+                "Digite sua data de nascimento.";
+
+            erro.style.display = "block";
+
+            return;
+        }
+
+        erro.style.display = "none";
+
+        btn.disabled = true;
+
+        btn.textContent = "Salvando...";
+
+        const token =
+            localStorage.getItem("user-token");
+
+        try {
+
+            const resposta = await fetch(
+                "/usuario/dados-complementares",
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-user-token": token
+                    },
+
+                    body: JSON.stringify({
+                        telefone: telefone,
+                        data_nascimento: dataNascimento
+                    })
+                }
+            );
+
+            const data = await resposta.json();
+
+            if (!data.sucesso) {
+
+                throw new Error(
+                    data.erro ||
+                    "Não foi possível salvar os dados."
+                );
+
+            }
+
+            // Fecha popup
+            document
+                .getElementById("popupDados")
+                .classList.remove("aberto");
+
+            // Toast se existir no seu projeto
+            if (typeof showToast === "function") {
+
+                showToast(
+                    "Dados salvos com sucesso! ✅",
+                    "success"
+                );
+
+            } else {
+
+                alert(
+                    "Dados salvos com sucesso!"
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            erro.textContent =
+                error.message ||
+                "Erro ao salvar os dados.";
+
+            erro.style.display = "block";
+
+        }
+
+        btn.disabled = false;
+
+        btn.textContent = "Continuar";
+
+    });
 </script>
 
 
