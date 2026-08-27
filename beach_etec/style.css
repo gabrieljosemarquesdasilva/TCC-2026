@@ -1461,17 +1461,24 @@ body.dark-mode .faq-answer{color:#7a9bb8}
 
 /* ── FAQ ── */
 .faq-section{padding:80px 24px;background:white}
-.faq-list{max-width:820px;margin:48px auto 0}
-.faq-item{border-bottom:1.5px solid #e8eff5}
-.faq-question{width:100%;background:none;border:none;text-align:left;padding:20px 0;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color .2s}
-.faq-question:hover{color:var(--coral)}
-.faq-question i{transition:transform .3s;font-size:.9rem;color:var(--coral)}
-.faq-item.open .faq-question i{transform:rotate(180deg)}
-.faq-answer{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:.92rem;color:#6a8099;line-height:1.6}
-.faq-item.open .faq-answer{max-height:200px;padding-bottom:18px}
-.faq-card{background:white;border-radius:20px;padding:32px;box-shadow:0 4px 20px rgba(27,58,92,.08);border:1.5px solid #e8eff5}
-.faq-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:6px}
-.faq-card p{font-size:.88rem;color:#6a8099;margin-bottom:24px}
+.faq-full-section{background:var(--dark);padding:80px 40px;margin-top:0}
+.faq-full-section .section-header h2{color:#fff}
+.faq-full-section .section-header p{color:rgba(255,255,255,.55)}
+.faq-full-list{max-width:900px;margin:48px auto 0}
+.faq-full-item{border-bottom:1.5px solid rgba(255,255,255,.12);transition:background .2s}
+.faq-full-item:hover{background:rgba(255,255,255,.03)}
+.faq-full-question{width:100%;background:none;border:none;text-align:left;padding:22px 8px;font-family:'Barlow Condensed',sans-serif;font-size:1.15rem;font-weight:700;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:color .2s}
+.faq-full-question:hover{color:var(--coral)}
+.faq-full-question i{transition:transform .3s;font-size:.85rem;color:var(--coral)}
+.faq-full-item.open .faq-full-question i{transform:rotate(45deg)}
+.faq-full-answer{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:.92rem;color:rgba(255,255,255,.6);line-height:1.6}
+.faq-full-answer p{padding:0 8px}
+.faq-full-item.open .faq-full-answer{max-height:200px;padding-bottom:18px}
+
+.contato-form-solo{max-width:600px;margin-left:auto;margin-right:auto}
+.contato-form-card{background:white;border-radius:20px;padding:36px 32px;box-shadow:0 4px 20px rgba(27,58,92,.08);border:1.5px solid #e8eff5}
+.contato-form-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:6px}
+.contato-form-card p{font-size:.88rem;color:#6a8099;margin-bottom:24px}
 
 /* ── CALENDÁRIO ── */
 .calendario-wrapper{max-width:680px;margin:0 auto 32px;background:white;border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(27,58,92,.08);border:1.5px solid #e8eff5}
@@ -1511,12 +1518,9 @@ body.dark-mode .faq-answer{color:#7a9bb8}
 .cta-section h2{font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;font-weight:800;color:white;margin-bottom:12px}
 .cta-section p{color:rgba(255,255,255,.65);font-size:1rem;margin-bottom:32px}
 
-/* ── CONTATO GRID ── */
+/* ── CONTATO GRID (legado, mantido para compatibilidade) ── */
 .contato-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:1100px;margin:0 auto;align-items:start}
 @media(max-width:700px){.contato-grid{grid-template-columns:1fr}}
-.contato-form-card{background:white;border-radius:20px;padding:36px 32px;box-shadow:0 4px 20px rgba(27,58,92,.08);border:1.5px solid #e8eff5}
-.contato-form-card h3{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:6px}
-.contato-form-card p{font-size:.88rem;color:#6a8099;margin-bottom:24px}
 
 /* ── INPUT WRAPPER / SENHA ── */
 .input-wrapper{position:relative}.input-wrapper input{padding-right:44px}
@@ -1573,28 +1577,93 @@ body.dark-mode .faq-answer{color:#7a9bb8}
 
 
 /* ── NÍVEL DO JOGADOR (perfil) ── */
+.filtro-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 4px 0 16px;
+  flex-wrap: wrap;
+}
+.filtro-tab {
+  padding: 9px 20px;
+  border: 2px solid var(--border, #e0eaf2);
+  border-radius: 20px;
+  background: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .2s;
+}
+.filtro-tab:hover { border-color: var(--coral); color: var(--coral); }
+.filtro-tab.ativo {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: white;
+  box-shadow: 0 4px 12px rgba(255,107,53,.3);
+}
+
 .nivel-container {
   text-align: center;
   margin-top: 16px;
 }
-.nivel-btns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 4px;
+.nivel-seletor {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 260px;
 }
-.nivel-btn {
-  padding: 8px 16px;
+.nivel-atual {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 18px;
   border: 2px solid #e0eaf2;
   border-radius: 20px;
   background: white;
   font-family: 'DM Sans', sans-serif;
-  font-size: .82rem;
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--dark);
+  cursor: pointer;
+  transition: border-color .2s;
+}
+.nivel-atual:hover { border-color: var(--coral); }
+.nivel-atual i { font-size: .75rem; color: #9BB; transition: transform .2s; }
+.nivel-seletor.aberto .nivel-atual i { transform: rotate(180deg); }
+
+.nivel-opcoes {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0eaf2;
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.15);
+  z-index: 20;
+}
+.nivel-seletor.aberto .nivel-opcoes { display: flex; }
+
+.nivel-btn {
+  padding: 9px 16px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: #f5f8fb;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .85rem;
   font-weight: 600;
   color: #6a8099;
   cursor: pointer;
   transition: all .2s;
+  text-align: left;
 }
 .nivel-btn:hover {
   border-color: var(--coral);

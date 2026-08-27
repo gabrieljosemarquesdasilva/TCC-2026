@@ -79,37 +79,6 @@
   </div>
 </section>
 
-<!-- FAQ DINÂMICO -->
-<section class="faq-section">
-  <div class="section-header reveal">
-    <span class="section-tag">❓ Dúvidas</span>
-    <h2>Perguntas <span class="accent">Frequentes</span></h2>
-    <p>Tudo que você precisa saber sobre as quadras e o projeto.</p>
-  </div>
-  <div class="faq-list reveal" id="faqLista">
-    <!-- Carregado dinamicamente -->
-    <div class="faq-item">
-      <button class="faq-question">Qual é o horário de funcionamento? <i class="fa-solid fa-chevron-down"></i></button>
-      <div class="faq-answer">As quadras funcionam de segunda a sábado, das 7h às 21h. Aos domingos, das 8h às 18h. Todas possuem iluminação noturna.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">Quais modalidades são aceitas? <i class="fa-solid fa-chevron-down"></i></button>
-      <div class="faq-answer">Beach Tennis, Vôlei de Areia e FutVôlei. A modalidade pode ser selecionada no momento do agendamento.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">Preciso levar equipamento? <i class="fa-solid fa-chevron-down"></i></button>
-      <div class="faq-answer">A Quadra Premium já inclui equipamentos profissionais. Para as demais, recomendamos trazer seus próprios equipamentos.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">É possível reservar para grupos ou eventos? <i class="fa-solid fa-chevron-down"></i></button>
-      <div class="faq-answer">Sim! Para grupos maiores ou eventos, entre em contato pelo WhatsApp ou pelo formulário da página de Contato.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">O projeto é apenas para alunos da ETEC? <i class="fa-solid fa-chevron-down"></i></button>
-      <div class="faq-answer">Não! O sistema é aberto para toda a comunidade. Qualquer pessoa pode criar uma conta e agendar uma quadra.</div>
-    </div>
-  </div>
-</section>
 
 <!-- MODAL IMAGEM -->
 <div id="modal-img" class="modal">
@@ -287,44 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('quadrasContainer').innerHTML =
         '<p style="text-align:center;color:var(--muted);padding:40px">Erro ao carregar quadras.</p>';
     });
-});
-</script>
-
-<script>
-// ── FAQ DINÂMICO ──
-document.addEventListener('DOMContentLoaded', () => {
-  fetch('/conteudo')
-    .then(r => r.json())
-    .then(d => {
-      if (!d.faq || !d.faq.length) return; // mantém o FAQ estático padrão
-      const lista = document.getElementById('faqLista');
-      lista.innerHTML = d.faq.map(item => `
-        <div class="faq-item">
-          <button class="faq-question">${item.p} <i class="fa-solid fa-chevron-down"></i></button>
-          <div class="faq-answer">${item.r}</div>
-        </div>
-      `).join('');
-      // Reaplica o acordeão
-      lista.querySelectorAll('.faq-question').forEach(btn => {
-        btn.addEventListener('click', function() {
-          const item = this.closest('.faq-item');
-          const isOpen = item.classList.contains('open');
-          lista.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-          if (!isOpen) item.classList.add('open');
-        });
-      });
-    })
-    .catch(() => {}); // falha silenciosa — mantém FAQ estático
-});
-
-// FAQ acordeão para os itens estáticos padrão
-document.querySelectorAll('.faq-question').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const item = this.closest('.faq-item');
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
-  });
 });
 </script>
 

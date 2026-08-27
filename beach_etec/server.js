@@ -107,7 +107,7 @@ app.post("/login", async (req, res) => {
       telefone: u.telefone||"", nascimento: u.nascimento||"",
       nivel_jogo: u.nivel_jogo||"", xp: xpAtual.rows[0].xp||0, nivel, xpNoNivel, xpProxNivel
     }});
-  } catch(e) { res.status(500).json({ erro: "Erro interno." }); }
+  } catch(e) { console.error("Erro no /login:", e.message); res.status(500).json({ erro: "Erro interno." }); }
 });
 
 app.post("/login-google", async (req, res) => {
