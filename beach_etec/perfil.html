@@ -91,11 +91,17 @@
       <!-- Nível de habilidade (auto-avaliado) -->
       <div class="nivel-container">
         <span style="font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9BB;display:block;margin-bottom:10px;">Nível de Habilidade</span>
-        <div class="nivel-btns">
-          <button class="nivel-btn" data-nivel="Iniciante"    onclick="setNivel(this)">🌱 Iniciante</button>
-          <button class="nivel-btn" data-nivel="Intermediário" onclick="setNivel(this)">⚡ Intermediário</button>
-          <button class="nivel-btn" data-nivel="Avançado"     onclick="setNivel(this)">🔥 Avançado</button>
-          <button class="nivel-btn" data-nivel="Profissional" onclick="setNivel(this)">🏆 Profissional</button>
+        <div class="nivel-seletor" id="nivelSeletor">
+          <button class="nivel-atual" id="nivelAtualBtn" onclick="toggleNivelOpcoes()">
+            <span id="nivelAtualTexto">🌱 Iniciante</span>
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>
+          <div class="nivel-opcoes" id="nivelOpcoes">
+            <button class="nivel-btn" data-nivel="Iniciante"    onclick="setNivel(this)">🌱 Iniciante</button>
+            <button class="nivel-btn" data-nivel="Intermediário" onclick="setNivel(this)">⚡ Intermediário</button>
+            <button class="nivel-btn" data-nivel="Avançado"     onclick="setNivel(this)">🔥 Avançado</button>
+            <button class="nivel-btn" data-nivel="Profissional" onclick="setNivel(this)">🏆 Profissional</button>
+          </div>
         </div>
       </div>
     </div>
@@ -122,6 +128,11 @@
     <div class="section-header">
       <span class="section-tag">📅 Histórico</span>
       <h2>Meus <span class="accent">Agendamentos</span></h2>
+    </div>
+    <div class="filtro-tabs" id="filtroTabs">
+      <button class="filtro-tab ativo" data-filtro="todos" onclick="filtrarAgendamentos('todos')">Todos</button>
+      <button class="filtro-tab" data-filtro="confirmado" onclick="filtrarAgendamentos('confirmado')">✅ Confirmados</button>
+      <button class="filtro-tab" data-filtro="cancelado" onclick="filtrarAgendamentos('cancelado')">❌ Cancelados</button>
     </div>
     <div style="text-align:right;margin-bottom:12px">
       <button onclick="carregarAgendamentos()" class="btn-refresh"><i class="fa-solid fa-rotate"></i> Atualizar</button>
@@ -178,10 +189,29 @@ function fazerLogout() {
   }
 }
 
+function aplicarNivelUI(nivel) {
+  document.querySelectorAll('.nivel-btn').forEach(btn => {
+    const ativo = btn.dataset.nivel === nivel;
+    btn.classList.toggle('ativo', ativo);
+    if (ativo) document.getElementById('nivelAtualTexto').textContent = btn.textContent;
+  });
+}
+
+function toggleNivelOpcoes() {
+  document.getElementById('nivelSeletor').classList.toggle('aberto');
+}
+
+document.addEventListener('click', function(e) {
+  const seletor = document.getElementById('nivelSeletor');
+  if (seletor && !seletor.contains(e.target)) seletor.classList.remove('aberto');
+});
+
 function setNivel(btn) {
   document.querySelectorAll('.nivel-btn').forEach(b => b.classList.remove('ativo'));
   btn.classList.add('ativo');
   const nivel = btn.dataset.nivel;
+  document.getElementById('nivelAtualTexto').textContent = btn.textContent;
+  document.getElementById('nivelSeletor').classList.remove('aberto');
   localStorage.setItem('nivelJogador', nivel);
   const usuarioStr = localStorage.getItem('usuario');
   if (usuarioStr) {
@@ -278,11 +308,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   const nivelSalvo = localStorage.getItem('nivelJogador') || usuario.nivel || '';
-  if (nivelSalvo) {
-    document.querySelectorAll('.nivel-btn').forEach(btn => {
-      btn.classList.toggle('ativo', btn.dataset.nivel === nivelSalvo);
-    });
-  }
+  if (nivelSalvo) aplicarNivelUI(nivelSalvo);
 
   // Busca dados atualizados (foto salva no banco, XP e nível) direto da API
   const token = localStorage.getItem('user-token');
@@ -292,11 +318,7 @@ document.addEventListener("DOMContentLoaded", function() {
       .then(dadosPerfil => {
         if (dadosPerfil.foto) document.getElementById('fotoPerfil').src = dadosPerfil.foto;
         atualizarBarraXp(dadosPerfil);
-        if (dadosPerfil.nivel_jogo) {
-          document.querySelectorAll('.nivel-btn').forEach(btn => {
-            btn.classList.toggle('ativo', btn.dataset.nivel === dadosPerfil.nivel_jogo);
-          });
-        }
+        if (dadosPerfil.nivel_jogo) aplicarNivelUI(dadosPerfil.nivel_jogo);
       })
       .catch(() => {});
   }
@@ -311,6 +333,17 @@ function carregarQuadrasInfo() {
     QUADRAS_INFO = {};
     (lista || []).forEach(q => { QUADRAS_INFO[q.nome] = q; });
   }).catch(() => {});
+}
+
+let AGENDAMENTOS_CACHE = [];
+let FILTRO_ATUAL = 'todos';
+
+function filtrarAgendamentos(filtro) {
+  FILTRO_ATUAL = filtro;
+  document.querySelectorAll('.filtro-tab').forEach(btn => {
+    btn.classList.toggle('ativo', btn.dataset.filtro === filtro);
+  });
+  renderizarAgendamentos();
 }
 
 function carregarAgendamentos() {
@@ -329,68 +362,82 @@ function carregarAgendamentos() {
   })
   .then(res => res.json())
   .then(dados => {
-    lista.innerHTML = '';
-    if (!dados.length) {
-      lista.innerHTML = `
-        <div style="text-align:center;padding:40px;color:#9BB;">
-          <div style="font-size:2.5rem;margin-bottom:12px;">📅</div>
-          <p style="font-weight:600;">Nenhum agendamento ainda.</p>
-          <a href="agendamento.html" style="color:var(--coral);font-weight:700;text-decoration:none;">Fazer minha primeira reserva →</a>
-        </div>`;
-      return;
-    }
-    const statusBadge = {
-      pendente:   '<span class="ag-badge pendente">⏳ Pendente</span>',
-      confirmado: '<span class="ag-badge confirmado">✅ Confirmado</span>',
-      cancelado:  '<span class="ag-badge cancelado">❌ Cancelado</span>'
-    };
-    dados.forEach(ag => {
-      const q = QUADRAS_INFO[ag.quadra] || {};
-      const infoQuadraExtra = [
-        q.endereco ? `<i class="fa-solid fa-location-dot"></i> ${q.endereco}` : '',
-        q.capacidade ? `<i class="fa-solid fa-users"></i> Até ${q.capacidade} pessoas` : '',
-        q.piso ? `<i class="fa-solid fa-shoe-prints"></i> ${q.piso}` : ''
-      ].filter(Boolean).join(' &nbsp;•&nbsp; ');
-
-      const div = document.createElement('div');
-      div.className = 'card-agendamento';
-      div.innerHTML = `
-        <div class="ag-header">
-          <div class="ag-quadra">📍 ${ag.quadra}</div>
-          ${statusBadge[ag.status]||'<span class="ag-badge">—</span>'}
-        </div>
-        ${infoQuadraExtra ? `<div style="font-size:.78rem;color:var(--muted);margin:-6px 0 10px;">${infoQuadraExtra}</div>` : ''}
-        <div class="ag-info-grid">
-          <div class="ag-info-item"><strong>Data:</strong> ${ag.data}</div>
-          <div class="ag-info-item"><strong>Horário:</strong> ${ag.horario_inicio} – ${ag.horario_fim} (${ag.duracao}h)</div>
-          <div class="ag-info-item"><strong>Modalidade:</strong> ${ag.modalidade}</div>
-          <div class="ag-info-item"><strong>Nível:</strong> ${ag.nivel}</div>
-        </div>
-        <div class="ag-actions">
-          ${ag.status==='pendente'?'<button class="ag-btn-cancel" data-id="'+ag.id+'"><i class="fa-solid fa-xmark"></i> Cancelar reserva</button>':''}
-        </div>
-      `;
-      const btn = div.querySelector('.ag-btn-cancel');
-      if (btn) btn.addEventListener('click', function() {
-        if (confirm('Deseja cancelar esta reserva?')) {
-          fetch('/agendamentos/'+ag.id, {
-            method: 'DELETE',
-            headers: { 'x-user-token': token }
-          })
-          .then(r => r.json())
-          .then(d => {
-            if (d.sucesso) showToast('Reserva cancelada.', 'info');
-            else showToast(d.erro||'Erro.', 'error');
-            carregarAgendamentos();
-          })
-          .catch(() => showToast('Erro ao cancelar.', 'error'));
-        }
-      });
-      lista.appendChild(div);
-    });
+    AGENDAMENTOS_CACHE = dados || [];
+    renderizarAgendamentos();
   })
   .catch(() => {
     lista.innerHTML = '<div class="card-agendamento" style="text-align:center;color:#9BB;"><p>Servidor offline — não foi possível carregar agendamentos. <button onclick="carregarAgendamentos()" style="background:var(--coral);color:#fff;border:none;border-radius:8px;padding:6px 14px;cursor:pointer;font-weight:600;margin-top:8px">Tentar novamente</button></p></div>';
+  });
+}
+
+function renderizarAgendamentos() {
+  const lista = document.getElementById("lista-agendamentos");
+  const token = localStorage.getItem('user-token');
+  const dados = FILTRO_ATUAL === 'todos'
+    ? AGENDAMENTOS_CACHE
+    : AGENDAMENTOS_CACHE.filter(ag => ag.status === FILTRO_ATUAL);
+
+  lista.innerHTML = '';
+  if (!dados.length) {
+    const msgFiltro = FILTRO_ATUAL === 'confirmado' ? 'Nenhum agendamento confirmado.'
+                     : FILTRO_ATUAL === 'cancelado' ? 'Nenhum agendamento cancelado.'
+                     : 'Nenhum agendamento ainda.';
+    lista.innerHTML = `
+      <div style="text-align:center;padding:40px;color:#9BB;">
+        <div style="font-size:2.5rem;margin-bottom:12px;">📅</div>
+        <p style="font-weight:600;">${msgFiltro}</p>
+        ${FILTRO_ATUAL==='todos'?'<a href="agendamento.html" style="color:var(--coral);font-weight:700;text-decoration:none;">Fazer minha primeira reserva →</a>':''}
+      </div>`;
+    return;
+  }
+  const statusBadge = {
+    pendente:   '<span class="ag-badge pendente">⏳ Pendente</span>',
+    confirmado: '<span class="ag-badge confirmado">✅ Confirmado</span>',
+    cancelado:  '<span class="ag-badge cancelado">❌ Cancelado</span>'
+  };
+  dados.forEach(ag => {
+    const q = QUADRAS_INFO[ag.quadra] || {};
+    const infoQuadraExtra = [
+      q.endereco ? `<i class="fa-solid fa-location-dot"></i> ${q.endereco}` : '',
+      q.capacidade ? `<i class="fa-solid fa-users"></i> Até ${q.capacidade} pessoas` : '',
+      q.piso ? `<i class="fa-solid fa-shoe-prints"></i> ${q.piso}` : ''
+    ].filter(Boolean).join(' &nbsp;•&nbsp; ');
+
+    const div = document.createElement('div');
+    div.className = 'card-agendamento';
+    div.innerHTML = `
+      <div class="ag-header">
+        <div class="ag-quadra">📍 ${ag.quadra}</div>
+        ${statusBadge[ag.status]||'<span class="ag-badge">—</span>'}
+      </div>
+      ${infoQuadraExtra ? `<div style="font-size:.78rem;color:var(--muted);margin:-6px 0 10px;">${infoQuadraExtra}</div>` : ''}
+      <div class="ag-info-grid">
+        <div class="ag-info-item"><strong>Data:</strong> ${ag.data}</div>
+        <div class="ag-info-item"><strong>Horário:</strong> ${ag.horario_inicio} – ${ag.horario_fim} (${ag.duracao}h)</div>
+        <div class="ag-info-item"><strong>Modalidade:</strong> ${ag.modalidade}</div>
+        <div class="ag-info-item"><strong>Nível:</strong> ${ag.nivel}</div>
+      </div>
+      <div class="ag-actions">
+        ${ag.status==='pendente'?'<button class="ag-btn-cancel" data-id="'+ag.id+'"><i class="fa-solid fa-xmark"></i> Cancelar reserva</button>':''}
+      </div>
+    `;
+    const btn = div.querySelector('.ag-btn-cancel');
+    if (btn) btn.addEventListener('click', function() {
+      if (confirm('Deseja cancelar esta reserva?')) {
+        fetch('/agendamentos/'+ag.id, {
+          method: 'DELETE',
+          headers: { 'x-user-token': token }
+        })
+        .then(r => r.json())
+        .then(d => {
+          if (d.sucesso) showToast('Reserva cancelada.', 'info');
+          else showToast(d.erro||'Erro.', 'error');
+          carregarAgendamentos();
+        })
+        .catch(() => showToast('Erro ao cancelar.', 'error'));
+      }
+    });
+    lista.appendChild(div);
   });
 }
 
