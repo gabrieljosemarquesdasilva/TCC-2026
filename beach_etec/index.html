@@ -239,62 +239,6 @@
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="faq-section">
-  <div class="section-header reveal">
-    <span class="section-tag">❓ Dúvidas</span>
-    <h2>Perguntas <span class="accent">Frequentes</span></h2>
-    <p>Tudo que você precisa saber antes de reservar.</p>
-  </div>
-
-  <div class="faq-list reveal">
-    <div class="faq-item">
-      <button class="faq-question">
-        Como faço para reservar uma quadra?
-        <i class="fa-solid fa-chevron-down"></i>
-      </button>
-      <div class="faq-answer">
-        Basta criar sua conta, acessar a página de Agendamento, escolher a quadra, data e horário desejados e confirmar. O processo todo leva menos de 2 minutos!
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">
-        Preciso criar uma conta para agendar?
-        <i class="fa-solid fa-chevron-down"></i>
-      </button>
-      <div class="faq-answer">
-        Sim, o cadastro é necessário para identificar sua reserva e garantir seu horário. O cadastro é gratuito e rápido — pode ser feito com e-mail ou conta Google.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">
-        Quais modalidades são permitidas nas quadras?
-        <i class="fa-solid fa-chevron-down"></i>
-      </button>
-      <div class="faq-answer">
-        As quadras comportam Beach Tennis, Vôlei de Areia e FutVôlei. Você pode escolher a modalidade no momento do agendamento.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">
-        Posso cancelar ou alterar minha reserva?
-        <i class="fa-solid fa-chevron-down"></i>
-      </button>
-      <div class="faq-answer">
-        Sim! Acesse a seção "Meus Agendamentos" no seu Perfil para visualizar, cancelar ou entrar em contato sobre suas reservas.
-      </div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-question">
-        As quadras têm iluminação noturna?
-        <i class="fa-solid fa-chevron-down"></i>
-      </button>
-      <div class="faq-answer">
-        Sim! Todas as quadras possuem iluminação noturna de alta potência, permitindo jogos até as 21h.
-      </div>
-    </div>
-  </div>
-</section>
 
 <footer>
   <div class="footer-content">
@@ -380,19 +324,6 @@
     });
   }, { threshold: 0.5 });
   nums.forEach(n => observer.observe(n));
-})();
-</script>
-<script>
-// FAQ Accordion
-(function() {
-  document.querySelectorAll('.faq-question').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const item = this.closest('.faq-item');
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-    });
-  });
 })();
 </script>
 <script>
