@@ -9,6 +9,66 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+
+<div id="popupDados" class="popup-dados-overlay">
+
+    <div class="popup-dados">
+
+        <div class="popup-dados-icon">
+            🎾
+        </div>
+
+        <h2>Complete seu cadastro</h2>
+
+        <p>
+            Para continuar utilizando o sistema,
+            precisamos de mais algumas informações.
+        </p>
+
+        <div class="form-group">
+            <label for="popupTelefone">
+                Telefone
+            </label>
+
+            <input
+                type="tel"
+                id="popupTelefone"
+                placeholder="(19) 99999-9999"
+                maxlength="15"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="popupNascimento">
+                Data de nascimento
+            </label>
+
+            <input
+                type="date"
+                id="popupNascimento"
+                required
+            >
+        </div>
+
+        <button
+            type="button"
+            id="btnSalvarDados"
+            class="botao-agendar"
+            style="width:100%;justify-content:center;"
+        >
+            Continuar
+        </button>
+
+        <p
+            id="erroPopupDados"
+            style="display:none;color:#e74c3c;text-align:center;margin-top:12px;"
+        ></p>
+
+    </div>
+
+</div>
+
 <div class="site-wrapper">
 
 <header>
@@ -313,14 +373,54 @@ document.addEventListener("DOMContentLoaded", function() {
   // Busca dados atualizados (foto salva no banco, XP e nível) direto da API
   const token = localStorage.getItem('user-token');
   if (token) {
-    fetch('/perfil', { headers: { 'x-user-token': token } })
-      .then(r => r.json())
-      .then(dadosPerfil => {
-        if (dadosPerfil.foto) document.getElementById('fotoPerfil').src = dadosPerfil.foto;
+    fetch('/perfil', {
+    headers: {
+        'x-user-token': token
+    }
+    })
+    .then(async r => {
+
+        if (!r.ok) {
+            throw new Error('Erro HTTP: ' + r.status);
+        }
+
+        return await r.json();
+
+    })
+    .then(dadosPerfil => {
+
+        console.log('Perfil atualizado:', dadosPerfil);
+
+        if (dadosPerfil.foto) {
+            document.getElementById('fotoPerfil').src = dadosPerfil.foto;
+        }
+
         atualizarBarraXp(dadosPerfil);
-        if (dadosPerfil.nivel_jogo) aplicarNivelUI(dadosPerfil.nivel_jogo);
-      })
-      .catch(() => {});
+
+        if (dadosPerfil.nivel_jogo) {
+            aplicarNivelUI(dadosPerfil.nivel_jogo);
+        }
+
+        // =====================================
+        // VERIFICAR DADOS COMPLEMENTARES
+        // =====================================
+
+        if (
+            !dadosPerfil.telefone ||
+            !dadosPerfil.nascimento
+        ) {
+            abrirPopupDados(dadosPerfil);
+        }
+
+    })
+    .catch(erro => {
+
+        console.error(
+            'Erro ao carregar perfil:',
+            erro
+        );
+
+    });
   }
 
   carregarQuadrasInfo();
@@ -483,5 +583,235 @@ if (usuarioLogado) {
 </script>
 </div>
 <script src="acessibilidade.js"></script>
+
+<script>
+
+// ==========================================
+// ABRIR POPUP DE DADOS COMPLEMENTARES
+// ==========================================
+
+// function abrirPopupDados(usuario) {
+
+//     const popup = document.getElementById("popupDados");
+//     const telefone = document.getElementById("popupTelefone");
+//     const nascimento = document.getElementById("popupNascimento");
+
+//     // Limpa os campos antes de preencher
+//     telefone.value = "";
+//     nascimento.value = "";
+
+//     // Se o telefone já existir, preenche
+//     if (usuario.telefone) {
+//         telefone.value = usuario.telefone;
+//     }
+
+//     // Se a data de nascimento já existir, preenche
+//     if (usuario.nascimento) {
+//         nascimento.value = String(usuario.nascimento).substring(0, 10);
+//     }
+
+//     // Abre o popup
+//     popup.classList.add("aberto");
+// }
+
+
+// // ==========================================
+// // SALVAR DADOS COMPLEMENTARES
+// // ==========================================
+
+// document
+//     .getElementById("btnSalvarDados")
+//     .addEventListener("click", async function () {
+
+//         const telefone =
+//             document.getElementById("popupTelefone").value.trim();
+
+//         const nascimento =
+//             document.getElementById("popupNascimento").value;
+
+//         const erro =
+//             document.getElementById("erroPopupDados");
+
+//         const btn =
+//             document.getElementById("btnSalvarDados");
+
+//         // ======================================
+//         // VALIDAÇÃO
+//         // ======================================
+
+//         if (!telefone) {
+
+//             erro.textContent = "Digite seu telefone.";
+//             erro.style.display = "block";
+
+//             return;
+//         }
+
+//         if (!nascimento) {
+
+//             erro.textContent =
+//                 "Digite sua data de nascimento.";
+
+//             erro.style.display = "block";
+
+//             return;
+//         }
+
+//         erro.style.display = "none";
+
+//         btn.disabled = true;
+//         btn.textContent = "Salvando...";
+
+//         const token =
+//             localStorage.getItem("user-token");
+
+//         if (!token) {
+
+//             erro.textContent =
+//                 "Sua sessão expirou. Faça login novamente.";
+
+//             erro.style.display = "block";
+
+//             btn.disabled = false;
+//             btn.textContent = "Continuar";
+
+//             return;
+//         }
+
+//         try {
+
+//             const resposta = await fetch(
+//                 "/usuario/dados-complementares",
+//                 {
+//                     method: "PUT",
+
+//                     headers: {
+//                         "Content-Type": "application/json",
+//                         "x-user-token": token
+//                     },
+
+//                     body: JSON.stringify({
+//                         telefone: telefone,
+//                         nascimento: nascimento
+//                     })
+//                 }
+//             );
+
+//             // Verifica se realmente recebeu JSON
+//             if (!resposta.ok) {
+
+//                 const texto = await resposta.text();
+
+//                 console.error(
+//                     "Resposta do servidor:",
+//                     texto
+//                 );
+
+//                 throw new Error(
+//                     "Erro ao salvar os dados. Código: " +
+//                     resposta.status
+//                 );
+//             }
+
+//             const data = await resposta.json();
+
+//             console.log(
+//                 "Dados complementares:",
+//                 data
+//             );
+
+//             if (!data.sucesso) {
+
+//                 throw new Error(
+//                     data.erro ||
+//                     "Não foi possível salvar os dados."
+//                 );
+//             }
+
+//             // ======================================
+//             // ATUALIZA LOCALSTORAGE
+//             // ======================================
+
+//             const usuarioStr =
+//                 localStorage.getItem("usuario");
+
+//             if (usuarioStr) {
+
+//                 try {
+
+//                     const usuario =
+//                         JSON.parse(usuarioStr);
+
+//                     usuario.telefone = telefone;
+//                     usuario.nascimento = nascimento;
+
+//                     localStorage.setItem(
+//                         "usuario",
+//                         JSON.stringify(usuario)
+//                     );
+
+//                 } catch (e) {
+
+//                     console.error(
+//                         "Erro ao atualizar usuário local:",
+//                         e
+//                     );
+//                 }
+//             }
+
+//             // ======================================
+//             // ATUALIZA A TELA
+//             // ======================================
+
+//             document.getElementById(
+//                 "telefone-perfil"
+//             ).innerText = telefone;
+
+//             const [ano, mes, dia] =
+//                 nascimento.split("-");
+
+//             document.getElementById(
+//                 "nascimento-perfil"
+//             ).innerText =
+//                 `${dia}/${mes}/${ano}`;
+
+//             // ======================================
+//             // FECHA POPUP
+//             // ======================================
+
+//             document
+//                 .getElementById("popupDados")
+//                 .classList.remove("aberto");
+
+//             showToast(
+//                 "Dados salvos com sucesso! ✅",
+//                 "success"
+//             );
+
+//         } catch (error) {
+
+//             console.error(
+//                 "Erro ao salvar dados complementares:",
+//                 error
+//             );
+
+//             erro.textContent =
+//                 error.message ||
+//                 "Erro ao salvar os dados.";
+
+//             erro.style.display = "block";
+
+//         } finally {
+
+//             btn.disabled = false;
+//             btn.textContent = "Continuar";
+
+//         }
+
+//     });
+
+</script>
+
+
 </body>
 </html>

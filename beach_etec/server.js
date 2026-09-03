@@ -101,6 +101,13 @@ app.post("/login", async (req, res) => {
     const isAdmin = adm.rows.length > 0;
     const token = crypto.randomBytes(32).toString("hex");
     await db.query("INSERT INTO usuario_sessoes(token,usuario_id) VALUES($1,$2)", [token, u.id]);
+
+    app.post("/logout", async (req, res) => {
+    const token = req.headers["x-user-token"];
+    if (token) await db.query("DELETE FROM usuario_sessoes WHERE token=$1", [token]).catch(()=>{});
+    res.json({ sucesso: true });
+  });
+
     res.json({ sucesso: true, isAdmin, token, usuario: {
       id: u.id, nome: u.nome+(u.sobrenome?" "+u.sobrenome:""),
       email: u.email, foto: u.foto_url || null,
@@ -109,6 +116,41 @@ app.post("/login", async (req, res) => {
     }});
   } catch(e) { console.error("Erro no /login:", e.message); res.status(500).json({ erro: "Erro interno." }); }
 });
+
+
+async function userAuth(req, res, next) {
+    const token = req.headers["x-user-token"];
+
+    if (!token) {
+      return res.status(401).json({
+        erro: "Não autenticado. Faça login."
+      });
+    }
+
+    try {
+      const r = await db.query(
+        "SELECT usuario_id FROM usuario_sessoes WHERE token=$1",
+        [token]
+      );
+
+      if (!r.rows.length) {
+        return res.status(401).json({
+          erro: "Sessão inválida. Faça login novamente."
+        });
+      }
+
+      req.usuarioId = r.rows[0].usuario_id;
+
+      next();
+
+    } catch(e) {
+      console.error("Erro de autenticação:", e);
+
+      res.status(401).json({
+        erro: "Erro de autenticação."
+      });
+    }
+  }
 
 app.post("/login-google", async (req, res) => {
   const { google_id, nome, email, foto } = req.body;
@@ -710,8 +752,7 @@ app.use((req, res) => {
   res.status(404).json({ erro: "Rota não encontrada." });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🏖️  Servidor rodando na porta ${PORT}`));
+
 
 // ==========================================
 // VERIFICAR DADOS COMPLEMENTARES DO USUÁRIO
@@ -791,47 +832,55 @@ app.get('/usuario/me', userAuth, async (req, res) => {
 // ATUALIZAR TELEFONE E DATA DE NASCIMENTO
 // ==========================================
 app.put('/usuario/dados-complementares', userAuth, async (req, res) => {
-  try {
+    try {
+        const { telefone, nascimento } = req.body;
 
-    const {
-      telefone,
-      data_nascimento
-    } = req.body;
+        if (!telefone || !nascimento) {
+            return res.status(400).json({
+                sucesso: false,
+                erro: 'Telefone e data de nascimento são obrigatórios.'
+            });
+        }
 
-    if (!telefone || !data_nascimento) {
-      return res.status(400).json({
-        sucesso: false,
-        erro: 'Telefone e data de nascimento são obrigatórios.'
-      });
+        await pool.query(
+            `UPDATE usuarios
+             SET telefone = $1,
+                 nascimento = $2
+             WHERE id = $3`,
+            [
+                telefone,
+                nascimento,
+                req.user.id
+            ]
+        );
+
+        res.json({
+            sucesso: true
+        });
+
+    } catch (erro) {
+
+        console.error(
+            'Erro ao salvar dados complementares:',
+            erro
+        );
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro interno ao salvar os dados.'
+        });
     }
-
-    await db.query(
-      `UPDATE usuarios
-       SET telefone = $1,
-           nascimento = $2
-       WHERE id = $3`,
-      [
-        telefone,
-        data_nascimento,
-        req.usuarioId
-      ]
-    );
-
-    res.json({
-      sucesso: true,
-      mensagem: 'Dados atualizados com sucesso.'
-    });
-
-  } catch (error) {
-
-    console.error(
-      'Erro ao atualizar dados:',
-      error
-    );
-
-    res.status(500).json({
-      sucesso: false,
-      erro: 'Erro ao atualizar seus dados.'
-    });
-  }
 });
+
+
+
+
+
+
+
+
+
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🏖️  Servidor rodando na porta ${PORT}`));
