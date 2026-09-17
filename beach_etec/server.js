@@ -167,8 +167,8 @@ app.post("/login-google", async (req, res) => {
       `SELECT id, nome, sobrenome, email, telefone, nascimento,
               foto_url, xp, nivel_jogo
        FROM usuarios
-       WHERE email=$1`,
-      [email]
+       WHERE email=$1 OR id_google=$2`,
+      [email, google_id]
     );
 
     let usuario;
@@ -181,12 +181,14 @@ app.post("/login-google", async (req, res) => {
       // Atualiza nome/foto caso tenham mudado no Google
       await db.query(
         `UPDATE usuarios
-         SET nome=$1,
-             foto_url=COALESCE($2, foto_url)
-         WHERE id=$3`,
+        SET nome=$1,
+            foto_url=COALESCE($2, foto_url),
+            id_google=$3
+        WHERE id=$4`,
         [
           nome || usuario.nome,
           foto || usuario.foto_url,
+          google_id,
           usuario.id
         ]
       );
@@ -196,10 +198,10 @@ app.post("/login-google", async (req, res) => {
       // Se não existe, cria novo usuário
       r = await db.query(
         `INSERT INTO usuarios
-         (nome, sobrenome, email, telefone, senha, nascimento, foto_url, xp)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
-         RETURNING id, nome, sobrenome, email, telefone,
-                   nascimento, foto_url, xp, nivel_jogo`,
+        (nome, sobrenome, email, telefone, senha, nascimento, foto_url, xp, id_google)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+        RETURNING id, nome, sobrenome, email, telefone,
+                  nascimento, foto_url, xp, nivel_jogo, id_google`,
         [
           nome || "Usuário",
           "",
@@ -208,7 +210,8 @@ app.post("/login-google", async (req, res) => {
           null,
           null,
           foto || null,
-          0
+          0,
+          google_id
         ]
       );
 
@@ -745,15 +748,6 @@ app.post("/admin/conteudo/restaurar-padrao", adminAuth, (req, res) => {
 });
 
 app.get("/conteudo", (req, res) => res.json(lerJSON(CONTENT_FILE)));
-
-// ═══ 404 personalizada ═══
-app.use((req, res) => {
-  if (req.accepts("html")) return res.status(404).sendFile(__dirname + "/404.html");
-  res.status(404).json({ erro: "Rota não encontrada." });
-});
-
-
-
 // ==========================================
 // VERIFICAR DADOS COMPLEMENTARES DO USUÁRIO
 // ==========================================
@@ -828,6 +822,7 @@ app.get('/usuario/me', userAuth, async (req, res) => {
   }
 });
 
+
 // ==========================================
 // ATUALIZAR TELEFONE E DATA DE NASCIMENTO
 // ==========================================
@@ -842,7 +837,7 @@ app.put('/usuario/dados-complementares', userAuth, async (req, res) => {
             });
         }
 
-        await pool.query(
+        await db.query(
             `UPDATE usuarios
              SET telefone = $1,
                  nascimento = $2
@@ -850,7 +845,7 @@ app.put('/usuario/dados-complementares', userAuth, async (req, res) => {
             [
                 telefone,
                 nascimento,
-                req.user.id
+                req.usuarioId
             ]
         );
 
@@ -871,6 +866,24 @@ app.put('/usuario/dados-complementares', userAuth, async (req, res) => {
         });
     }
 });
+
+
+
+
+
+
+
+
+
+// ═══ 404 personalizada ═══
+app.use((req, res) => {
+  if (req.accepts("html")) return res.status(404).sendFile(__dirname + "/404.html");
+  res.status(404).json({ erro: "Rota não encontrada." });
+});
+
+
+
+
 
 
 

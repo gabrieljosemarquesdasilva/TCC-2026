@@ -391,14 +391,93 @@ document.addEventListener("DOMContentLoaded", function() {
 
         console.log('Perfil atualizado:', dadosPerfil);
 
-        if (dadosPerfil.foto) {
-            document.getElementById('fotoPerfil').src = dadosPerfil.foto;
+        // =====================================
+        // ATUALIZAR LOCALSTORAGE COM DADOS DO BANCO
+        // =====================================
+
+        const usuarioStr = localStorage.getItem("usuario");
+
+        if (usuarioStr) {
+
+            try {
+
+                const usuario = JSON.parse(usuarioStr);
+
+                // Atualiza telefone
+                usuario.telefone = dadosPerfil.telefone || "";
+
+                // Atualiza data de nascimento
+                usuario.nascimento = dadosPerfil.nascimento || "";
+
+                // Atualiza foto
+                if (dadosPerfil.foto) {
+                    usuario.foto = dadosPerfil.foto;
+                    document.getElementById('fotoPerfil').src = dadosPerfil.foto;
+                }
+
+                // Atualiza nível
+                if (dadosPerfil.nivel_jogo) {
+                    usuario.nivel = dadosPerfil.nivel_jogo;
+                }
+
+                // Salva tudo novamente
+                localStorage.setItem(
+                    "usuario",
+                    JSON.stringify(usuario)
+                );
+
+                console.log(
+                    "LocalStorage atualizado:",
+                    usuario
+                );
+
+            } catch (e) {
+
+                console.error(
+                    "Erro ao atualizar LocalStorage:",
+                    e
+                );
+
+            }
         }
+
+        // =====================================
+        // ATUALIZAR XP
+        // =====================================
 
         atualizarBarraXp(dadosPerfil);
 
+        // =====================================
+        // ATUALIZAR NÍVEL
+        // =====================================
+
         if (dadosPerfil.nivel_jogo) {
             aplicarNivelUI(dadosPerfil.nivel_jogo);
+        }
+
+        // =====================================
+        // ATUALIZAR TELEFONE NA TELA
+        // =====================================
+
+        document.getElementById("telefone-perfil").innerText =
+            dadosPerfil.telefone || "-";
+
+        // =====================================
+        // ATUALIZAR NASCIMENTO NA TELA
+        // =====================================
+
+        if (dadosPerfil.nascimento) {
+
+            const raw = String(dadosPerfil.nascimento).split('T')[0];
+            const [ano, mes, dia] = raw.split('-');
+
+            document.getElementById("nascimento-perfil").innerText =
+                `${dia}/${mes}/${ano}`;
+
+        } else {
+
+            document.getElementById("nascimento-perfil").innerText = "-";
+
         }
 
         // =====================================
@@ -590,225 +669,226 @@ if (usuarioLogado) {
 // ABRIR POPUP DE DADOS COMPLEMENTARES
 // ==========================================
 
-// function abrirPopupDados(usuario) {
+function abrirPopupDados(usuario) {
 
-//     const popup = document.getElementById("popupDados");
-//     const telefone = document.getElementById("popupTelefone");
-//     const nascimento = document.getElementById("popupNascimento");
+    const popup = document.getElementById("popupDados");
+    const telefone = document.getElementById("popupTelefone");
+    const nascimento = document.getElementById("popupNascimento");
 
-//     // Limpa os campos antes de preencher
-//     telefone.value = "";
-//     nascimento.value = "";
+    // Limpa os campos antes de preencher
+    telefone.value = "";
+    nascimento.value = "";
 
-//     // Se o telefone já existir, preenche
-//     if (usuario.telefone) {
-//         telefone.value = usuario.telefone;
-//     }
+    // Se o telefone já existir, preenche
+    if (usuario.telefone) {
+        telefone.value = usuario.telefone;
+    }
 
-//     // Se a data de nascimento já existir, preenche
-//     if (usuario.nascimento) {
-//         nascimento.value = String(usuario.nascimento).substring(0, 10);
-//     }
+    // Se a data de nascimento já existir, preenche
+    if (usuario.nascimento) {
+        nascimento.value = String(usuario.nascimento).substring(0, 10);
+    }
 
-//     // Abre o popup
-//     popup.classList.add("aberto");
-// }
+    // Abre o popup
+    popup.classList.add("aberto");
+}
 
 
-// // ==========================================
-// // SALVAR DADOS COMPLEMENTARES
-// // ==========================================
+// ==========================================
+// SALVAR DADOS COMPLEMENTARES
+// ==========================================
 
-// document
-//     .getElementById("btnSalvarDados")
-//     .addEventListener("click", async function () {
+document
+    .getElementById("btnSalvarDados")
+    .addEventListener("click", async function () {
 
-//         const telefone =
-//             document.getElementById("popupTelefone").value.trim();
+        const telefone =
+            document.getElementById("popupTelefone").value.trim();
 
-//         const nascimento =
-//             document.getElementById("popupNascimento").value;
+        const nascimento =
+            document.getElementById("popupNascimento").value;
 
-//         const erro =
-//             document.getElementById("erroPopupDados");
+        const erro =
+            document.getElementById("erroPopupDados");
 
-//         const btn =
-//             document.getElementById("btnSalvarDados");
+        const btn =
+            document.getElementById("btnSalvarDados");
 
-//         // ======================================
-//         // VALIDAÇÃO
-//         // ======================================
+        // ======================================
+        // VALIDAÇÃO
+        // ======================================
 
-//         if (!telefone) {
+        if (!telefone) {
 
-//             erro.textContent = "Digite seu telefone.";
-//             erro.style.display = "block";
+            erro.textContent = "Digite seu telefone.";
+            erro.style.display = "block";
 
-//             return;
-//         }
+            return;
+        }
 
-//         if (!nascimento) {
+        if (!nascimento) {
 
-//             erro.textContent =
-//                 "Digite sua data de nascimento.";
+            erro.textContent =
+                "Digite sua data de nascimento.";
 
-//             erro.style.display = "block";
+            erro.style.display = "block";
 
-//             return;
-//         }
+            return;
+        }
 
-//         erro.style.display = "none";
+        erro.style.display = "none";
 
-//         btn.disabled = true;
-//         btn.textContent = "Salvando...";
+        btn.disabled = true;
+        btn.textContent = "Salvando...";
 
-//         const token =
-//             localStorage.getItem("user-token");
+        const token =
+            localStorage.getItem("user-token");
 
-//         if (!token) {
+        if (!token) {
 
-//             erro.textContent =
-//                 "Sua sessão expirou. Faça login novamente.";
+            erro.textContent =
+                "Sua sessão expirou. Faça login novamente.";
 
-//             erro.style.display = "block";
+            erro.style.display = "block";
 
-//             btn.disabled = false;
-//             btn.textContent = "Continuar";
+            btn.disabled = false;
+            btn.textContent = "Continuar";
 
-//             return;
-//         }
+            return;
+        }
 
-//         try {
+        try {
 
-//             const resposta = await fetch(
-//                 "/usuario/dados-complementares",
-//                 {
-//                     method: "PUT",
+            const resposta = await fetch(
+                "/usuario/dados-complementares",
+                {
+                    method: "PUT",
 
-//                     headers: {
-//                         "Content-Type": "application/json",
-//                         "x-user-token": token
-//                     },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-user-token": token
+                    },
 
-//                     body: JSON.stringify({
-//                         telefone: telefone,
-//                         nascimento: nascimento
-//                     })
-//                 }
-//             );
+                    body: JSON.stringify({
+                        telefone: telefone,
+                        nascimento: nascimento
+                    })
+                }
+            );
 
-//             // Verifica se realmente recebeu JSON
-//             if (!resposta.ok) {
+            // Verifica se realmente recebeu JSON
+            if (!resposta.ok) {
+
+                const texto = await resposta.text();
 
-//                 const texto = await resposta.text();
+                console.error(
+                    "Resposta do servidor:",
+                    texto
+                );
 
-//                 console.error(
-//                     "Resposta do servidor:",
-//                     texto
-//                 );
+                throw new Error(
+                    "Erro ao salvar os dados. Código: " +
+                    resposta.status
+                );
+            }
 
-//                 throw new Error(
-//                     "Erro ao salvar os dados. Código: " +
-//                     resposta.status
-//                 );
-//             }
+            const data = await resposta.json();
 
-//             const data = await resposta.json();
+            console.log(
+                "Dados complementares:",
+                data
+            );
 
-//             console.log(
-//                 "Dados complementares:",
-//                 data
-//             );
+            if (!data.sucesso) {
 
-//             if (!data.sucesso) {
+                throw new Error(
+                    data.erro ||
+                    "Não foi possível salvar os dados."
+                );
+            }
+            
 
-//                 throw new Error(
-//                     data.erro ||
-//                     "Não foi possível salvar os dados."
-//                 );
-//             }
+            // ======================================
+            // ATUALIZA LOCALSTORAGE
+            // ======================================
 
-//             // ======================================
-//             // ATUALIZA LOCALSTORAGE
-//             // ======================================
+            const usuarioStr =
+                localStorage.getItem("usuario");
 
-//             const usuarioStr =
-//                 localStorage.getItem("usuario");
+            if (usuarioStr) {
 
-//             if (usuarioStr) {
+                try {
 
-//                 try {
+                    const usuario =
+                        JSON.parse(usuarioStr);
 
-//                     const usuario =
-//                         JSON.parse(usuarioStr);
+                    usuario.telefone = telefone;
+                    usuario.nascimento = nascimento;
 
-//                     usuario.telefone = telefone;
-//                     usuario.nascimento = nascimento;
+                    localStorage.setItem(
+                        "usuario",
+                        JSON.stringify(usuario)
+                    );
 
-//                     localStorage.setItem(
-//                         "usuario",
-//                         JSON.stringify(usuario)
-//                     );
+                } catch (e) {
 
-//                 } catch (e) {
+                    console.error(
+                        "Erro ao atualizar usuário local:",
+                        e
+                    );
+                }
+            }
 
-//                     console.error(
-//                         "Erro ao atualizar usuário local:",
-//                         e
-//                     );
-//                 }
-//             }
+            // ======================================
+            // ATUALIZA A TELA
+            // ======================================
 
-//             // ======================================
-//             // ATUALIZA A TELA
-//             // ======================================
+            document.getElementById(
+                "telefone-perfil"
+            ).innerText = telefone;
 
-//             document.getElementById(
-//                 "telefone-perfil"
-//             ).innerText = telefone;
+            const [ano, mes, dia] =
+                nascimento.split("-");
 
-//             const [ano, mes, dia] =
-//                 nascimento.split("-");
+            document.getElementById(
+                "nascimento-perfil"
+            ).innerText =
+                `${dia}/${mes}/${ano}`;
 
-//             document.getElementById(
-//                 "nascimento-perfil"
-//             ).innerText =
-//                 `${dia}/${mes}/${ano}`;
+            // ======================================
+            // FECHA POPUP
+            // ======================================
 
-//             // ======================================
-//             // FECHA POPUP
-//             // ======================================
+            document
+                .getElementById("popupDados")
+                .classList.remove("aberto");
 
-//             document
-//                 .getElementById("popupDados")
-//                 .classList.remove("aberto");
+            showToast(
+                "Dados salvos com sucesso! ✅",
+                "success"
+            );
 
-//             showToast(
-//                 "Dados salvos com sucesso! ✅",
-//                 "success"
-//             );
+        } catch (error) {
 
-//         } catch (error) {
+            console.error(
+                "Erro ao salvar dados complementares:",
+                error
+            );
 
-//             console.error(
-//                 "Erro ao salvar dados complementares:",
-//                 error
-//             );
+            erro.textContent =
+                error.message ||
+                "Erro ao salvar os dados.";
 
-//             erro.textContent =
-//                 error.message ||
-//                 "Erro ao salvar os dados.";
+            erro.style.display = "block";
 
-//             erro.style.display = "block";
+        } finally {
 
-//         } finally {
+            btn.disabled = false;
+            btn.textContent = "Continuar";
 
-//             btn.disabled = false;
-//             btn.textContent = "Continuar";
+        }
 
-//         }
-
-//     });
+    });
 
 </script>
 
